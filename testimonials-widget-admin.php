@@ -225,6 +225,7 @@ function testimonialswidget_editform($testimonial_id = 0)
 	$tags_label = __('Tags', 'testimonials-widget');
 	$public_label = __('Public?', 'testimonials-widget');
 	$optional_text = __('optional', 'testimonials-widget');
+	$url_text = __('email address or website URL', 'testimonials-widget');
 	$comma_separated_text = __('comma separated', 'testimonials-widget');
 	
 
@@ -242,7 +243,7 @@ function testimonialswidget_editform($testimonial_id = 0)
 		</tr>
 		<tr class="form-field">
 			<th style="text-align:left;" scope="row" valign="top"><label for="testimonialswidget_source">{$source_label}</label></th>
-			<td><input type="text" id="testimonialswidget_source" name="source" size="40" value="{$source}" /><br />{$optional_text}</td>
+			<td><input type="text" id="testimonialswidget_source" name="source" size="40" value="{$source}" /><br />{$optional_text}, {$url_text}</td>
 		</tr>
 		<tr class="form-field">
 			<th style="text-align:left;" scope="row" valign="top"><label for="testimonialswidget_tags">{$tags_label}</label></th>
@@ -253,7 +254,7 @@ function testimonialswidget_editform($testimonial_id = 0)
 			<td><input type="checkbox" id="testimonialswidget_public" name="public"{$public_selected} />
 		</tr></tbody>
 	</table>
-	<p class="submit">{$back}<input name="submit" value="{$submit_value}" type="submit" class="button button-primary" /></p>
+	<p class="submit"><input name="submit" value="{$submit_value}" type="submit" class="button button-primary" />{$back}</p>
 </form>
 EDITFORM;
 	return $display;
