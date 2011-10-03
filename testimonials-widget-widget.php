@@ -66,7 +66,7 @@ class testimonials_widget extends WP_Widget {
 		/* After widget (defined by themes). */
 			echo $after_widget;
 		}
-	
+
 	/* ---------------------------- */
 	/* ------- Update Widget -------- */
 	/* ---------------------------- */
@@ -99,7 +99,7 @@ class testimonials_widget extends WP_Widget {
 	function form( $instance ) {
 		/* Set up some default widget settings. */
 		$defaults = array(
-			'title' => __('Testimonials', 'testimonials-widget'), 
+			'title' => __('Testimonials', 'testimonials-widget'),
 			'min_height' => 150,
 			'show_author' => 1,
 			'show_source' => 1,

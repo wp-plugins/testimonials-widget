@@ -23,11 +23,12 @@ License: GPL2
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
+
 /*  This plugin borrows code from the Quotes Collection plugin by Srini G
-    http://srinig.com/wordpress/plugins/testimonials-widget/
+    http://srinig.com/wordpress/plugins/quotes-collection/
 
     Additional contributions from comprock and ChrisCree
- */
+*/
 
 
 /*  Refer http://codex.wordpress.org/Roles_and_Capabilities */
@@ -103,8 +104,10 @@ EOF;
     </script>
 EOF;
 	}
+
 	$html .= '<div class="'.$id.' '.$id_base.'">';
 	$first = true;
+
 	foreach ($testimonials as $testimonial) {
 
 		if (!$first) {
@@ -157,7 +160,6 @@ function testimonialswidget_install()
 	if(defined('DB_COLLATE') && $db_collate = DB_COLLATE)
 		$db_collate = "COLLATE ".$db_collate;
 
-
 	// if table name already exists
 	if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") == $table_name) {
    		$wpdb->query("ALTER TABLE `{$table_name}` {$db_charset} {$db_collate}");
@@ -206,6 +208,7 @@ function testimonialswidget_css_head()
 	<?php
 }
 
+
 function testimonialswidget_enqueue_scripts()
 {
 	wp_enqueue_script('jquery');
@@ -214,7 +217,6 @@ function testimonialswidget_enqueue_scripts()
 add_action('wp_head', 'testimonialswidget_css_head' );
 add_action('wp_enqueue_scripts', 'testimonialswidget_enqueue_scripts');
 
-
-
 register_activation_hook( __FILE__, 'testimonialswidget_install' );
+
 ?>
