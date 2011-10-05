@@ -52,7 +52,7 @@ function testimonialswidget_display_testimonials($title = '', $random = 1, $min_
 
 	if($tags) {
 		$taglist = explode(',', $tags);
-		$tag_conditions = "";
+		$tag_conditions = '';
 		foreach($taglist as $tag) {
 			$tag = mysql_real_escape_string(strip_tags(trim($tag)));
 			if($tag_conditions) $tag_conditions .= " OR ";
@@ -117,12 +117,12 @@ EOF;
 			$first = false;
 		}
 		$html .= "<p><q>". make_clickable( $testimonial['testimonial'] ) ."</q>";
-		$cite = "";
+		$cite = '';
 		if($show_author && ! empty( $testimonial['author'] ) )
 			$cite = '<span class="testimonialswidget_author">'. make_clickable( $testimonial['author'] ) .'</span>';
 
 		if($show_source && ! empty( $testimonial['source'] ) ) {
-			if($cite) $cite .= ", ";
+			if($cite) $cite .= ', ';
 			$cite .= '<span class="testimonialswidget_source">'. make_clickable( $testimonial['source'] ) .'</span>';
 		}
 		if($cite) $cite = " <cite>&mdash;&nbsp;{$cite}</cite>";
@@ -135,7 +135,7 @@ EOF;
 }
 
 
-function testimonialswidget_get_testimonials($conditions = "")
+function testimonialswidget_get_testimonials($conditions = '')
 {
 	global $wpdb;
 	$sql = "SELECT testimonial_id, testimonial, author, source, tags, public

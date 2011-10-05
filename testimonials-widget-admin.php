@@ -58,6 +58,7 @@ function testimonialswidget_pagenav($total, $current = 1, $format = 0, $paged = 
 		else $format = 2;
 	}
 
+
 	if($current > $total) $current = $total;
 		$pagenav = "";
 
@@ -99,11 +100,10 @@ function testimonialswidget_addtestimonial($testimonial, $author = "", $source =
 		return __('Database table not found', 'testimonials-widget');
 	else //Add the testimonial data to the database
 	{
-
-		$testimonial = stripslashes($testimonial);
-		$author = stripslashes($author);
-		$source = stripslashes($source);
-		$tags = stripslashes($tags);
+		$testimonial = trim( stripslashes($testimonial) );
+		$author = trim( stripslashes($author) );
+		$source = trim( stripslashes($source) );
+		$tags = trim( stripslashes($tags) );
 
 		$testimonial = "'".$wpdb->escape($testimonial)."'";
 		$author = $author?"'".$wpdb->escape($author)."'":"NULL";
@@ -136,11 +136,10 @@ function testimonialswidget_edittestimonial($testimonial_id, $testimonial, $auth
 		return __('Database table not found', 'testimonials-widget');
 	else //Update database
 	{
-
-		$testimonial = stripslashes($testimonial);
-		$author = stripslashes($author);
-		$source = stripslashes($source);
-		$tags = stripslashes($tags);
+		$testimonial = trim( stripslashes($testimonial) );
+		$author = trim( stripslashes($author) );
+		$source = trim( stripslashes($source) );
+		$tags = trim( stripslashes($tags) );
 
 	  	$testimonial = "'".$wpdb->escape($testimonial)."'";
 		$author = $author?"'".$wpdb->escape($author)."'":"NULL";
@@ -226,6 +225,7 @@ function testimonialswidget_editform($testimonial_id = 0)
 	$optional_text = __('optional', 'testimonials-widget');
 	$url_text = __('email address or website URL', 'testimonials-widget');
 	$comma_separated_text = __('comma separated', 'testimonials-widget');
+
 
 	$display =<<< EDITFORM
 <form name="{$form_name}" method="post" action="{$action_url}">
@@ -483,6 +483,7 @@ function testimonialswidget_testimonials_management()
 	$display .= "<div id=\"addnew\" class=\"wrap\">\n<h2>".__('Add new testimonial', 'testimonials-widget')."</h2>";
 	$display .= testimonialswidget_editform();
 	$display .= "</div>";
+
 
 	echo $display;
 
