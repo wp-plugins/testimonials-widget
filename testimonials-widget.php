@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Testimonials Widget
-Description: Testimonial widget plugin helps you display testimonials in a sidebar on your WordPress blog.
+Description: Testimonial widget plugin helps you display testimonials in a widget on your WordPress blog.
 Version: 0.2.2
 Author: comprock, j0hnsmith
 License: GPL2
