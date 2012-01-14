@@ -373,9 +373,9 @@ function testimonialswidget_testimonials_management()
 		$option_selected[$_REQUEST['order']] = " selected=\"selected\"";
 	}
 	else {
-		$sql .= " ORDER BY testimonial_id ASC";
+		$sql .= " ORDER BY testimonial_id DESC";
 		$option_selected['testimonial_id'] = " selected=\"selected\"";
-		$option_selected['ASC'] = " selected=\"selected\"";
+		$option_selected['DESC'] = " selected=\"selected\"";
 	}
 
 	if(isset($_REQUEST['paged']) && $_REQUEST['paged'] && is_numeric($_REQUEST['paged']))
@@ -429,7 +429,7 @@ function testimonialswidget_testimonials_management()
 		$display .= "<div class=\"tablenav\">";
 		$display .= "<div class=\"alignleft actions\">";
 		$display .= "<select name=\"bulkaction\">";
-		$display .= 	"<option value=\"0\">".__('Bulk Actions')."</option>";
+		$display .= 	"<option value=\"0\">".__('Bulk Actions', 'testimonials-widget')."</option>";
 		$display .= 	"<option value=\"delete\">".__('Delete', 'testimonials-widget')."</option>";
 		$display .= 	"<option value=\"make_public\">".__('Make public', 'testimonials-widget')."</option>";
 		$display .= 	"<option value=\"keep_private\">".__('Keep private', 'testimonials-widget')."</option>";
