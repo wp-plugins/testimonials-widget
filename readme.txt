@@ -4,7 +4,7 @@ Donate link: http://typo3vagabond.com/about-typo3-vagabond/donate/
 Tags: testimonial, testimonials, quote, quotes, quotations, random quote, sidebar, widget
 Requires at least: 3.0
 Tested up to: 3.4.1
-Stable tag: 0.2.12
+Stable tag: 0.2.13
 
 Testimonials widget plugin allows you display testimonials in a widget on your WordPress blog.
 
@@ -83,7 +83,7 @@ Look for `[testimonialswidget_list]`.
 = How do I hide the comma after the author? =
 
 Use CSS.
-`span.testimonialswidget_join {
+`.testimonialswidget_testimonial .testimonialswidget_join {
 	display: none;
 }`
 
@@ -105,7 +105,9 @@ Specify a larger minimum height in the testimonials widget, see screenshot 2.
 
 = How to get rid of the quotation marks that surround the random quote? =
 
-Open the testimonials-widget.css file that comes along with the plugin, scroll down and look towards the bottom for the comment "Uncomment the block below if you want to get rid of the quotation marks before and after the quote".
+`.testimonialswidget_testimonial q {
+	quotes: none;
+}`
 
 = How to change the random quote text color? =
 
@@ -123,21 +125,21 @@ Each shortcode testimonial is wrapped by a `div` using classes `testimonialswidg
 
 `
 .testimonialswidget_testimonial_list {
-padding-bottom: 1em;
+	padding-bottom: 1em;
 }
 `
 Making the citation line a different color is a little trickier. The reason being is that applying a color to `.testimonialswidget_testimonial cite` will change the entire citation line in the widget display as well. To only change the shortcode testimonial citation color, try…
 
 `
 .testimonialswidget_testimonial_list cite {
-color: blue;
+	color: blue;
 }
 `
 If you're wanting to change only the source (URL/email address) color, then try.
 
 `
 .testimonialswidget_testimonial_list cite .testimonialswidget_source  {
-color: purple;
+	color: purple;
 }
 `
 Like wise, the author uses class `testimonialswidget_author` and join ", " uses class `testimonialswidget_join`.
@@ -169,6 +171,10 @@ Change the value of the variable `$testimonialswidget_admin_userlevel` on line 3
 ==Changelog==
 = trunk =
 -
+
+= 0.2.13 =
+* Clean up CSS
+* Remove q & cite p wrapper
 
 = 0.2.12 =
 * the_title filter fix
