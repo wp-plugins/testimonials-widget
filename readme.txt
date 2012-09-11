@@ -1,22 +1,26 @@
 === Testimonials Widget ===
-Contributors: comprock, j0hnsmith
+Contributors: comprock
 Donate link: http://typo3vagabond.com/about-typo3-vagabond/donate/
-Tags: testimonial, testimonials, quote, quotes, quotations, random quote, sidebar, widget
-Requires at least: 3.0
-Tested up to: 3.4.1
-Stable tag: 0.2.13
+Tags: testimonial, testimonials, quote, quotes, quotations, random quote, sidebar, widget, rotation
+Requires at least: 3.4
+Tested up to: 3.4.2
+Stable tag: 2.0.0
 
-Testimonials widget plugin allows you display testimonials in a widget on your WordPress blog.
+Testimonials Widget plugin allows you to display random, rotating quotes with images on your WordPress blog.
+
 
 == Description ==
 
-Testimonial widget plugin allows you display testimonials in a widget on your WordPress blog. 
+Testimonials Widget plugin allows you to display random, rotating quotes with images on your WordPress blog.
+
+REWRITE
 
 More than one widget can be displayed, each pulling from testimonial sets by using tags. Each displayed widget has its own identifier allowing for custom CSS styling.
 
 You can make a simple client or portfolio rotator by using the testimonial field as the client or organization name, and the source field with the URL and tag as "portfolio". Then in the widget, show source and require tag "portfolio". 
 
 
+REWRITE
 **Features and notes**
 
 * All testimonials (subject to filters) are in the html source so will be seen by google etc. 
@@ -35,6 +39,7 @@ You can make a simple client or portfolio rotator by using the testimonial field
 * Allows for multiple widgets. Useful for using tags to keep widgets separated.
 * Compatible with WordPress 3.0 multi-site functionality.
 
+REWRITE
 = Shortcode [testimonialswidget_list] =
 * Options
 	* hide_author - default show; hide_author=true
@@ -49,14 +54,14 @@ You can make a simple client or portfolio rotator by using the testimonial field
 	* [testimonialswidget_list tags="test,fun" limit=1]
 	* [testimonialswidget_list ids=1]
 
-= Need More Power? =
-Check out the [Quotes Collection](http://wordpress.org/extend/plugins/quotes-collection/) plugin by [SriniG](http://profiles.wordpress.org/users/SriniG/profile/public/)
 
 == Installation ==
 1. Upload `testimonials-widget` directory to the `/wp-content/plugins/` directory
 1. Activate the 'Testimonials Widget' plugin through the 'Plugins' menu in WordPress
 1. Add and manage the quotes through the 'Testimonials' menu in the WordPress admin area
 1. To display testimonials in the sidebar, go to 'Widgets' menu and drag the 'Testimonials' widget into the sidebar
+1. Alternately, use the `[testimonialswidget_list]` to display on a page or in a post
+
 
 == Frequently Asked Questions ==
 
@@ -148,29 +153,61 @@ Like wise, the author uses class `testimonialswidget_author` and join ", " uses 
 
 Change the value of the variable `$testimonialswidget_admin_userlevel` on line 33 of the testimonials-widget.php file. Refer [WordPress documentation](http://codex.wordpress.org/Roles_and_Capabilities#Capability_vs._Role_Table) for more information about user roles and capabilities.
 
+
 == Screenshots ==
 
-1. Admin interface (WordPress 3.2)
+1. Admin interface
 2. Add new testimonial
-3. 'Testimonials' widget options (WordPress 3.2)
+3. 'Testimonials' widget options
 4. A testimonial in the sidebar
 5. Edit testimonial
 6. Testimonial shortcode results
 7. Testimonial shortcode in post
 	
 
-== Installation ==
-1. Upload `testimonials-widget` directory to the `/wp-content/plugins/` directory
-1. Activate the 'Testimonials Widget' plugin through the 'Plugins' menu in WordPress
-1. Add and manage the quotes through the 'Testimonials' menu in the WordPress admin area
-1. To display testimonials in the sidebar, go to 'Widgets' menu and drag the 'Testimonials' widget into the sidebar
-
 == Upgrade Notice ==
-* If you have no tags fields, deactivate and activate the plugin as normal to perform database upgrades
+* TBD
+
+
+== TODO ==
+* Main Goals
+	* Custom post-type and tag conversion
+	* Auto-migration from old to new format
+		* Public > Published
+		* Not public > Private
+	* Images
+	* Minimum user level to manage testimonials
+	* More display options like ordering
+	* Settings
+		* Height
+		* Ordering - random, id ASC, id DESC
+	* Default fields - name, URL, email, company
+* Ideas
+	* Categories - product, project, service
+	* Custom CSS
+	* Custom fields
+	* Fields to show
+		* Name
+		* URL
+		* Email
+		* Company
+		* Image
+		* Testimonial
+		* Date
+		* Category
+	* Gravatar
+	* Global options page
+	* No nl2br when content is already using HTML
+	* Widget options inherit from global
+	* Updated jQuery for rotations
+
 
 ==Changelog==
 = trunk =
 -
+
+= 2.0.0 =
+* Major rewrite
 
 = 0.2.13 =
 * Clean up CSS
@@ -224,7 +261,3 @@ Change the value of the variable `$testimonialswidget_admin_userlevel` on line 3
 
 = 2011-08-12: Version 0.1 =
 * initial release
-
-== TODO ==
-* No nl2br when content is already using HTML
-* TBD

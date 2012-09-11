@@ -1,8 +1,9 @@
 <?php
 /*
 Plugin Name: Testimonials Widget
+Plugin URI: http://wordpress.org/extend/plugins/testimonials-widget/
 Description: Testimonial widget plugin helps you display testimonials in a sidebar on your WordPress blog.
-Version: 0.2.13
+Version: 2.0.0
 Author: Michael Cannon
 Author URI: http://typo3vagabond.com/about-typo3-vagabond/hire-michael/
 License: GPL2
