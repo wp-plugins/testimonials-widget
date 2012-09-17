@@ -1,121 +1,123 @@
 === Testimonials Widget ===
 Contributors: comprock
 Donate link: http://typo3vagabond.com/about-typo3-vagabond/donate/
-Tags: testimonial, testimonials, quote, quotes, quotations, random quote, sidebar, widget, rotation
+Tags: ajax, business, client, commendation, custom post type, customer, quotations, quotations widget, quote, quote shortcode, quotes, quotes collection, random, random content, random quote, recommendation, reference, shortcode, sidebar, sidebar quote, testimonial, testimonial widget, testimonials, testimonials widget, testimony, widget
 Requires at least: 3.4
 Tested up to: 3.4.2
 Stable tag: 2.0.0
 
-Testimonials Widget plugin allows you to display random, rotating quotes with images on your WordPress blog.
+Testimonials Widget plugin allows you to display random, rotating quotes or other content with images on your WordPress blog. You can insert content via widgets, shortcode or a theme function with multiple selection and display options.
 
 
 == Description ==
 
-Testimonials Widget plugin allows you to display random, rotating quotes with images on your WordPress blog.
+Testimonials Widget plugin allows you to display random, rotating quotes or other content with images on your WordPress blog. You can insert content via widgets, shortcode or a theme function with multiple selection and display options.
 
-REWRITE
+More than one Testimonials Widget section can be displayed at a time. Each Testimonials Widget separately pulls from the testimonial custom post type based upon your desired categories, tags, and other selection options.
 
-More than one widget can be displayed, each pulling from testimonial sets by using tags. Each displayed widget has its own identifier allowing for custom CSS styling.
+Furthermore, you can choose to display a short or long list or rotation of testimonials. Additionally, each Testimonal Widget has its own CSS identifier for custom styling.
 
-You can make a simple client or portfolio rotator by using the testimonial field as the client or organization name, and the source field with the URL and tag as "portfolio". Then in the widget, show source and require tag "portfolio". 
+Through categories and tagging, you can create organizational structures based upon products, projects and services via categories and then apply tagging for further classificaton. As an example, you might create a Portfolio category and then use tags to identify web, magazine, media, public, enterprise niches. You can then configure the Testimonial Widget to show only Portfolio testimonials with the public and enterprise tags. In another Testimonial Widget, you also select only Portfolio testimonials, but then allow web and media tags.
 
-
-REWRITE
-**Features and notes**
-
-* All testimonials (subject to filters) are in the html source so will be seen by google etc. 
-* Testimony, author and source fields are clickable
-* **Admin interface**: A nice admin interface to add, edit and manage testimonials. Details such as author and source of the quote, and attributes like tags and visibility, can be specified. The 'Testimonials' menu in the WP admin navigation leads to the admin interface.
-* **Sidebar widget**: The Testimonials sidebar widget loads a testimonial then rotates through all available testimonials. Following is the list of options in the widget control panel:
+= Features =
+* Testimonial, author, and source fields are clickable
+* Admin interface to add, edit and manage testimonials
+* Testimonials Widget displays and rotates singular testimonials 
 	* Widget title
-	* Option to show/hide author
-	* Option to show/hide source
-	* Choose refresh interval in seconds or set to 0 for static display
-	* Choose random or sequential order for refresh
-	* Show only quotes with certain tags
-	* Show only quotes with all tags
-	* Specify a character limit to filter out longer quotes - 0 means no limit
-	* Limit number of testimonials to pull at a time - 0 means no limit
-* Allows for multiple widgets. Useful for using tags to keep widgets separated.
-* Compatible with WordPress 3.0 multi-site functionality.
+	* Show/hide author
+	* Show/hide source
+	* Refresh interval in seconds or set to 0 for static display
+	* Random or sequential order for refresh
+	* Category selection
+	* Tag selection
+	* Require all tags
+	* Testimonial character limit crop - 0 means no limit
+	* Number of testimonials to display - 0 means no limit
+* Multiple widget capable
+* Compatible with WordPress multi-site
+* Testimonials are in the HTML source and therefore search indexable
 
-REWRITE
 = Shortcode [testimonialswidget_list] =
-* Options
-	* hide_author - default show; hide_author=true
-	* hide_source - default show; hide_source=true
-	* ids - default none; ids=2 or ids="2,4,6"
-	* limit - default none; limit=10
-	* random - default newest first; random=true
-	* tags - default none; tags=fire or tags="fire,water"
-	* char_limit - default none; char_limit=200
+REVIEW QC shortcode section
+* Shortcode Options
+	* `hide_author` - default show; hide_author=true
+	* `hide_source` - default show; hide_source=true
+	* `ids` - default none; ids=2 or ids="2,4,6"
+	* `limit` - default none; limit=10
+	* `random` - default newest first; random=true
+	* `category` - default none; category=product
+	* `tags` - default none; tags=fire or tags="fire,water"
+	* `char_limit` - default none; char_limit=200
+	* `order` - default "id desc"; order="post_date asc", order=random, order="asc"
 * [testimonialswidget_list] Examples
 	* [testimonialswidget_list hide_author=true hide_source=true] 
 	* [testimonialswidget_list tags="test,fun" limit=1]
 	* [testimonialswidget_list ids=1]
 
+= Languages =
+You can translate this plugin into your if it's not done so already. The localization file `testimonials-widget.pot` can be found in the `languages` folder of this plugin. After translation, please [send the localized file](http://typo3vagabond.com/contact-typo3vagabond/) to the plugin author.
+
+= Background & Thanks =
+Version 2.0.0 of Testimonials Widget is a complete rewrite and composite of ideas from user feedback and grokking plugins Imperfect Quotes, IvyCat Ajax Testimonials, Quotes Collection, and TB Testimonials. Thank you to those plugin developers for their efforts that have inspired this rewrite.
+
+Prior to version 2.0.0, this plugin was a fork of Quotes Collection by Srini G * [http://srinig.com/wordpress/plugins/quotes-collection/] with additional contributions from j0hnsmith and ChrisCree.
+
 
 == Installation ==
+
 1. Upload `testimonials-widget` directory to the `/wp-content/plugins/` directory
 1. Activate the 'Testimonials Widget' plugin through the 'Plugins' menu in WordPress
+
+= Usage =
 1. Add and manage the quotes through the 'Testimonials' menu in the WordPress admin area
-1. To display testimonials in the sidebar, go to 'Widgets' menu and drag the 'Testimonials' widget into the sidebar
+1. To display testimonials in the sidebar, go to 'Widgets' menu and drag the 'Testimonials' widget into the desired widget area
+1. Configure the Testimonial Widget to select quotes and display as needed
 1. Alternately, use the `[testimonialswidget_list]` to display on a page or in a post
+1. Or use `<?php echo do_shortcode("[testimonialswidget_list]"); ?>` to pull testimonials into your theme
 
 
 == Frequently Asked Questions ==
 
 = How do you include the actual testimonials for the widget? Where do I quote my customers? I mean, where do I enter the actual text? =
-
 Checkout the first screenshot 1 at http://wordpress.org/extend/plugins/testimonials-widget/screenshots/ to see where to manage testimonials.
 
 Basically, look down the left side of your WordPress admin area for the Testimonials sections. Click on that section link, then scroll down or click "Add new ttestimonial" to add quotes.
 
 = What CSS applies to testimonials container? =
-
 CSS class `testimonialswidget_testimonials` wraps all testimonials. Additionally, shortcode lists are wrapped by `testimonialswidget_testimonials testimonialswidget_testimonials_list`.
 
 = What CSS applies to single testimonial container? =
-
 CSS class `testimonialswidget_testimonial` wraps a single testimonial. Additionally, single shortcode list tems are wrapped by `testimonialswidget_testimonial testimonialswidget_testimonial_list`.
 
 = How can I add the testimonials plugin to any where on the site? ie. somewhere other than the side bar like the contact page etc.? =
-
 Use [testimonialswidget_list]. Usage examples are at the bottom of http://wordpress.org/extend/plugins/testimonials-widget/.
 
 Look for `[testimonialswidget_list]`.
 
 = How do I hide the comma after the author? =
-
 Use CSS.
 `.testimonialswidget_testimonial .testimonialswidget_join {
 	display: none;
 }`
 
 = Testimonials widget is not showing or rotating =
-
 The usual problem is that jQuery is included twice. Once by WordPress and again by a theme. Remove the jQuery version included by your theme and you should be fine.
 
 = I'm not seeing any testimonials but the title =
-
 If you're not seeing any testimonials, even when not using tags filter, you might try increasing the Character limit or setting it to '0' or 'none' in the widget box.
 
 = How do I apply custom CSS to a testimonial widget? =
-
 The easiest thing is to check the source code of your page with the widget and look for the testimonial widgets div container id tag. It'll be something like `id="testimonials_widget-3"`.
 
 = How to stop testimonial text/author/source being cut off? =
-
 Specify a larger minimum height in the testimonials widget, see screenshot 2.
 
 = How to get rid of the quotation marks that surround the random quote? =
-
 `.testimonialswidget_testimonial q {
 	quotes: none;
 }`
 
 = How to change the random quote text color? =
-
 Styling such as text color, font size, background color, etc., of the random quote can be customized by editing the testimonials-widget.css file or applying CSS like the following.
 
 `.testimonialswidget_testimonial q {
@@ -123,7 +125,6 @@ Styling such as text color, font size, background color, etc., of the random quo
 }`
 
 = How can I style the shortcode testimonials? =
-
 Using my own testimonials page, http://typo3vagabond.com/typo3-vagabond-testimonials/, as the example.
 
 Each shortcode testimonial is wrapped by a `div` using classes `testimonialswidget_testimonial testimonialswidget_testimonial_list`. As such, to increase spacing between testimonials, try…
@@ -150,8 +151,10 @@ If you're wanting to change only the source (URL/email address) color, then try.
 Like wise, the author uses class `testimonialswidget_author` and join ", " uses class `testimonialswidget_join`.
 
 = How to change the admin access level setting for the quotes collection admin page? =
-
 Change the value of the variable `$testimonialswidget_admin_userlevel` on line 33 of the testimonials-widget.php file. Refer [WordPress documentation](http://codex.wordpress.org/Roles_and_Capabilities#Capability_vs._Role_Table) for more information about user roles and capabilities.
+
+= I'm stuck, how can I get help? =
+Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widget) and ask your question.
 
 
 == Screenshots ==
@@ -166,26 +169,33 @@ Change the value of the variable `$testimonialswidget_admin_userlevel` on line 3
 	
 
 == Upgrade Notice ==
+
 * TBD
 
 
 == TODO ==
+
 * Main Goals
 	* Custom post-type and tag conversion
 	* Auto-migration from old to new format
 		* Public > Published
 		* Not public > Private
 	* Images
-	* Minimum user level to manage testimonials
+	* Minimum role  to manage testimonials
 	* More display options like ordering
-	* Settings
-		* Height
-		* Ordering - random, id ASC, id DESC
+	* Widget settings
+		* Height - fluid, static
+		* Order By - random, id, title, date
+		* Order - ASC, DESC
 	* Default fields - name, URL, email, company
+	* Modes - widget, shortcode, theme function
+	* Localized
 * Ideas
 	* Categories - product, project, service
 	* Custom CSS
 	* Custom fields
+	* Custom templating
+	* Admin bar New >  Testimonial
 	* Fields to show
 		* Name
 		* URL
@@ -200,9 +210,12 @@ Change the value of the variable `$testimonialswidget_admin_userlevel` on line 3
 	* No nl2br when content is already using HTML
 	* Widget options inherit from global
 	* Updated jQuery for rotations
+	* Testimonial ordering
+	* Number of refresh interations
+	* Paging
 
 
-==Changelog==
+== Changelog ==
 = trunk =
 -
 
