@@ -58,7 +58,7 @@ REVIEW QC shortcode section
 You can translate this plugin into your if it's not done so already. The localization file `testimonials-widget.pot` can be found in the `languages` folder of this plugin. After translation, please [send the localized file](http://typo3vagabond.com/contact-typo3vagabond/) to the plugin author.
 
 = Background & Thanks =
-Version 2.0.0 of Testimonials Widget is a complete rewrite and composite of ideas from user feedback and grokking plugins Imperfect Quotes, IvyCat Ajax Testimonials, Quotes Collection, and TB Testimonials. Thank you to those plugin developers for their efforts that have inspired this rewrite.
+Version 2.0.0 of Testimonials Widget is a complete rewrite based upon a composite of ideas from user feedback and grokking plugins Imperfect Quotes, IvyCat Ajax Testimonials, Quotes Collection, and TB Testimonials. You can consider that the initial basis of Version 2.0.0 is a fork of IvyCat Ajax Testimonials. They've got a grest basis for getting started fast. Thank you to those plugin developers for their efforts that have inspired this rewrite.
 
 Prior to version 2.0.0, this plugin was a fork of Quotes Collection by Srini G * [http://srinig.com/wordpress/plugins/quotes-collection/] with additional contributions from j0hnsmith and ChrisCree.
 
