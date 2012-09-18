@@ -59,8 +59,8 @@ define( 'ICTESTI_URL', str_replace( ABSPATH, site_url( '/' ), __DIR__ ) );
 
 class Testimonials_Widget{
 	public function __construct() {
-		add_action( 'init', array( $this, 'post_type_init' ) );
-		add_action( 'admin_init' , array( &$this, 'metabox_init' ) );
+		add_action( 'init', array( &$this, 'init_post_type' ) );
+		add_action( 'admin_init' , array( &$this, 'init_meta_box' ) );
 		add_action( 'save_post' , array( &$this, 'save_testimonial_metadata' ) );
 		add_shortcode( 'testimonialswidget_list', array( &$this, 'do_testimonials' ) );
 		add_action( 'wp_ajax_get-testimonials',  array( &$this, 'more_testimonials' ) );
@@ -70,7 +70,7 @@ class Testimonials_Widget{
 	}
 
 
-	public function post_type_init() {
+	public function init_post_type() {
 		$labels = array(
 			'add_new'			=> __( 'New Testimonial' ),
 			'add_new_item'		=> __( 'Add New Testimonial' ),
@@ -102,8 +102,6 @@ class Testimonials_Widget{
 				'title',
 				'editor',
 				'thumbnail',
-				'excerpt',
-				'page-attributes'
 			),
 			'taxonomies'		=> array(
 				'category',
@@ -131,17 +129,17 @@ class Testimonials_Widget{
 	}
 
 
-	public function metabox_init() {
+	public function init_meta_box() {
 		add_meta_box(
-			'Testimonialinfo-meta',
-			'Testimonial Data',
-			array( &$this, 'testimonial_metabox' ),
+			'testimonials-widget-meta',
+			__('Testimonial Data'),
+			array( &$this, 'meta_box_testimonial' ),
 			'testimonials-widget', 'side', 'high'
 		);
 	}
 
 
-	public function testimonial_metabox() {
+	public function meta_box_testimonial() {
 		global $post;
 		$testimonial_order = get_post_meta( $post->ID, 'ivycat_testimonial_order', true);
 ?>
