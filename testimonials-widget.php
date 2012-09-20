@@ -27,7 +27,6 @@
  */
 
 // TODO
-// setup localization http://i18n.svn.wordpress.org/tools/trunk/
 // widget
 //  include css
 // upgrade handling
@@ -103,16 +102,16 @@ class Testimonials_Widget{
 		// order of keys matches column ordering
 		$columns				= array(
 			'cb'							=> '<input type="checkbox" />',
-			'thumbnail'						=> __( 'Image' ),
-			'title'							=> __( 'Source' ),
-			'shortcode'						=> __( 'Shortcode' ),
-			'testimonials-widget-email'		=> __( 'Email' ),
-			'testimonials-widget-company'	=> __( 'Company' ),
-			'testimonials-widget-url'		=> __( 'URL' ),
-			'categories'					=> __( 'Category' ),
-			'tags'							=> __( 'Tags' ),
-			'date'							=> __( 'Date' ),
-			'author'						=> __( 'Posted by' ),
+			'thumbnail'						=> __( 'Image' , 'testimonials-widget'),
+			'title'							=> __( 'Source' , 'testimonials-widget'),
+			'shortcode'						=> __( 'Shortcode' , 'testimonials-widget'),
+			'testimonials-widget-email'		=> __( 'Email' , 'testimonials-widget'),
+			'testimonials-widget-company'	=> __( 'Company' , 'testimonials-widget'),
+			'testimonials-widget-url'		=> __( 'URL' , 'testimonials-widget'),
+			'categories'					=> __( 'Category' , 'testimonials-widget'),
+			'tags'							=> __( 'Tags' , 'testimonials-widget'),
+			'date'							=> __( 'Date' , 'testimonials-widget'),
+			'author'						=> __( 'Posted by' , 'testimonials-widget'),
 		);
 
 		return $columns;
@@ -121,21 +120,21 @@ class Testimonials_Widget{
 
 	public function init_post_type() {
 		$labels = array(
-			'add_new'			=> __( 'New Testimonial' ),
-			'add_new_item'		=> __( 'Add New Testimonial' ),
-			'edit_item'			=> __( 'Edit Testimonial' ),
-			'name'				=> __( 'Testimonials' ),
-			'new_item'			=> __( 'Add New Testimonial' ),
-			'not_found' 		=>  __( 'No testimonials found.' ),
-			'not_found_in_trash'	=>  __( 'No testimonials found in Trash.' ),
+			'add_new'			=> __( 'New Testimonial' , 'testimonials-widget'),
+			'add_new_item'		=> __( 'Add New Testimonial' , 'testimonials-widget'),
+			'edit_item'			=> __( 'Edit Testimonial' , 'testimonials-widget'),
+			'name'				=> __( 'Testimonials' , 'testimonials-widget'),
+			'new_item'			=> __( 'Add New Testimonial' , 'testimonials-widget'),
+			'not_found' 		=>  __( 'No testimonials found.' , 'testimonials-widget'),
+			'not_found_in_trash'	=>  __( 'No testimonials found in Trash.' , 'testimonials-widget'),
 			'parent_item_colon'	=> null,
-			'search_items'		=> __( 'Search Testimonials' ),
-			'singular_name'		=> __( 'Testimonial' ),
-			'view_item'			=> __( 'View Testimonial' ),
+			'search_items'		=> __( 'Search Testimonials' , 'testimonials-widget'),
+			'singular_name'		=> __( 'Testimonial' , 'testimonials-widget'),
+			'view_item'			=> __( 'View Testimonial' , 'testimonials-widget'),
 		);
 
 		$args = array(
-			'label'				=> __( 'Testimonials' ),
+			'label'				=> __( 'Testimonials' , 'testimonials-widget'),
 			'capability_type' 	=> 'post',
 			'has_archive'		=> true,
 			'hierarchical' 		=> false,
@@ -208,7 +207,7 @@ class Testimonials_Widget{
 
 		if ( empty( $testimonials ) ) {
 			$testimonials		= array(
-				array( 'testimonial_content'	=>	__( 'No testimonials found' ) )
+				array( 'testimonial_content'	=>	__( 'No testimonials found' , 'testimonials-widget') )
 			);
 		}
 
@@ -402,28 +401,28 @@ class Testimonials_Widget{
 
 		$meta_box				= redrokk_metabox_class::getInstance( 'testimonialswidget',
 			array(
-				'title'			=> __( 'Testimonial Data' ),
-				'description'	=> __( '' ),
+				'title'			=> __( 'Testimonial Data' , 'testimonials-widget'),
+				'description'	=> __( '' , 'testimonials-widget'),
 				'_object_types'	=> 'testimonials-widget',
 				'priority'		=> 'high',
 				'_fields'		=> array(
 					array(
-						'name' 	=> __( 'Email' ),
+						'name' 	=> __( 'Email' , 'testimonials-widget'),
 						'id' 	=> 'testimonials-widget-email',
 						'type' 	=> 'text',
-						'desc'	=> __( '' ),
+						'desc'	=> __( '' , 'testimonials-widget'),
 					),
 					array(
-						'name' 	=> __( 'Company' ),
+						'name' 	=> __( 'Company' , 'testimonials-widget'),
 						'id' 	=> 'testimonials-widget-company',
 						'type' 	=> 'text',
-						'desc'	=> __( '' ),
+						'desc'	=> __( '' , 'testimonials-widget'),
 					),
 					array(
-						'name' 	=> __( 'URL' ),
+						'name' 	=> __( 'URL' , 'testimonials-widget'),
 						'id' 	=> 'testimonials-widget-url',
 						'type' 	=> 'text',
-						'desc'	=> __( '' ),
+						'desc'	=> __( '' , 'testimonials-widget'),
 					),
 				)
 			)
@@ -446,8 +445,8 @@ class Testimonials_Widget{
 
 		if ( 'testimonials-widget' == $post->post_type ) {
 			switch( $translation ) {
-			case __( 'Enter title here' ):
-				return __( 'Enter testimonial source here' );
+			case __( 'Enter title here' , 'testimonials-widget'):
+				return __( 'Enter testimonial source here' , 'testimonials-widget');
 				break;
 			}
 		}
@@ -471,17 +470,17 @@ class Testimonials_Widget{
 
 		$m['testimonials-widget'] = array(
 			0 => '', // Unused. Messages start at index 1.
-			1 => sprintf( __( 'Testimonial updated. <a href="%s">View testimonial</a>' ), esc_url( get_permalink( $post->ID ) ) ),
-			2 => __( 'Custom field updated.' ),
-			3 => __( 'Custom field deleted.' ),
-			4 => __( 'Testimonial updated.' ),
+			1 => sprintf( __( 'Testimonial updated. <a href="%s">View testimonial</a>' , 'testimonials-widget'), esc_url( get_permalink( $post->ID ) ) ),
+			2 => __( 'Custom field updated.' , 'testimonials-widget'),
+			3 => __( 'Custom field deleted.' , 'testimonials-widget'),
+			4 => __( 'Testimonial updated.' , 'testimonials-widget'),
 			/* translators: %s: date and time of the revision */
-			5 => isset( $_GET['revision'] ) ? sprintf( __( 'Testimonial restored to revision from %s' ), wp_post_revision_title( (int)$_GET['revision'], false ) ) : false,
-			6 => sprintf( __( 'Testimonial published. <a href="%s">View testimonial</a>' ), esc_url( get_permalink( $post->ID ) ) ),
-			7 => __( 'Testimonial saved.' ),
-			8 => sprintf( __( 'Testimonial submitted. <a target="_blank" href="%s">Preview testimonial</a>' ), esc_url( add_query_arg( 'preview', 'true', get_permalink($post->ID) ) ) ),
-			9 => sprintf( __( 'Testimonial scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview testimonial</a>' ), date_i18n( 'M j, Y @ G:i', strtotime( $post->post_date ) ), esc_url( get_permalink( $post->ID ) ) ),
-			10 => sprintf( __( 'Testimonial draft updated. <a target="_blank" href="%s">Preview testimonial</a>' ), esc_url( add_query_arg( 'preview', 'true', get_permalink( $post->ID ) ) ) )
+			5 => isset( $_GET['revision'] ) ? sprintf( __( 'Testimonial restored to revision from %s' , 'testimonials-widget'), wp_post_revision_title( (int)$_GET['revision'], false ) ) : false,
+			6 => sprintf( __( 'Testimonial published. <a href="%s">View testimonial</a>' , 'testimonials-widget'), esc_url( get_permalink( $post->ID ) ) ),
+			7 => __( 'Testimonial saved.' , 'testimonials-widget'),
+			8 => sprintf( __( 'Testimonial submitted. <a target="_blank" href="%s">Preview testimonial</a>' , 'testimonials-widget'), esc_url( add_query_arg( 'preview', 'true', get_permalink($post->ID) ) ) ),
+			9 => sprintf( __( 'Testimonial scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview testimonial</a>' , 'testimonials-widget'), date_i18n( 'M j, Y @ G:i', strtotime( $post->post_date ) ), esc_url( get_permalink( $post->ID ) ) ),
+			10 => sprintf( __( 'Testimonial draft updated. <a target="_blank" href="%s">Preview testimonial</a>' , 'testimonials-widget'), esc_url( add_query_arg( 'preview', 'true', get_permalink( $post->ID ) ) ) )
 		);
 
 		return $m;

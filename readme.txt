@@ -23,6 +23,7 @@ Through categories and tagging, you can create organizational structures based u
 * Display testimonials directly in template via theme function
 * Fields for source, testimonial, email, company and URL
 * Image, Gravatar, category and tag enabled
+* Localizable - see `languages/testimonials-widget.pot`
 * Multiple widget capable
 * Testimonial supports HTML
 * Testimonial, email, and URL fields are clickable
@@ -233,7 +234,6 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 		* Public > Published
 		* Not public > Private
 	* Caching
-	* Localization
 	* Modes - widget, x shortcode, x theme function
 	* Widget settings
 		* Height - fluid, static
@@ -273,6 +273,7 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 	* Gravatar
 	* HTML content allowed
 	* Images
+	* Localization
 	* Reference shortcode column
 	* Shortcode options validation
 	* WP_Query for get_testimonials()
