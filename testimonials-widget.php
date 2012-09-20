@@ -78,19 +78,21 @@ class Testimonials_Widget{
 			break;
 
 		case 'testimonials-widget-email':
-			case 'testimonials-widget-url':
-				$result				=  make_clickable( get_post_meta( $post_id, $column, true ) );
-				break;
+		case 'testimonials-widget-url':
+			$result				=  make_clickable( get_post_meta( $post_id, $column, true ) );
+			break;
 
-			case 'thumbnail':
-				if ( has_post_thumbnail( $post_id ) ) {
-					$result			= get_the_post_thumbnail( $post_id, 'thumbnail' );
-				} elseif ( ! empty( $email ) ) {
-					$result			= get_avatar( $email );
-				} else {
-					$result			= false;
-				}
-				break;
+		case 'thumbnail':
+			$email				= get_post_meta( $post_id, 'testimonials-widget-email', true );
+
+			if ( has_post_thumbnail( $post_id ) ) {
+				$result			= get_the_post_thumbnail( $post_id, 'thumbnail' );
+			} elseif ( is_email( $email ) ) {
+				$result			= get_avatar( $email );
+			} else {
+				$result			= false;
+			}
+			break;
 		}
 
 		if ( $result )
@@ -369,7 +371,7 @@ class Testimonials_Widget{
 
 			if ( has_post_thumbnail( $post_id ) ) {
 				$image			= get_the_post_thumbnail( $post_id, 'thumbnail' );
-			} elseif ( ! empty( $email ) ) {
+			} elseif ( is_email( $email ) ) {
 				$image			= get_avatar( $email );
 			} else {
 				$image			= false;
