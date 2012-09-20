@@ -26,63 +26,72 @@
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
-// permissions
-// 	editor edit any
-// 	author edit own
+// TODO
+// setup localization http://i18n.svn.wordpress.org/tools/trunk/
 // widget
 //  include css
 // upgrade handling
-// post meta data saving - handle post meta data saving and clearing
-// setup languages
 // caching
-// migration from other plugins
-
-
-// require_once 'lib/Testimonials_Widget.php';
 
 
 class Testimonials_Widget{
 	public function __construct() {
-        add_theme_support( 'post-thumbnails' );
 		add_action( 'init', array( &$this, 'init_post_type' ) );
-		add_shortcode( 'testimonialswidget_list', array( &$this, 'shortcode_testimonialswidget_list' ) );
 		// add_action( 'widgets_init', array( &$this, 'init_widgets' ) );
+		add_shortcode( 'testimonialswidget_list', array( &$this, 'shortcode_testimonialswidget_list' ) );
+		add_theme_support( 'post-thumbnails' );
+		load_plugin_textdomain( 'testimonials-widget', false, 'testimonials-widget/languages' );
 
 		if ( is_admin() ) {
-        	add_action( 'gettext', array( &$this, 'gettext_testimonials' ) );
+			add_action( 'admin_init', array( &$this, 'add_meta_box_testimonials_widget' ) );
+			add_action( 'gettext', array( &$this, 'gettext_testimonials' ) );
+			add_action( 'manage_testimonials-widget_posts_custom_column', array( &$this, 'manage_testimonialswidget_posts_custom_column' ), 10, 2 );
+			add_filter( 'manage_testimonials-widget_posts_columns', array( &$this, 'manage_edit_testimonialswidget_columns' ) );
 			add_filter( 'post_updated_messages', array( &$this, 'post_updated_messages' ) );
-			add_filter( 'manage_edit-testimonials-widget_columns', array( &$this, 'manage_edit_testimonialswidget_columns' ) );
-			add_action( 'manage_testimonials-widget_posts_custom_column', array( &$this, 'manage_testimonialswidget_posts_custom_column' ) );
-			// add_action( 'admin_init' , array( &$this, 'init_meta_box' ) );
-			// add_action( 'save_post' , array( &$this, 'save_testimonial_metadata' ) );
+			add_filter( 'pre_get_posts', array( &$this, 'pre_get_posts_author' ) );
 		}
-
-		load_plugin_textdomain( 'testimonials-widget', false, 'testimonials-widget/languages' );
 	}
 
 
-	public function manage_testimonialswidget_posts_custom_column( $column ) {
-		global $post;
+	public function pre_get_posts_author( $query ) {
+		global $user_level, $user_ID;
 
+		// author's and below
+		if( $query->is_admin && $query->is_main_query && $query->is_post_type_archive( 'testimonials-widget' ) && $user_level < 3 )
+			$query->set( 'post_author', $user_ID );
+
+		return $query;
+	}
+
+
+	public function manage_testimonialswidget_posts_custom_column( $column, $post_id ) {
 		$result					= false;
 
 		switch ( $column ) {
-		case 'testimonials-widget-company':
-		case 'testimonials-widget-email':
-		case 'testimonials-widget-url':
-			$result				=  make_clickable( get_post_meta( $post->ID, $column, true ) );
+		case 'shortcode':
+			$result				= '[testimonialswidget_list ids="';
+			$result				.= $post_id;
+			$result				.= '"]';
 			break;
 
-		case 'thumbnail':
-			if ( has_post_thumbnail( $post->ID ) ) {
-				$result			= get_the_post_thumbnail( $post->ID, 'thumbnail' );
-			} elseif ( ! empty( $email ) ) {
-				$result			= get_avatar( $email );
-			} else {
-				$result			= false;
-			}
+		case 'testimonials-widget-company':
+			$result				=  get_post_meta( $post_id, $column, true );
 			break;
+
+		case 'testimonials-widget-email':
+			case 'testimonials-widget-url':
+				$result				=  make_clickable( get_post_meta( $post_id, $column, true ) );
+				break;
+
+			case 'thumbnail':
+				if ( has_post_thumbnail( $post_id ) ) {
+					$result			= get_the_post_thumbnail( $post_id, 'thumbnail' );
+				} elseif ( ! empty( $email ) ) {
+					$result			= get_avatar( $email );
+				} else {
+					$result			= false;
+				}
+				break;
 		}
 
 		if ( $result )
@@ -96,12 +105,14 @@ class Testimonials_Widget{
 			'cb'							=> '<input type="checkbox" />',
 			'thumbnail'						=> __( 'Image' ),
 			'title'							=> __( 'Source' ),
+			'shortcode'						=> __( 'Shortcode' ),
 			'testimonials-widget-email'		=> __( 'Email' ),
 			'testimonials-widget-company'	=> __( 'Company' ),
 			'testimonials-widget-url'		=> __( 'URL' ),
 			'categories'					=> __( 'Category' ),
 			'tags'							=> __( 'Tags' ),
 			'date'							=> __( 'Date' ),
+			'author'						=> __( 'Posted by' ),
 		);
 
 		return $columns;
@@ -139,7 +150,6 @@ class Testimonials_Widget{
 				'title',
 				'editor',
 				'thumbnail',
-				'custom-fields',
 			),
 			'taxonomies'		=> array(
 				'category',
@@ -152,15 +162,15 @@ class Testimonials_Widget{
 
 
 	public function testimonialswidget_list( $atts ) {
-		$content				= self::shortcode_testimonialswidget_list( $atts );
+		$content				= $this->shortcode_testimonialswidget_list( $atts );
 
 		return $content;
 	}
 
 
 	public function shortcode_testimonialswidget_list( $atts ) {
-		$testimonials			= self::get_testimonials( $atts );
-		$content				= self::get_testimonials_html( $testimonials, $atts, true );
+		$testimonials			= $this->get_testimonials( $atts );
+		$content				= $this->get_testimonials_html( $testimonials, $atts, true );
 
 		return $content;
 	}
@@ -178,20 +188,19 @@ class Testimonials_Widget{
 
 
 	public function get_testimonials_html( $testimonials, $atts, $is_list = false ) {
-		self::styles();
+		$this->styles();
 
 		// display attributes
-		$char_limit				= ( $atts['char_limit'] && is_numeric( $atts['char_limit'] ) ) ? intval( $atts['char_limit'] ) : false;
-		$height					= ( $atts['height'] ) ? $atts['height'] : 'auto';
-		$hide_source			= ( $atts['hide_source'] ) ? true : false;
-		$hide_source			= ( $hide_source || $atts['hide_source'] ) ? true : false;
-		$hide_company			= ( $atts['hide_company'] ) ? true : false;
-		$hide_email				= ( $atts['hide_email'] ) ? true : false;
-		$hide_image				= ( $atts['hide_image'] ) ? true : false;
-		$hide_url				= ( $atts['hide_url'] ) ? true : false;
+		$char_limit				= ( is_numeric( $atts['char_limit'] ) && 0 < $atts['char_limit'] ) ? intval( $atts['char_limit'] ) : false;
+		$height					= ( is_numeric( $atts['height'] ) && 0 < $atts['height'] ) ? intval( $atts['height'] ) : 'auto';
+		$hide_company			= ( 'true' == $atts['hide_company'] ) ? true : false;
+		$hide_email				= ( 'true' == $atts['hide_email'] ) ? true : false;
+		$hide_image				= ( 'true' == $atts['hide_image'] ) ? true : false;
+		$hide_source			= ( 'true' == $atts['hide_source'] || 'true' == $atts['hide_author'] ) ? true : false;
+		$hide_url				= ( 'true' == $atts['hide_url'] ) ? true : false;
 
 		$html					= '<div class="testimonialswidget_testimonials';
-	   
+
 		if ( $is_list )
 			$html				.= ' testimonialswidget_testimonials_list';
 
@@ -206,16 +215,12 @@ class Testimonials_Widget{
 		foreach ( $testimonials as $testimonial ) {
 			$do_source			= ! $hide_source && ! empty( $testimonial['testimonial_source'] );
 			$do_company			= ! $hide_company && ! empty( $testimonial['testimonial_company'] );
-			$do_email			= ! $hide_email && ! empty( $testimonial['testimonial_email'] );
+			$do_email			= ! $hide_email && ! empty( $testimonial['testimonial_email'] ) && is_email( $testimonial['testimonial_email'] );
 			$do_image			= ! $hide_image && ! empty( $testimonial['testimonial_image'] );
 			$do_url				= ! $hide_url && ! empty( $testimonial['testimonial_url'] );
 
-			if ( $char_limit ) {
-				$testimonial['testimonial_content']	= self::testimonials_truncate( $testimonial['testimonial_content'], $char_limit );
-			}
-
 			$html				.= '<div class="testimonialswidget_testimonial';
-		   
+
 			if ( $is_list )
 				$html			.= ' testimonialswidget_testimonial_list';
 
@@ -227,8 +232,14 @@ class Testimonials_Widget{
 				$html			.= '</span>';
 			}
 
+			$content			= $testimonial['testimonial_content'];
+			$content			= $this->testimonials_truncate( $content, $char_limit );
+			$content			= apply_filters( 'the_content', $content );
+			$content			= force_balance_tags( $content );
+			$content			= make_clickable( $content );
+
 			$html				.= '<q>';
-			$html				.= make_clickable( $testimonial['testimonial_content'] );
+			$html				.= $content;
 			$html				.= '</q>';
 
 			$cite				= '';
@@ -282,7 +293,10 @@ class Testimonials_Widget{
 
 
 	// Original PHP code as myTruncate2 by Chirp Internet: www.chirp.com.au
-	public function testimonials_truncate( $string, $char_limit, $break = ' ', $pad = '…' ) {
+	public function testimonials_truncate( $string, $char_limit = false, $break = ' ', $pad = '…' ) {
+		if ( ! $char_limit )
+			return $string;
+
 		// return with no change if string is shorter than $char_limit
 		if ( strlen( $string ) <= $char_limit )
 			return $string;
@@ -300,14 +314,14 @@ class Testimonials_Widget{
 		// TODO caching based upon md5(serialized($atts
 
 		// selection attributes
-		$category				= ( $atts['category'] ) ? $atts['category'] : false;
-		$ids					= ( $atts['ids'] ) ? $atts['ids'] : false;
-		$limit					= ( $atts['limit'] ) ? $atts['limit'] : 25;
-		$order					= ( $atts['order'] ) ? $atts['order'] : 'DESC';
-		$orderby				= ( $atts['orderby'] ) ? $atts['orderby'] : 'ID';
-		$random					= ( $atts['random'] ) ? true : false;
-		$tags					= ( $atts['tags'] ) ? $atts['tags'] : false;
-		$tags_all				= ( $atts['tags_all'] ) ? true : false;
+		$category				= ( preg_match( '#^[\w-]+(,[\w-]+)?$#', $atts['category'] ) ) ? $atts['category'] : false;
+		$ids					= ( preg_match( '#^\d+(,\d+)?$#', $atts['ids'] ) ) ? $atts['ids'] : false;
+		$limit					= ( is_numeric( $atts['limit'] ) && 0 < $atts['limit'] ) ? intval( $atts['limit'] ) : 25;
+		$order					= ( preg_match( '#^desc|asc$#i', $atts['order'] ) ) ? $atts['order'] : 'DESC';
+		$orderby				= ( preg_match( '#^\w+$#', $atts['category'] ) ) ? $atts['orderby'] : 'ID';
+		$random					= ( 'true' == $atts['random'] ) ? true : false;
+		$tags					= ( preg_match( '#^[\w-]+(,[\w-]+)?$#', $atts['tags'] ) ) ? $atts['tags'] : false;
+		$tags_all				= ( 'true' == $atts['tags_all'] ) ? true : false;
 
 		if ( $random ) {
 			$orderby			= 'rand';
@@ -326,6 +340,8 @@ class Testimonials_Widget{
 		}
 
 		if ( $ids ) {
+			$ids				= explode( ',', $ids );
+
 			$args['post__in']	= $ids;
 		}
 
@@ -375,44 +391,43 @@ class Testimonials_Widget{
 
 
 	public function init_widgets() {
+		// require_once 'lib/Testimonials_Widget.php';
+
 		register_widget( 'Testimonials_Widget' );
 	}
 
 
-	public function init_meta_box() {
-		add_meta_box(
-			'testimonials-widget-meta',
-			__( 'Testimonial Data' ),
-			array( &$this, 'meta_box_testimonial' ),
-			'testimonials-widget', 'normal', 'high'
+	public function add_meta_box_testimonials_widget() {
+		require_once( 'lib/metabox.class.php' );
+
+		$meta_box				= redrokk_metabox_class::getInstance( 'testimonialswidget',
+			array(
+				'title'			=> __( 'Testimonial Data' ),
+				'description'	=> __( '' ),
+				'_object_types'	=> 'testimonials-widget',
+				'priority'		=> 'high',
+				'_fields'		=> array(
+					array(
+						'name' 	=> __( 'Email' ),
+						'id' 	=> 'testimonials-widget-email',
+						'type' 	=> 'text',
+						'desc'	=> __( '' ),
+					),
+					array(
+						'name' 	=> __( 'Company' ),
+						'id' 	=> 'testimonials-widget-company',
+						'type' 	=> 'text',
+						'desc'	=> __( '' ),
+					),
+					array(
+						'name' 	=> __( 'URL' ),
+						'id' 	=> 'testimonials-widget-url',
+						'type' 	=> 'text',
+						'desc'	=> __( '' ),
+					),
+				)
+			)
 		);
-	}
-
-
-	public function meta_box_testimonial() {
-		// TODO https://gist.github.com/1880770 meta_box class helper for
-		// additional fields
-
-		global $post;
-		$testimonial_order = get_post_meta( $post->ID, 'ivycat_testimonial_order', true);
-?>
-		<ul>
-			<li>
-				<label for="test-order">Order: </label>
-				<input id="test-order" type="text" name="testimonial_order" value="<?php echo ( $testimonial_order ) ? $testimonial_order : '0'; ?>" />
-			</li>
-		</ul>
-<?php
-	}
-
-
-	public function save_testimonial_metadata() {
-		// TODO https://gist.github.com/1880770 meta_box class helper for
-		// additional fields
-
-		if ( defined( 'DOING_AJAX' ) ) return;
-		global $post;
-		update_post_meta( $post->ID, 'ivycat_testimonial_order', $_POST['testimonial_order'] );
 	}
 
 
@@ -432,7 +447,7 @@ class Testimonials_Widget{
 		if ( 'testimonials-widget' == $post->post_type ) {
 			switch( $translation ) {
 			case __( 'Enter title here' ):
-				return __( 'Testimonial Source' );
+				return __( 'Enter testimonial source here' );
 				break;
 			}
 		}

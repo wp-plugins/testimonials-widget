@@ -13,9 +13,7 @@ Testimonials Widget plugin allows you to display random, rotating quotes or othe
 
 Testimonials Widget plugin allows you to display random, rotating quotes or other content with images on your WordPress blog. You can insert content via widgets, shortcode or a theme function with multiple selection and display options.
 
-More than one Testimonials Widget section can be displayed at a time. Each Testimonials Widget separately pulls from the testimonial custom post type based upon your desired categories, tags, and other selection options.
-
-Furthermore, you can choose to display a short or long list or rotation of testimonials. Additionally, each Testimonal Widget has its own CSS identifier for custom styling.
+More than one Testimonials Widget section can be displayed at a time. Each Testimonials Widget separately pulls from the `testimonials-widget` custom post type based upon your desired categories, tags, and other selection options. Furthermore, you can choose to display a short or long list or rotation of testimonials. Additionally, each Testimonal Widget has its own CSS identifier for custom styling.
 
 Through categories and tagging, you can create organizational structures based upon products, projects and services via categories and then apply tagging for further classificaton. As an example, you might create a Portfolio category and then use tags to identify web, magazine, media, public, enterprise niches. You can then configure the Testimonial Widget to show only Portfolio testimonials with the public and enterprise tags. In another Testimonial Widget, you also select only Portfolio testimonials, but then allow web and media tags.
 
@@ -26,18 +24,19 @@ Through categories and tagging, you can create organizational structures based u
 * Fields for source, testimonial, email, company and URL
 * Image, Gravatar, category and tag enabled
 * Multiple widget capable
+* Testimonial supports HTML
 * Testimonial, email, and URL fields are clickable
-* Testimonials Widget displays static and rotating testimonials 
-* Testimonials list shortcode
+* Testimonials Widget widget displays static and rotating testimonials 
+* [testimonialswidget_list] shortcode
 * Widget options
 	* Widget title
-	* Show/hide source, company, email, url, image
-	* Rotation refresh interval in seconds or set to 0 for static display
-	* Random or sequential order for rotation
 	* Category and tag selection
-	* Require all tags
-	* Testimonial character limit crop - 0 means no limit
 	* Number of testimonials to display - 0 means no limit
+	* Random or sequential order for rotation
+	* Require all tags
+	* Rotation refresh interval in seconds or set to 0 for static display
+	* Show/hide source, company, email, url, image
+	* Testimonial character limit crop - 0 means no limit
 
 = Shortcode [testimonialswidget_list] =
 * Shortcode Options
@@ -233,8 +232,8 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 	* Auto-migration from old to new format upon install
 		* Public > Published
 		* Not public > Private
-	* Localized
-	* Minimum role to manage testimonials
+	* Caching
+	* Localization
 	* Modes - widget, x shortcode, x theme function
 	* Widget settings
 		* Height - fluid, static
@@ -242,6 +241,7 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 		* Order - ASC, DESC
 		* Random
 * Ideas
+	* CSV import
 	* Custom CSS
 	* Custom templating
 	* Fields to show
@@ -249,12 +249,11 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 		* Date
 		* Tags
 	* Global options page
+		* Number of refresh interations
 		* Widget options inherit from global
-	* No nl2br when content is already using HTML
-	* Number of refresh interations
-	* Paging
-	* Testimonial ordering
-	* Updated jQuery for rotations
+	* Pagination when using shortcode
+	* Testimonial manual ordering
+	* Updated custom rotations jQuery
 
 
 == Changelog ==
@@ -264,11 +263,18 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 = 2.0.0 =
 * Major rewrite
 	* Admin bar New > Testimonial
+	* Authors and lower can manage their own testimonials
 	* Categories - product, project, service
+	* Custom columns list view
+	* Custom fields metabox
 	* Custom post-type and tag conversion
 	* Default fields - source, email, company, URL
+	* Editors and higher can manage all testimonials
 	* Gravatar
+	* HTML content allowed
 	* Images
+	* Reference shortcode column
+	* Shortcode options validation
 	* WP_Query for get_testimonials()
 
 = 0.2.13 =
