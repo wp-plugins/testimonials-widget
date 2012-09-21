@@ -76,6 +76,12 @@ Through categories and tagging, you can create organizational structures based u
 * `<?php echo testimonialswidget_list( $args ); ?>`
 * `$args` is an array of the above [testimonialswidget_list] shortcode options
 
+= Theme Function `testimonialswidget_widget()` =
+* For calling the widget with rotation code into your theme directly
+* `<?php echo testimonialswidget_widget( $args, $number ); ?>`
+* `$args` is an array of the above [testimonialswidget_list] shortcode options
+* `$number` should be an arbitrarily number that doesn't conflict with existing actual Testimonial Widgets widget IDs
+
 = Notes =
 * Default image size is based upon Thumbnail size in Media Settings 
 * Gravatar image is configured in the Avatar section of Discussion Settings
@@ -262,8 +268,8 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 	* Auto-migration from old to new format upon install
 		* Public > Published
 		* Not public > Private
-	* Caching
 * Ideas
+	* Caching
 	* Centralized defaults - share widgets and shortcode options
 	* CSV import
 	* Custom CSS
@@ -286,61 +292,64 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 
 = 2.0.0 =
 * Major rewrite
-	* Add filters for image & gravatar sizes
-	* Admin bar New > Testimonial
-	* Authors and lower can manage their own testimonials
-	* Categories - product, project, service
-	* Clean up verbiage
-	* Cleaner widget class
-	* Custom columns list view
-		* Image
-		* Source
-		* Shortcode
-		* Email
-		* Company
-		* URL
-		* Published by
-		* Category
-		* Tags
-		* Date
-	* Custom fields metabox
-		* Email
-		* Company
-		* URL
-	* Custom post-type
-	* Default fields - source, email, company, URL
-	* Editors and higher can manage all testimonials and edit testimonial publisher
-	* Enable categories and tags
-	* Enable full shortcode options in widget
-	* Gravatar
-	* HTML content allowed
-	* Images
-	* JavaScript in footer
-	* Localization
-	* Reference shortcode column
-	* Reorganize widget options panel
-	* Rotation JavaScript in footer than body
-	* Shortcode options validation
-	* WP_Query for get_testimonials()
-	* Widget image on own line
-	* Widget options
-		* Title
-		* Category filter
-		* Tags filter
-		* Require all tags
-		* Advanced options
-		* Hide image?
-		* Hide source?
-		* Hide email?
-		* Hide company?
-		* Hide URL?
-		* Character limit
-		* IDs filter
-		* Limit
-		* ORDER BY
-		* ORDER BY Order
-		* Random order
-		* Refresh Interval
+* Add filters for image & gravatar sizes
+* Admin bar New > Testimonial
+* Authors and lower can manage their own testimonials
+* Categories - product, project, service
+* Clean up verbiage
+* Cleaner widget class
+* Custom columns list view
+	* Image
+	* Source
+	* Shortcode
+	* Email
+	* Company
+	* URL
+	* Published by
+	* Category
+	* Tags
+	* Date
+* Custom fields metabox
+	* Email
+	* Company
+	* URL
+* Custom post-type
+* Default fields - source, email, company, URL
+* Editors and higher can manage all testimonials and edit testimonial publisher
+* Enable categories and tags
+* Enable full shortcode options in widget
+* Gravatar
+* HTML content allowed
+* Images
+* JavaScript in footer
+* Localization
+* Reference shortcode column
+* Reorganize widget options panel
+* Rotation JavaScript in footer than body
+* Shortcode options validation
+* WP_Query for get_testimonials()
+* Widget image on own line
+* Widget options
+	* Title
+	* Category filter
+	* Tags filter
+	* Require all tags
+	* Advanced options
+	* Hide image?
+	* Hide source?
+	* Hide email?
+	* Hide company?
+	* Hide URL?
+	* Character limit
+	* IDs filter
+	* Limit
+	* ORDER BY
+	* ORDER BY Order
+	* Random order
+	* Refresh Interval
+* Move caching to ideas
+* Add theme function `testimonialswidget_widget()` doc
+* Update POT
 
 = 0.2.13 =
 * Clean up CSS
