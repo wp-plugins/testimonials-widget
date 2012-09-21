@@ -27,14 +27,13 @@
  */
 
 // TODO
-// include widget javascript
-// reduce image size by half for widget
 // upgrade handling
 // caching
-// disable post password
 
 
 class Testimonials_Widget {
+	static $scripts				= array();
+
 	public function __construct() {
 		add_action( 'admin_init', array( &$this, 'admin_init' ) );
 		add_action( 'init', array( &$this, 'init_post_type' ) );
@@ -132,8 +131,8 @@ class Testimonials_Widget {
 			'edit_item'			=> __( 'Edit Testimonial' , 'testimonials-widget'),
 			'name'				=> __( 'Testimonials' , 'testimonials-widget'),
 			'new_item'			=> __( 'Add New Testimonial' , 'testimonials-widget'),
-			'not_found' 		=>  __( 'No testimonials found.' , 'testimonials-widget'),
-			'not_found_in_trash'	=>  __( 'No testimonials found in Trash.' , 'testimonials-widget'),
+			'not_found' 		=>  __( 'No testimonials found' , 'testimonials-widget'),
+			'not_found_in_trash'	=>  __( 'No testimonials found in Trash' , 'testimonials-widget'),
 			'parent_item_colon'	=> null,
 			'search_items'		=> __( 'Search Testimonials' , 'testimonials-widget'),
 			'singular_name'		=> __( 'Testimonial' , 'testimonials-widget'),
@@ -197,7 +196,7 @@ class Testimonials_Widget {
 
 
 	public function styles() {
-		wp_register_style( 'testimonials-widget', plugins_url( 'testimonials-widget.css', __FILE__) );
+		wp_register_style( 'testimonials-widget', plugins_url( 'testimonials-widget.css', __FILE__ ) );
 		wp_enqueue_style( 'testimonials-widget' );
 	}
 
@@ -207,14 +206,12 @@ class Testimonials_Widget {
 
 		// display attributes
 		$char_limit				= ( is_numeric( $atts['char_limit'] ) && 0 < $atts['char_limit'] ) ? intval( $atts['char_limit'] ) : false;
-		$height					= ( is_numeric( $atts['height'] ) && 0 < $atts['height'] ) ? intval( $atts['height'] ) : 'auto';
 		$hide_company			= ( 'true' == $atts['hide_company'] ) ? true : false;
 		$hide_email				= ( 'true' == $atts['hide_email'] ) ? true : false;
 		$hide_image				= ( 'true' == $atts['hide_image'] ) ? true : false;
 		$hide_source			= ( 'true' == $atts['hide_source'] || 'true' == $atts['hide_author'] ) ? true : false;
 		$hide_url				= ( 'true' == $atts['hide_url'] ) ? true : false;
-		$min_height				= ( is_numeric( $atts['min_height'] ) && 0 < $atts['min_height'] ) ? intval( $atts['min_height'] ) : 150;
-		$refresh_interval		= ( is_numeric( $atts['refresh_interval'] ) && 0 < $atts['refresh_interval'] ) ? intval( $atts['refresh_interval'] ) : 0;
+		$refresh_interval		= ( is_numeric( $atts['refresh_interval'] ) && 0 < $atts['refresh_interval'] ) ? intval( $atts['refresh_interval'] ) : 5;
 
 		$id = 'testimonialswidget_testimonials';
 
@@ -227,16 +224,9 @@ class Testimonials_Widget {
 			$html				.= '">';
 		} else {
 			$id_base			= $id . $widget_number;
-			$html				= <<<EOF
-			<style>
-				.$id_base {
-				min-height: $min_height;
-			}
-			</style>
-EOF;
+
 			if ( 0 != $refresh_interval ) {
-		// TODO jQuery to separate file in footer
-				$html			.= <<<EOF
+				$javascript		= <<<EOF
 <script type="text/javascript">
 	function nextTestimonial$widget_number() {
 		if (!jQuery('.$id_base').first().hasClass('hovered')) {
@@ -256,9 +246,11 @@ EOF;
 	});
 </script>
 EOF;
+				self::$scripts[]	= $javascript;
+				add_action( 'wp_footer', 'Testimonials_Widget::get_testimonials_scripts', 20 );
 			}
 
-			$html				.= '<div class="' . $id . ' ' . $id_base . '">';
+			$html				= '<div class="' . $id . ' ' . $id_base . '">';
 		}
 
 		if ( empty( $testimonials ) ) {
@@ -353,6 +345,13 @@ EOF;
 	}
 
 
+	public function get_testimonials_scripts() {
+		foreach( self::$scripts as $key => $script ) {
+			echo $script;
+		}
+	}
+
+
 	// Original PHP code as myTruncate2 by Chirp Internet: www.chirp.com.au
 	public function testimonials_truncate( $string, $char_limit = false, $break = ' ', $pad = '…' ) {
 		if ( ! $char_limit )
@@ -379,7 +378,7 @@ EOF;
 		$ids					= ( preg_match( '#^\d+(,\d+)?$#', $atts['ids'] ) ) ? $atts['ids'] : false;
 		$limit					= ( is_numeric( $atts['limit'] ) && 0 < $atts['limit'] ) ? intval( $atts['limit'] ) : 25;
 		$order					= ( preg_match( '#^desc|asc$#i', $atts['order'] ) ) ? $atts['order'] : 'DESC';
-		$orderby				= ( preg_match( '#^\w+$#', $atts['category'] ) ) ? $atts['orderby'] : 'ID';
+		$orderby				= ( preg_match( '#^\w+$#', $atts['orderby'] ) ) ? $atts['orderby'] : 'ID';
 		$random					= ( 'true' == $atts['random'] ) ? true : false;
 		$tags					= ( preg_match( '#^[\w-]+(,[\w-]+)?$#', $atts['tags'] ) ) ? $atts['tags'] : false;
 		$tags_all				= ( 'true' == $atts['tags_all'] ) ? true : false;
@@ -430,9 +429,11 @@ EOF;
 			$email				= get_post_meta( $post_id, 'testimonials-widget-email', true );
 
 			if ( has_post_thumbnail( $post_id ) ) {
-				$image			= get_the_post_thumbnail( $post_id, 'thumbnail' );
+				$image_size		= apply_filters( 'testimonials_widget_image_size', 'thumbnail' );
+				$image			= get_the_post_thumbnail( $post_id, $image_size );
 			} elseif ( is_email( $email ) ) {
-				$image			= get_avatar( $email );
+				$gravatar_size	= apply_filters( 'testimonials_widget_gravatar_size', 96 );
+				$image			= get_avatar( $email, $gravatar_size );
 			} else {
 				$image			= false;
 			}

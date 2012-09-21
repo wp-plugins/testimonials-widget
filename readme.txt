@@ -26,19 +26,29 @@ Through categories and tagging, you can create organizational structures based u
 * Image, Gravatar, category and tag enabled
 * Localizable - see `languages/testimonials-widget.pot`
 * Multiple widget capable
+* Rotation JavaScript in footer than body
 * Testimonial supports HTML
 * Testimonial, email, and URL fields are clickable
 * Testimonials Widget widget displays static and rotating testimonials 
 * [testimonialswidget_list] shortcode
 * Widget options
-	* Widget title
-	* Category and tag selection
-	* Number of testimonials to display - 0 means no limit
-	* Random or sequential order for rotation
+	* Title
+	* Category filter
+	* Tags filter
 	* Require all tags
-	* Rotation refresh interval in seconds or set to 0 for static display
-	* Show/hide source, company, email, url, image
-	* Testimonial character limit crop - 0 means no limit
+	* Advanced options
+	* Hide image?
+	* Hide source?
+	* Hide email?
+	* Hide company?
+	* Hide URL?
+	* Character limit
+	* IDs filter
+	* Limit
+	* ORDER BY
+	* ORDER BY Order
+	* Random order
+	* Refresh Interval
 
 = Shortcode [testimonialswidget_list] =
 * Shortcode Options
@@ -67,7 +77,7 @@ Through categories and tagging, you can create organizational structures based u
 * `$args` is an array of the above [testimonialswidget_list] shortcode options
 
 = Notes =
-* Image size is determined by Thumbnail size in Media Settings 
+* Default image size is based upon Thumbnail size in Media Settings 
 * Gravatar image is configured in the Avatar section of Discussion Settings
 
 = Languages =
@@ -101,6 +111,20 @@ Prior to version 2.0.0, this plugin was a fork of [Quotes Collection by Srini G]
 Checkout the first screenshot 1 at http://wordpress.org/extend/plugins/testimonials-widget/screenshots/ to see where to manage testimonials.
 
 Basically, look down the left side of your WordPress admin area for the Testimonials sections. Click on that section link, then scroll down or click "Add new ttestimonial" to add quotes.
+
+= How do I change the image size? =
+The default image size is based upon Thumbnail size in Media Settings. If changing that doesn't work for you, then use `add_filter` in your theme to adjust the image size.
+
+`add_filter( 'testimonials_widget_image_size', array( 120, 90 ) );`
+
+You can use either a string keyword (thumbnail, medium, large or full) or a 2-item array representing width and height in pixels, e.g. array(32,32).
+
+= How do I change the Gravatar size? =
+Use an `add_filter` in your theme to adjust the Gravatar size.
+
+`add_filter( 'testimonials_widget_gravatar_size', 120 );`
+
+Default Gravatar size is 96, maximum 512.
 
 = What CSS applies to testimonials container? =
 CSS class `testimonialswidget_testimonials` wraps all testimonials. Additionally, shortcode lists are wrapped by `testimonialswidget_testimonials testimonialswidget_testimonials_list`.
@@ -228,6 +252,8 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 * Shortcode options
 	* `hide_source` replaced by `hide_url`
 	* `hide_author` replaced by `hide_source`
+* Widget options
+	* "Show author" and "Show source" options are replaced by "Hide source" and "Hide URL" respectively. There's no backwards compatibility for these changes. 
 
 
 == TODO ==
@@ -237,15 +263,12 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 		* Public > Published
 		* Not public > Private
 	* Caching
-	* Widget settings
-		* Height - fluid, static
-		* Order By - id, title, date
-		* Order - ASC, DESC
-		* Random
 * Ideas
+	* Centralized defaults - share widgets and shortcode options
 	* CSV import
 	* Custom CSS
 	* Custom templating
+	* Disable post password
 	* Fields to show
 		* Category
 		* Date
@@ -255,7 +278,6 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 		* Widget options inherit from global
 	* Pagination when using shortcode
 	* Testimonial manual ordering
-	* Updated custom rotations jQuery
 
 
 == Changelog ==
@@ -264,9 +286,11 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 
 = 2.0.0 =
 * Major rewrite
+	* Add filters for image & gravatar sizes
 	* Admin bar New > Testimonial
 	* Authors and lower can manage their own testimonials
 	* Categories - product, project, service
+	* Clean up verbiage
 	* Cleaner widget class
 	* Custom columns list view
 		* Image
@@ -287,13 +311,36 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 	* Default fields - source, email, company, URL
 	* Editors and higher can manage all testimonials and edit testimonial publisher
 	* Enable categories and tags
+	* Enable full shortcode options in widget
 	* Gravatar
 	* HTML content allowed
 	* Images
+	* JavaScript in footer
 	* Localization
 	* Reference shortcode column
+	* Reorganize widget options panel
+	* Rotation JavaScript in footer than body
 	* Shortcode options validation
 	* WP_Query for get_testimonials()
+	* Widget image on own line
+	* Widget options
+		* Title
+		* Category filter
+		* Tags filter
+		* Require all tags
+		* Advanced options
+		* Hide image?
+		* Hide source?
+		* Hide email?
+		* Hide company?
+		* Hide URL?
+		* Character limit
+		* IDs filter
+		* Limit
+		* ORDER BY
+		* ORDER BY Order
+		* Random order
+		* Refresh Interval
 
 = 0.2.13 =
 * Clean up CSS
