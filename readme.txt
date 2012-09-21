@@ -21,6 +21,7 @@ Through categories and tagging, you can create organizational structures based u
 * Admin interface to add, edit and manage testimonials
 * Compatible with WordPress multi-site
 * Display testimonials directly in template via theme function
+* Editors and admins can edit testimonial publisher
 * Fields for source, testimonial, email, company and URL
 * Image, Gravatar, category and tag enabled
 * Localizable - see `languages/testimonials-widget.pot`
@@ -74,6 +75,8 @@ You can translate this plugin into your if it's not done so already. The localiz
 
 = Background & Thanks =
 Version 2.0.0 of Testimonials Widget is a complete rewrite based upon a composite of ideas from user feedback and grokking the plugins [Imperfect Quotes](http://www.swarmstrategies.com/imperfect-quotes/), [IvyCat Ajax Testimonials](http://wordpress.org/extend/plugins/ivycat-ajax-testimonials/), [Quotes Collection](http://srinig.com/wordpress/plugins/quotes-collection/), and [TB Testimonials](http://travisballard.com/wordpress/tb-testimonials/). Thank you to these plugin developers for their efforts that have helped inspire this rewrite.
+
+A cool thanks to RedRokk Library for the [redrokk_metabox_class](https://gist.github.com/1880770). It makes configuring metaboxes for your posts, pages or custom post types a snap.
 
 Prior to version 2.0.0, this plugin was a fork of [Quotes Collection by Srini G](http://srinig.com/wordpress/plugins/quotes-collection/) with additional contributions from j0hnsmith, ChrisCree and myself, comprock.
 
@@ -234,7 +237,6 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 		* Public > Published
 		* Not public > Private
 	* Caching
-	* Modes - widget, x shortcode, x theme function
 	* Widget settings
 		* Height - fluid, static
 		* Order By - id, title, date
@@ -265,11 +267,26 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 	* Admin bar New > Testimonial
 	* Authors and lower can manage their own testimonials
 	* Categories - product, project, service
+	* Cleaner widget class
 	* Custom columns list view
+		* Image
+		* Source
+		* Shortcode
+		* Email
+		* Company
+		* URL
+		* Published by
+		* Category
+		* Tags
+		* Date
 	* Custom fields metabox
-	* Custom post-type and tag conversion
+		* Email
+		* Company
+		* URL
+	* Custom post-type
 	* Default fields - source, email, company, URL
-	* Editors and higher can manage all testimonials
+	* Editors and higher can manage all testimonials and edit testimonial publisher
+	* Enable categories and tags
 	* Gravatar
 	* HTML content allowed
 	* Images

@@ -31,13 +31,14 @@
 //  include css
 // upgrade handling
 // caching
+// disable post password
 
 
-class Testimonials_Widget{
+class Testimonials_Widget {
 	public function __construct() {
 		add_action( 'init', array( &$this, 'init_post_type' ) );
-		// add_action( 'widgets_init', array( &$this, 'init_widgets' ) );
-		add_shortcode( 'testimonialswidget_list', array( &$this, 'shortcode_testimonialswidget_list' ) );
+		add_action( 'widgets_init', array( &$this, 'init_widgets' ) );
+		add_shortcode( 'testimonialswidget_list', array( &$this, 'testimonialswidget_list' ) );
 		add_theme_support( 'post-thumbnails' );
 		load_plugin_textdomain( 'testimonials-widget', false, 'testimonials-widget/languages' );
 
@@ -110,10 +111,10 @@ class Testimonials_Widget{
 			'testimonials-widget-email'		=> __( 'Email' , 'testimonials-widget'),
 			'testimonials-widget-company'	=> __( 'Company' , 'testimonials-widget'),
 			'testimonials-widget-url'		=> __( 'URL' , 'testimonials-widget'),
+			'author'						=> __( 'Published by' , 'testimonials-widget'),
 			'categories'					=> __( 'Category' , 'testimonials-widget'),
 			'tags'							=> __( 'Tags' , 'testimonials-widget'),
 			'date'							=> __( 'Date' , 'testimonials-widget'),
-			'author'						=> __( 'Posted by' , 'testimonials-widget'),
 		);
 
 		return $columns;
@@ -121,6 +122,8 @@ class Testimonials_Widget{
 
 
 	public function init_post_type() {
+		global $user_level;
+
 		$labels = array(
 			'add_new'			=> __( 'New Testimonial' , 'testimonials-widget'),
 			'add_new_item'		=> __( 'Add New Testimonial' , 'testimonials-widget'),
@@ -134,6 +137,16 @@ class Testimonials_Widget{
 			'singular_name'		=> __( 'Testimonial' , 'testimonials-widget'),
 			'view_item'			=> __( 'View Testimonial' , 'testimonials-widget'),
 		);
+		
+		$supports 				= array(
+			'title',
+			'editor',
+			'thumbnail',
+		);
+
+		// editor's and up
+		if( $user_level > 3 )
+			$supports[] 		= 'author';
 
 		$args = array(
 			'label'				=> __( 'Testimonials' , 'testimonials-widget'),
@@ -147,11 +160,7 @@ class Testimonials_Widget{
 			'rewrite'			=> array( 'slug' => 'testimonial' ),
 			'show_in_menu'		=> true,
 			'show_ui' 			=> true,
-			'supports' 			=> array(
-				'title',
-				'editor',
-				'thumbnail',
-			),
+			'supports' 			=> $supports,
 			'taxonomies'		=> array(
 				'category',
 				'post_tag',
@@ -163,15 +172,18 @@ class Testimonials_Widget{
 
 
 	public function testimonialswidget_list( $atts ) {
-		$content				= $this->shortcode_testimonialswidget_list( $atts );
+		$testimonials			= self::get_testimonials( $atts );
+		$content				= self::get_testimonials_html( $testimonials, $atts );
 
 		return $content;
 	}
 
 
-	public function shortcode_testimonialswidget_list( $atts ) {
-		$testimonials			= $this->get_testimonials( $atts );
-		$content				= $this->get_testimonials_html( $testimonials, $atts, true );
+	public function testimonialswidget_widget( $atts, $widget_number = null ) {
+		self::scripts();
+
+		$testimonials			= self::get_testimonials( $atts );
+		$content				= self::get_testimonials_html( $testimonials, $atts, false, $widget_number );
 
 		return $content;
 	}
@@ -188,8 +200,8 @@ class Testimonials_Widget{
 	}
 
 
-	public function get_testimonials_html( $testimonials, $atts, $is_list = false ) {
-		$this->styles();
+	public function get_testimonials_html( $testimonials, $atts, $is_list = true, $widget_number = null ) {
+		self::styles();
 
 		// display attributes
 		$char_limit				= ( is_numeric( $atts['char_limit'] ) && 0 < $atts['char_limit'] ) ? intval( $atts['char_limit'] ) : false;
@@ -199,19 +211,61 @@ class Testimonials_Widget{
 		$hide_image				= ( 'true' == $atts['hide_image'] ) ? true : false;
 		$hide_source			= ( 'true' == $atts['hide_source'] || 'true' == $atts['hide_author'] ) ? true : false;
 		$hide_url				= ( 'true' == $atts['hide_url'] ) ? true : false;
+		$min_height				= ( is_numeric( $atts['min_height'] ) && 0 < $atts['min_height'] ) ? intval( $atts['min_height'] ) : 150;
+		$refresh_interval		= ( is_numeric( $atts['refresh_interval'] ) && 0 < $atts['refresh_interval'] ) ? intval( $atts['refresh_interval'] ) : 0;
 
-		$html					= '<div class="testimonialswidget_testimonials';
+		$id = 'testimonialswidget_testimonials';
 
-		if ( $is_list )
-			$html				.= ' testimonialswidget_testimonials_list';
+		if ( is_null( $widget_number ) ) {
+			$html				= '<div class="' . $id;
 
-		$html					.= '">';
+			if ( $is_list )
+				$html			.= ' testimonialswidget_testimonials_list';
+
+			$html				.= '">';
+		} else {
+			$id_base			= $id . $widget_number;
+			$html				= <<<EOF
+			<style>
+				.$id_base {
+				min-height: $min_height;
+			}
+			</style>
+EOF;
+			if ( 0 != $refresh_interval ) {
+		// TODO jQuery to separate file in footer
+				$html			.= <<<EOF
+<script type="text/javascript">
+	function nextTestimonial$widget_number() {
+		if (!jQuery('.$id_base').first().hasClass('hovered')) {
+			var active = jQuery('.$id_base .testimonialswidget_active');
+			var next = (jQuery('.$id_base .testimonialswidget_active').next().length > 0) ? jQuery('.$id_base .testimonialswidget_active').next() : jQuery('.$id_base .testimonialswidget_testimonial:first');
+			active.fadeOut(1250, function(){
+				active.removeClass('testimonialswidget_active');
+				next.fadeIn(500);
+				next.addClass('testimonialswidget_active');
+			});
+		}
+	}
+
+	jQuery(document).ready(function(){
+		jQuery('.$id_base').hover(function() { jQuery(this).addClass('hovered') }, function() { jQuery(this).removeClass('hovered') });
+		setInterval('nextTestimonial$widget_number()', $refresh_interval * 1000);
+	});
+</script>
+EOF;
+			}
+
+			$html				.= '<div class="' . $id . ' ' . $id_base . '">';
+		}
 
 		if ( empty( $testimonials ) ) {
 			$testimonials		= array(
 				array( 'testimonial_content'	=>	__( 'No testimonials found' , 'testimonials-widget') )
 			);
 		}
+
+		$is_first				= true;
 
 		foreach ( $testimonials as $testimonial ) {
 			$do_source			= ! $hide_source && ! empty( $testimonial['testimonial_source'] );
@@ -222,8 +276,12 @@ class Testimonials_Widget{
 
 			$html				.= '<div class="testimonialswidget_testimonial';
 
-			if ( $is_list )
+			if ( $is_list ) {
 				$html			.= ' testimonialswidget_testimonial_list';
+			} elseif ( $is_first ) {
+				$html			.= ' testimonialswidget_active';
+				$is_first		= false;
+			}
 
 			$html				.= '">';
 
@@ -234,7 +292,7 @@ class Testimonials_Widget{
 			}
 
 			$content			= $testimonial['testimonial_content'];
-			$content			= $this->testimonials_truncate( $content, $char_limit );
+			$content			= self::testimonials_truncate( $content, $char_limit );
 			$content			= apply_filters( 'the_content', $content );
 			$content			= force_balance_tags( $content );
 			$content			= make_clickable( $content );
@@ -392,16 +450,17 @@ class Testimonials_Widget{
 
 
 	public function init_widgets() {
-		// require_once 'lib/Testimonials_Widget.php';
+		require_once 'lib/testimonials-widget-widget.php';
 
-		register_widget( 'Testimonials_Widget' );
+		register_widget( 'Testimonials_Widget_Widget' );
 	}
 
 
 	public function add_meta_box_testimonials_widget() {
 		require_once( 'lib/metabox.class.php' );
 
-		$meta_box				= redrokk_metabox_class::getInstance( 'testimonialswidget',
+		$meta_box				= redrokk_metabox_class::getInstance(
+			'testimonialswidget',
 			array(
 				'title'			=> __( 'Testimonial Data' , 'testimonials-widget'),
 				'description'	=> __( '' , 'testimonials-widget'),
