@@ -88,7 +88,7 @@ Version 2.0.0 of Testimonials Widget is a complete rewrite based upon a composit
 
 A cool thanks to RedRokk Library for the [redrokk_metabox_class](https://gist.github.com/1880770). It makes configuring metaboxes for your posts, pages or custom post types a snap.
 
-Prior to version 2.0.0, this plugin was a fork of [Quotes Collection by Srini G](http://srinig.com/wordpress/plugins/quotes-collection/) with additional contributions from j0hnsmith, ChrisCree and myself, comprock.
+Prior to version 2.0.0, this plugin was a fork of [Quotes Collection](http://srinig.com/wordpress/plugins/quotes-collection/) by [Srini G](http://wordpress.org/support/profile/SriniG) with additional contributions from [j0hnsmith](http://wordpress.org/support/profile/j0hnsmith), [ChrisCree](http://wordpress.org/support/profile/ChrisCree) and [comprock](http://wordpress.org/support/profile/comprock).
 
 
 == Installation ==
