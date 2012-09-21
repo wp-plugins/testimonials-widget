@@ -27,8 +27,8 @@
  */
 
 // TODO
-// widget
-//  include css
+// include widget javascript
+// reduce image size by half for widget
 // upgrade handling
 // caching
 // disable post password
@@ -36,20 +36,22 @@
 
 class Testimonials_Widget {
 	public function __construct() {
+		add_action( 'admin_init', array( &$this, 'admin_init' ) );
 		add_action( 'init', array( &$this, 'init_post_type' ) );
 		add_action( 'widgets_init', array( &$this, 'init_widgets' ) );
 		add_shortcode( 'testimonialswidget_list', array( &$this, 'testimonialswidget_list' ) );
 		add_theme_support( 'post-thumbnails' );
 		load_plugin_textdomain( 'testimonials-widget', false, 'testimonials-widget/languages' );
+	}
 
-		if ( is_admin() ) {
-			add_action( 'admin_init', array( &$this, 'add_meta_box_testimonials_widget' ) );
-			add_action( 'gettext', array( &$this, 'gettext_testimonials' ) );
-			add_action( 'manage_testimonials-widget_posts_custom_column', array( &$this, 'manage_testimonialswidget_posts_custom_column' ), 10, 2 );
-			add_filter( 'manage_testimonials-widget_posts_columns', array( &$this, 'manage_edit_testimonialswidget_columns' ) );
-			add_filter( 'post_updated_messages', array( &$this, 'post_updated_messages' ) );
-			add_filter( 'pre_get_posts', array( &$this, 'pre_get_posts_author' ) );
-		}
+
+	public function admin_init() {
+		$this->add_meta_box_testimonials_widget();
+		add_action( 'gettext', array( &$this, 'gettext_testimonials' ) );
+		add_action( 'manage_testimonials-widget_posts_custom_column', array( &$this, 'manage_testimonialswidget_posts_custom_column' ), 10, 2 );
+		add_filter( 'manage_testimonials-widget_posts_columns', array( &$this, 'manage_edit_testimonialswidget_columns' ) );
+		add_filter( 'post_updated_messages', array( &$this, 'post_updated_messages' ) );
+		add_filter( 'pre_get_posts', array( &$this, 'pre_get_posts_author' ) );
 	}
 
 
