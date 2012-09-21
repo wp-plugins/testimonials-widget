@@ -31,6 +31,7 @@ Through categories and tagging, you can create organizational structures based u
 * Testimonial, email, and URL fields are clickable
 * Testimonials Widget widget displays static and rotating testimonials 
 * [testimonialswidget_list] shortcode
+* [testimonialswidget_widget] shortcode
 * Widget options
 	* Title
 	* Category filter
@@ -45,12 +46,13 @@ Through categories and tagging, you can create organizational structures based u
 	* Character limit
 	* IDs filter
 	* Limit
+	* Minimum Height
 	* ORDER BY
 	* ORDER BY Order
 	* Random order
 	* Refresh Interval
 
-= Shortcode [testimonialswidget_list] =
+= Shortcodes [testimonialswidget_list] [testimonialswidget_widget] =
 * Shortcode Options
 	* `category` - default none; category=product or category="product,services"
 	* `char_limit` - default none; char_limit=200
@@ -71,6 +73,10 @@ Through categories and tagging, you can create organizational structures based u
 	* [testimonialswidget_list tags="test,fun" random=true]
 	* [testimonialswidget_list category="product" tags="widget" limit=5]
 	* [testimonialswidget_list ids="1,11,111"]
+* [testimonialswidget_widget] Examples
+	* [testimonialswidget_widget]
+	* [testimonialswidget_widget tags="sometag" random=true]
+	* [testimonialswidget_widget category="product" order="asc"]
 
 = Theme Function `testimonialswidget_list()` =
 * `<?php echo testimonialswidget_list( $args ); ?>`
@@ -240,13 +246,13 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 
 == Screenshots ==
 
-1. Admin interface
-2. Add new testimonial
-3. 'Testimonials' widget options
-4. A testimonial in the sidebar
-5. Edit testimonial
-6. Testimonial shortcode results
-7. Testimonial shortcode in post
+1. Testimonials admin interface
+2. Edit testimonial
+3. Testimonials Widget options - top
+4. [testimonialswidget_widget] in post and testimonial widget in the sidebar 
+5. [testimonialswidget_list] in post
+6. [testimonialswidget_list] results
+7. Testimonials Widget options - bottom
 	
 
 == Upgrade Notice ==
@@ -282,6 +288,7 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 	* Global options page
 		* Number of refresh interations
 		* Widget options inherit from global
+	* Minimum height removal for widgets
 	* Pagination when using shortcode
 	* Testimonial manual ordering
 
@@ -343,6 +350,7 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 	* Character limit
 	* IDs filter
 	* Limit
+	* Minimum Height
 	* ORDER BY
 	* ORDER BY Order
 	* Random order
@@ -350,6 +358,10 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 * Move caching to ideas
 * Add theme function `testimonialswidget_widget()` doc
 * Update POT
+* [testimonialswidget_widget] shortcode
+* Match [testimonialswidget_widget] shortcode option defaults to widget
+* Update screenshots
+* Readd Minimum Height - need help getting around this
 
 = 0.2.13 =
 * Clean up CSS

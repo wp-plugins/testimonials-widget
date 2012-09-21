@@ -11,6 +11,7 @@ class Testimonials_Widget_Widget extends WP_Widget {
 			'hide_url'			=> '',
 			'ids'				=> '',
 			'limit'				=> 25,
+			'min_height'		=> '250',
 			'order'				=> 'DESC',
 			'orderby'			=> 'ID',
 			'random'			=> 'true',
@@ -76,6 +77,7 @@ class Testimonials_Widget_Widget extends WP_Widget {
 		$instance['hide_url']			= ( 'true' == $new_instance['hide_url'] ) ? 'true' : $this->defaults['hide_url'];
 		$instance['ids']				= ( preg_match( '#^\d+(,\d+)?$#', $new_instance['ids'] ) ) ? $new_instance['ids'] : $this->defaults['ids'];
 		$instance['limit']				= ( is_numeric( $new_instance['limit'] ) && 0 < $new_instance['limit'] ) ? intval( $new_instance['limit'] ) : $this->defaults['limit'];;
+		$instance['min_height']				= ( is_numeric( $new_instance['min_height'] ) && 0 < $new_instance['min_height'] ) ? intval( $new_instance['min_height'] ) : $this->defaults['min_height'];;
 		$instance['order']				= ( preg_match( '#^desc|asc$#i', $new_instance['order'] ) ) ? $new_instance['order'] : $this->defaults['order'];
 		$instance['orderby']			= ( preg_match( '#^\w+$#', $new_instance['orderby'] ) ) ? $new_instance['orderby'] : $this->defaults['orderby'];
 		$instance['random']				= ( 'true' == $new_instance['random'] ) ? 'true' : $this->defaults['random'];
@@ -118,6 +120,8 @@ class Testimonials_Widget_Widget extends WP_Widget {
 		echo '<p><label for="'.$this->get_field_id( 'ids' ).'">'.__( 'IDs filter', 'testimonials-widget' ).' </label><input class="widefat" type="text" id="'.$this->get_field_id( 'ids' ).'" name="'.$this->get_field_name( 'ids' ).'" value="'.htmlspecialchars($instance['ids'], ENT_QUOTES).'" /><br/><span class="setting-description"><small>'.__( 'Comma separated IDs', 'testimonials-widget' ).'</small></span></p>';
 
 		echo '<p><label for="'.$this->get_field_id( 'limit' ).'">'.__( 'Limit', 'testimonials-widget' ).' </label><input size="4" type="text" id="'.$this->get_field_id( 'limit' ).'" name="'.$this->get_field_name( 'limit' ).'" value="'.htmlspecialchars($instance['limit'], ENT_QUOTES).'" /><br/><span class="setting-description"><small>'.__( 'Number of testimonials to pull at a time', 'testimonials-widget' ).'</small></span></p>';
+
+		echo '<p><label for="'.$this->get_field_id( 'min_height' ).'">'.__('Minimum Height', 'testimonials-widget').' </label><input size="4" type="text" id="'.$this->get_field_id( 'min_height' ).'" name="'.$this->get_field_name( 'min_height' ).'" value="'.htmlspecialchars($instance['min_height'], ENT_QUOTES).'" /><br/><span class="setting-description"><small>'.__('Increase this value if your testimonials are getting cut off when displayed', 'testimonials-widget').'</small></span></p>';
 
 		echo '<p><label for="'.$this->get_field_id( 'orderby' ).'">'.__( 'ORDER BY', 'testimonials-widget' ).' </label><input class="widefat" type="text" id="'.$this->get_field_id( 'orderby' ).'" name="'.$this->get_field_name( 'orderby' ).'" value="'.htmlspecialchars($instance['orderby'], ENT_QUOTES).'" /><br/><span class="setting-description"><small>'.__( 'Used when Random order is disabled', 'testimonials-widget' ).'</small></span></p>';
 

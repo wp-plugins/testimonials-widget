@@ -28,17 +28,19 @@
 
 
 // TODO
-// upgrade handling
+// upgrade handling http://codex.localhost/Creating_Tables_with_Plugins
 
 
 class Testimonials_Widget {
 	static $scripts				= array();
+	static $widget_number		= 100000;
 
 	public function __construct() {
 		add_action( 'admin_init', array( &$this, 'admin_init' ) );
 		add_action( 'init', array( &$this, 'init_post_type' ) );
 		add_action( 'widgets_init', array( &$this, 'init_widgets' ) );
 		add_shortcode( 'testimonialswidget_list', array( &$this, 'testimonialswidget_list' ) );
+		add_shortcode( 'testimonialswidget_widget', array( &$this, 'testimonialswidget_widget' ) );
 		add_theme_support( 'post-thumbnails' );
 		load_plugin_textdomain( 'testimonials-widget', false, 'testimonials-widget/languages' );
 	}
@@ -183,6 +185,15 @@ class Testimonials_Widget {
 	public function testimonialswidget_widget( $atts, $widget_number = null ) {
 		self::scripts();
 
+		if ( empty( $atts['char_limit'] ) )
+			$atts['char_limit']	= 500;
+
+		if ( empty( $atts['random'] ) )
+			$atts['random']		= 'true';
+
+		if ( empty( $widget_number ) )
+			$widget_number		= self::$widget_number++;
+
 		$testimonials			= self::get_testimonials( $atts );
 		$content				= self::get_testimonials_html( $testimonials, $atts, false, $widget_number );
 
@@ -211,6 +222,7 @@ class Testimonials_Widget {
 		$hide_image				= ( 'true' == $atts['hide_image'] ) ? true : false;
 		$hide_source			= ( 'true' == $atts['hide_source'] || 'true' == $atts['hide_author'] ) ? true : false;
 		$hide_url				= ( 'true' == $atts['hide_url'] ) ? true : false;
+		$min_height				= ( is_numeric( $atts['min_height'] ) && 0 < $atts['min_height'] ) ? intval( $atts['min_height'] ) : 250;
 		$refresh_interval		= ( is_numeric( $atts['refresh_interval'] ) && 0 < $atts['refresh_interval'] ) ? intval( $atts['refresh_interval'] ) : 5;
 
 		$id = 'testimonialswidget_testimonials';
@@ -223,9 +235,17 @@ class Testimonials_Widget {
 
 			$html				.= '">';
 		} else {
+			$html				= '';
 			$id_base			= $id . $widget_number;
 
 			if ( 0 != $refresh_interval ) {
+				$html			.= <<<EOF
+<style>
+.$id_base {
+	min-height: {$min_height}px;
+}
+</style>
+EOF;
 				$javascript		= <<<EOF
 <script type="text/javascript">
 	function nextTestimonial$widget_number() {
@@ -250,7 +270,7 @@ EOF;
 				add_action( 'wp_footer', 'Testimonials_Widget::get_testimonials_scripts', 20 );
 			}
 
-			$html				= '<div class="' . $id . ' ' . $id_base . '">';
+			$html				.= '<div class="' . $id . ' ' . $id_base . '">';
 		}
 
 		if ( empty( $testimonials ) ) {
@@ -554,9 +574,5 @@ EOF;
 
 
 $Testimonials_Widget			= new Testimonials_Widget();
-
-
-// TODO move old TW table data to new custom post type
-// register_activation_hook( __FILE__, 'testimonialswidget_install' );
 
 ?>
