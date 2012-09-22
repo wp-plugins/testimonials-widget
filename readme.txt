@@ -19,6 +19,8 @@ Through categories and tagging, you can create organizational structures based u
 
 = Features =
 * Admin interface to add, edit and manage testimonials
+* Auto-migration from old custom table to new custom post type
+	* Company, URL and email details attempted to be identified and placed properly
 * Compatible with WordPress multi-site
 * Display testimonials directly in template via theme function
 * Editors and admins can edit testimonial publisher
@@ -270,10 +272,6 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 
 == TODO ==
 
-* Main Goals
-	* Auto-migration from old to new format upon install
-		* Public > Published
-		* Not public > Private
 * Ideas
 	* Caching
 	* Centralized defaults - share widgets and shortcode options
@@ -281,6 +279,9 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 	* Custom CSS
 	* Custom templating
 	* Disable post password
+	* During migration
+		* Pull out images and attach correctly
+		* Set category
 	* Fields to show
 		* Category
 		* Date
@@ -302,6 +303,9 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 * Add filters for image & gravatar sizes
 * Admin bar New > Testimonial
 * Authors and lower can manage their own testimonials
+* Auto-migration from old to new format upon install
+	* Public > Published
+	* Not public > Private
 * Categories - product, project, service
 * Clean up verbiage
 * Cleaner widget class

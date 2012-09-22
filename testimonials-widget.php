@@ -32,6 +32,7 @@
 
 
 class Testimonials_Widget {
+	const pt					= 'testimonials-widget';
 	static $scripts				= array();
 	static $widget_number		= 100000;
 
@@ -42,17 +43,96 @@ class Testimonials_Widget {
 		add_shortcode( 'testimonialswidget_list', array( &$this, 'testimonialswidget_list' ) );
 		add_shortcode( 'testimonialswidget_widget', array( &$this, 'testimonialswidget_widget' ) );
 		add_theme_support( 'post-thumbnails' );
-		load_plugin_textdomain( 'testimonials-widget', false, 'testimonials-widget/languages' );
+		load_plugin_textdomain( self::pt, false, 'testimonials-widget/languages' );
 	}
 
 
 	public function admin_init() {
 		$this->add_meta_box_testimonials_widget();
+		$this->update();
 		add_action( 'gettext', array( &$this, 'gettext_testimonials' ) );
-		add_action( 'manage_testimonials-widget_posts_custom_column', array( &$this, 'manage_testimonialswidget_posts_custom_column' ), 10, 2 );
-		add_filter( 'manage_testimonials-widget_posts_columns', array( &$this, 'manage_edit_testimonialswidget_columns' ) );
+		add_action( 'manage_' . self::pt . '_posts_custom_column', array( &$this, 'manage_testimonialswidget_posts_custom_column' ), 10, 2 );
+		add_filter( 'manage_' . self::pt . '_posts_columns', array( &$this, 'manage_edit_testimonialswidget_columns' ) );
 		add_filter( 'post_updated_messages', array( &$this, 'post_updated_messages' ) );
 		add_filter( 'pre_get_posts', array( &$this, 'pre_get_posts_author' ) );
+	}
+
+
+	public function update() {
+		$options				= get_option( 'testimonialswidget' );
+
+		if ( ! empty( $options['migrated'] ) )
+			return;
+
+		global $wpdb;
+		$table_name				= $wpdb->prefix . 'testimonialswidget';
+
+		// check that db table exists and has entries
+		$query					= 'SELECT `testimonial_id`, `testimonial`, `author`, `source`, `tags`, `public`, `time_added`, `time_updated` FROM `' . $table_name . '`';
+		$results				= $wpdb->get_results( $query );
+		if( ! empty( $results ) ) {
+			foreach ( $results as $result ) {
+				// author can contain title and company details
+				$author			= $result->author;
+				$company		= false;
+
+				// ex: Catherine Upton of Elearning!
+				$author			= str_replace( ' of ', ', ', $author );
+				// now ex: Catherine Upton, Elearning!
+
+				// ex: Mark Gillingham, The Great Books Foundation
+				// ex: Steve Adams, Web Development Manager, Topcon Positioning Systems, Inc.
+				// ex: Karen Richard, Owner, Karen Richard Photography, LLC
+				$author			= str_replace( ' of ', ', ', $author );
+				$temp_comma		= '^^^';
+				$author			= str_replace( ', LLC', $temp_comma . ' LLC', $author );
+				// now ex: Karen Richard, Owner, Karen Richard Photography^^^ LLC
+				$author			= str_replace( ', Inc', $temp_comma . ' Inc', $author );
+				// ex: Steve Adams, Web Development Manager, Topcon Positioning Systems^^^ Inc.
+				// it's possible to have "Michael Cannon, Senior Developer" and "Senior Developer" become the company. Okay for now
+				$author			= explode( ', ', $author );
+
+				if ( 1 < count( $author ) ) {
+					$company	= array_pop( $author );
+					$company	= str_replace( $temp_comma, ',', $company );
+				}
+
+				$author			= implode( ', ', $author );
+				$author			= str_replace( $temp_comma, ',', $author );
+
+				$post_data		= array(
+					'post_type'			=> self::pt,
+					'post_status'		=> ( 'yes' == $result->public ) ? 'publish' : 'private',
+					'post_date'			=> $result->time_added,
+					'post_modified'		=> $result->time_updated,
+					'post_title'		=> $author,
+					'post_content'		=> $result->testimonial,
+					'tags_input'		=> $result->tags,
+				);
+
+				$post_id		= wp_insert_post( $post_data, true );
+
+				// track/link testimonial import to new post
+				add_post_meta( $post_id, '_' . self::pt . ':testimonial_id', $result->testimonial_id );
+
+				if ( ! empty( $company ) ) {
+					add_post_meta( $post_id, 'testimonials-widget-company', $company );
+				}
+
+				$source			= $result->source;
+				if ( ! empty( $source ) ) {
+					if ( is_email( $source ) ) {
+						add_post_meta( $post_id, 'testimonials-widget-email', $source );
+					} else {
+						add_post_meta( $post_id, 'testimonials-widget-url', $source );
+					}
+				}
+			}
+		}
+
+		$options['migrated']	= true;
+		delete_option( 'testimonialswidget' );
+		add_option( 'testimonialswidget', $options, null, 'no' );
 	}
 
 
@@ -60,7 +140,7 @@ class Testimonials_Widget {
 		global $user_level, $user_ID;
 
 		// author's and below
-		if( $query->is_admin && $query->is_main_query && $query->is_post_type_archive( 'testimonials-widget' ) && $user_level < 3 )
+		if( $query->is_admin && $query->is_main_query && $query->is_post_type_archive( self::pt ) && $user_level < 3 )
 			$query->set( 'post_author', $user_ID );
 
 		return $query;
@@ -170,7 +250,7 @@ class Testimonials_Widget {
 			)
 		);
 
-		register_post_type( 'testimonials-widget', $args );
+		register_post_type( self::pt, $args );
 	}
 
 
@@ -411,7 +491,7 @@ EOF;
 		$args					= array(
 			'orderby'			=> $orderby,
 			'post_status'		=> 'publish',
-			'post_type'			=> 'testimonials-widget',
+			'post_type'			=> self::pt,
 			'posts_per_page'	=> $limit,
 		);
 
@@ -527,7 +607,7 @@ EOF;
 
 		global $post;
 
-		if ( 'testimonials-widget' == $post->post_type ) {
+		if ( self::pt == $post->post_type ) {
 			switch( $translation ) {
 			case __( 'Enter title here' , 'testimonials-widget'):
 				return __( 'Enter testimonial source here' , 'testimonials-widget');
@@ -552,7 +632,7 @@ EOF;
 	public function post_updated_messages( $m ) {
 		global $post;
 
-		$m['testimonials-widget'] = array(
+		$m[ self::pt ] = array(
 			0 => '', // Unused. Messages start at index 1.
 			1 => sprintf( __( 'Testimonial updated. <a href="%s">View testimonial</a>' , 'testimonials-widget'), esc_url( get_permalink( $post->ID ) ) ),
 			2 => __( 'Custom field updated.' , 'testimonials-widget'),
