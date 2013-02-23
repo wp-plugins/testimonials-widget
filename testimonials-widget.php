@@ -115,7 +115,7 @@ class Testimonials_Widget {
 
 
 	public function init() {
-		if ( false && function_exists( 'admin_url' ) ) {
+		if ( function_exists( 'admin_url' ) ) {
 			require_once( 'lib/settings.testimonials-widget.php' );
 
 			$this->settings_link	= '<a href="' . get_admin_url() . 'edit.php?post_type=' . Testimonials_Widget::pt . '&page=' . Testimonials_Widget_Settings::id . '">' . __('Settings', 'testimonials-widget') . '</a>';

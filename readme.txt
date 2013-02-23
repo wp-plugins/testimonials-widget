@@ -89,39 +89,40 @@ Testimonials Widget Premium extends the Testimonials Widget plugin with addition
 
 = Shortcode and Widget Options =
 
-* Title - Widget title
+* Widget Title
+	* `title1 - default "Testimonials"
 * Title Link - URL or Post ID to link widget title to
-* Category filter - Comma separated category slug-names
+* Category Filter - Comma separated category slug-names
 	* `category` - default none; category=product or category="product,services"
-* Character limit - Number of characters to limit testimonial views to
+* Character Limit - Number of characters to limit testimonial views to
 	* `char_limit` - default none; char_limit=200
 	* Widget - default 500
-* Exclude IDs filter - Comma separated IDs
+* Exclude IDs Filter - Comma separated IDs
 	* `exclude` - default none; exclude=2 or exclude="2,4,6"
-* Hide company?
+* Hide Company?
 	* `hide_company` - default show; hide_company=true
-* Hide email?
+* Hide Email?
 	* `hide_email` - default show; hide_email=true
-* Hide gravatar?
+* Hide Gravatar?
 	* `hide_gravatar` - default show; hide_gravatar=true
-* Hide image?
+* Hide Image?
 	* `hide_image` - default show; hide_image=true
-* Hide not found?
+* Hide "Testimonials Not Found"?
 	* `hide_not_found` - default show; hide_not_found=true
-* Hide source?
+* Hide Source? - Don't display "Post Title" in cite
 	* `hide_source` - default show; hide_source=true
-* Hide title?
+* Hide Title?
 	* `hide_title` - default show; hide_title=true
 * Hide URL?
 	* `hide_url` - default show; hide_url=true
-* IDs filter - Comma separated IDs
+* Include IDs Filter - Comma separated IDs
 	* `ids` - default none; ids=2 or ids="2,4,6"
-* Keep whitespace? - Keeps testimonials looking as entered than sans auto-formatting
+* Keep Whitespace? - Keeps testimonials looking as entered than sans auto-formatting
 	* `keep_whitespace` - default none; keep_whitespace=true
 	* The citation has no whitespace adaptions. It's straight text, except for email or URL links. The presentation is handled strictly by CSS.
 * Limit - Number of testimonials to rotate through via widget or show at a time when listing
 	* `limit` - default 10; limit=25
-* Sort by meta key - Used when Random order is disabled and sorting by a testimonials meta key is needed
+* ORDER BY meta_key - Used when Random order is disabled and sorting by a testimonials meta key is needed
 	* `meta_key` - default none [testimonials-widget-company|testimonials-widget-email|testimonials-widget-title|testimonials-widget-url]; meta_key=testimonials-widget-company
 * Minimum Height - Set for minimum display height
 	* `min_height` - default none; min_height=100
@@ -131,20 +132,20 @@ Testimonials Widget Premium extends the Testimonials Widget plugin with addition
 	* `order` - [default DESC](http://codex.wordpress.org/Class_Reference/WP_Query#Order_.26_Orderby_Parameters); order=ASC
 * ORDER BY - Used when Random order is disabled
 	* `orderby` - [default ID](http://codex.wordpress.org/Class_Reference/WP_Query#Order_.26_Orderby_Parameters); orderby=title
-* Enable paging for [testimonialswidget_list]
+* Enable Paging - for [testimonialswidget_list]
 	* `paging` - default true [true|before|after|false]; paging=false
 		* `true` – display paging before and after testimonial entries
 		* `before` – display paging only before testimonial entries
 		* `after` – display paging only after testimonial entries
 	* Widget - Not functional
-* Random order - Unchecking this will rotate testimonials per ORDER BY and ORDER BY Order
+* Random Order? - Unchecking this will rotate testimonials per ORDER BY and ORDER BY Order
 	* `random` - default none; random=true (overrides `order` and `orderby`)
 	* Widget = default true
-* Rotation Speed - Seconds between testimonial rotations or 0 for no refresh
+* Rotation speed - Seconds between testimonial rotations or 0 for no refresh
 	* `refresh_interval` - default 5; refresh_interval=0
-* Require all tags - Select only testimonials with all of the given tags
+* Require All Tags - Select only testimonials with all of the given tags
 	* `tags_all` - default OR; tags_all=true
-* Tags filter - Comma separated tag slug-names
+* Tags Filter - Comma separated tag slug-names
 	* `tags` - default none; tags=fire or tags="fire,water"
 * URL Target
 	* `target` - default none; target=_new
@@ -1077,6 +1078,14 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 
 == Changelog ==
 = trunk =
+* Add `tw_get_options`
+* BUG with "Post Types Order"
+* Configure settings within Testimonials_Widget_Settings class
+* Enable settings pages
+* Revise about page content
+* Revise settings page footer
+* Update "Shortcode and Widget Options" verbiage
+* Widget validates via Testimonials_Widget_Settings::validate_settings 
 
 = 2.7.17 =
 * Add purchase Testimonials Widget Premium plugin meta link
@@ -1779,4 +1788,5 @@ Is there something you want done? Write it up on the [support forums](http://wor
 	* set display defaults
 * BUG
 	* [JetPack J-Shortcodes conflict](http://wordpress.org/support/topic/just-realised-my-testimonial-is-not-rotating)
+	* [Post Types Order](http://wordpress.org/support/topic/random-order-doesnt-work)
 * Remove `.hentry` class
