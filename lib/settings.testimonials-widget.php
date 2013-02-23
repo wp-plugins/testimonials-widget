@@ -95,6 +95,7 @@ class Testimonials_Widget_Settings {
 		self::$settings['hide_email']	= array(
 			'title'   			=> __( 'Hide Email?', 'testimonials-widget' ),
 			'type'				=> 'checkbox',
+			'std'				=> 1,
 		);
 
 		self::$settings['hide_company']	= array(
