@@ -1047,6 +1047,20 @@ In your theme's `custom.css` or `styles.css` file write the following CSS.
 * JetPack shortcodes
 * FancyBox for WordPress
 
+= 65. How do I disable the stylesheet? =
+
+In your theme's `functions.php` file, add the following.
+
+`
+add_action( 'init', 'my_init' );
+
+function my_init() {
+	wp_dequeue_style( 'testimonials-widget' );
+}
+`
+
+Thank you [sazanetti](http://wordpress.org/support/topic/css-tweaks?replies=4#post-3893996) for the suggestion.
+
 
 = I'm still stuck, how can I get help? =
 Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widget) and ask your question.
@@ -1089,6 +1103,7 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 * BUGFIX paging when not in singular view
 * Configure settings within Testimonials_Widget_Settings class
 * Enable 'Expand/Collapse' view in Widget options
+* FAQ 65 Disable the stylesheet
 * FEATURE Testimonials Widget Settings screen
 * Rename `widget_text` to `bottom_text`
 * Revise About page content
