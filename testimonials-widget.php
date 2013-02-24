@@ -649,6 +649,7 @@ EOF;
 		$do_title				= ! $atts['hide_title'] && ! empty( $testimonial['testimonial_title'] );
 		$do_url					= ! $atts['hide_url'] && ! empty( $testimonial['testimonial_url'] );
 		$keep_whitespace		= $atts['keep_whitespace'];
+		$remove_hentry			= $atts['remove_hentry'];
 
 		$class					= 'testimonialswidget_testimonial';
 
@@ -672,6 +673,9 @@ EOF;
 			$div_open			.= 'testimonials-widget type-testimonials-widget status-publish hentry ' . $class;
 
 		$div_open				.= '">';
+
+		if ( $remove_hentry )
+			$div_open			= str_replace( ' hentry', '', $div_open );
 
 		$image					= '';
 		if ( $do_image ) {

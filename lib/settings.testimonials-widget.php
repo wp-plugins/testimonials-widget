@@ -168,6 +168,12 @@ class Testimonials_Widget_Settings {
 			'std'				=> 1,
 		);
 
+		self::$settings['remove_hentry']	= array(
+			'title'   			=> __( 'Remove `.hentry` CSS?', 'testimonials-widget' ),
+			'desc'   			=> __( 'Some themes use class `.hentry` in a manner that breaks Testimonials Widgets CSS', 'testimonials-widget' ),
+			'type'				=> 'checkbox',
+		);
+
 		self::$settings['general_expand_end']	= array(
 			'type'				=> 'expand_end',
 		);
@@ -693,6 +699,7 @@ EOD;
 		$input['orderby']		= ( empty( $input['orderby'] ) || preg_match( '#^\w+$#', $input['orderby'] ) ) ? $input['orderby'] : self::$defaults['orderby'];
 		$input['random']		= empty( $input['random'] ) ? 0 : self::is_true_int( $input['random'] );
 		$input['refresh_interval']	= ( empty( $input['refresh_interval'] ) || ( is_numeric( $input['refresh_interval'] ) && 0 <= $input['refresh_interval'] ) ) ? $input['refresh_interval'] : self::$defaults['refresh_interval'];
+		$input['remove_hentry']		= empty( $input['remove_hentry'] ) ? 0 : self::is_true_int( $input['remove_hentry'] );
 		$input['tags']			= ( empty( $input['tags'] ) || preg_match( '#^[\w-]+(,[\w-]+)*$#', $input['tags'] ) ) ? $input['tags'] : self::$defaults['tags'];
 		$input['tags_all']		= empty( $input['tags_all'] ) ? 0 : self::is_true_int( $input['tags_all'] );
 		$input['target']		= ( empty( $input['target'] ) || preg_match( '#^\w+$#', $input['target'] ) ) ? $input['target'] : self::$defaults['target'];

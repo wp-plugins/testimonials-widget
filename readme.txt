@@ -28,6 +28,7 @@ Single testimonial view supports image, source, title, email, company and URL de
 * Filters to manipulate testimonial layout and presentation
 * Has fields for source, title, testimonial, email, company and URL details
 * Multiple widgets on a single page capable
+* Settings screen for site-wide option defaults
 * Shortcodes and theme functions for listings and rotation
 * Single testimonial view includes image, source, title, email, company and URL details
 * Testimonials archive view – Disabled for now
@@ -118,6 +119,8 @@ Testimonials Widget Premium extends the Testimonials Widget plugin with addition
 	* `hide_url` - default show; hide_url=true
 * Include IDs Filter - Comma separated IDs
 	* `ids` - default none; ids=2 or ids="2,4,6"
+* Remove `.hentry` CSS? – Some themes use class `.hentry` in a manner that breaks Testimonials Widgets CSS
+	* `remove_hentry` - default none; remove_hentry=true
 * Keep Whitespace? - Keeps testimonials looking as entered than sans auto-formatting
 	* `keep_whitespace` - default none; keep_whitespace=true
 	* The citation has no whitespace adaptions. It's straight text, except for email or URL links. The presentation is handled strictly by CSS.
@@ -1097,9 +1100,6 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 
 == Changelog ==
 = trunk =
-* Screenshot 2 updated
-* Screenshot 11 updated
-* Screenshot 16 removed
 * Add `tw_get_options`
 * Add filter `testimonials_widget_sections` – Alter section options
 * Add filter `testimonials_widget_settings` – Alter setting options
@@ -1109,18 +1109,22 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 * Configure settings within Testimonials_Widget_Settings class
 * Enable 'Expand/Collapse' view in Widget options
 * FAQ 65 Disable the stylesheet
+* FEATURE Remove `.hentry` CSS?
 * FEATURE Testimonials Widget Settings screen
 * Removed filters `testimonials_widget_options_update`, `testimonials_widget_options_form`
 * Rename `widget_text` to `bottom_text`
 * Revise About page content
 * Revise Settings page footer
 * Revise widget options update and validation
-* Screenshot 3 updated
-* Screenshot 4 updated, Expanded 'General Options' Testimonials Widget 
+* Screenshot 11 updated
+* Screenshot 16 removed
+* Screenshot 2 updated
 * Screenshot 22 Testimonials Widget Settings > General tab
 * Screenshot 23 Expanded 'Selection Options' Testimonials Widget 
 * Screenshot 24 Expanded 'Ordering Options' Testimonials Widget 
 * Screenshot 25 Testimonials Widget Settings > Selection tab
+* Screenshot 3 updated
+* Screenshot 4 updated, Expanded 'General Options' Testimonials Widget 
 * Update "Shortcode and Widget Options" verbiage
 * Update POT file
 * Use defaults via Testimonials_Widget_Settings class
@@ -1831,7 +1835,4 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 
 Is there something you want done? Write it up on the [support forums](http://wordpress.org/support/plugin/testimonials-widget) and then [donate](http://aihr.us/about-aihrus/donate/) or [send along](http://aihr.us/contact-aihrus/) an [awesome testimonial](http://aihr.us/about-aihrus/testimonials/).
 
-* BUG
-	* [JetPack J-Shortcodes conflict](http://wordpress.org/support/topic/just-realised-my-testimonial-is-not-rotating)
-	* [Post Types Order](http://wordpress.org/support/topic/random-order-doesnt-work)
-* Remove `.hentry` class
+* BUG [Post Types Order](http://wordpress.org/support/topic/random-order-doesnt-work) - sorting conflict
