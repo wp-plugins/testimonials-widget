@@ -1096,6 +1096,7 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 23. Expanded 'Selection Options' in Testimonials Widget options
 24. Expanded 'Ordering Options' in Testimonials Widget options
 25. Testimonials Widget Settings > Selection tab
+26. Testimonials Widget Settings > Premium tab - [Testimonials Widget Premium plugin](http://aihr.us/wordpress/testimonials-widget-premium/)
 
 
 == Changelog ==
@@ -1123,6 +1124,7 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 * Screenshot 23 Expanded 'Selection Options' Testimonials Widget 
 * Screenshot 24 Expanded 'Ordering Options' Testimonials Widget 
 * Screenshot 25 Testimonials Widget Settings > Selection tab
+* Screenshot 26 Testimonials Widget Settings > Premium tab
 * Screenshot 3 updated
 * Screenshot 4 updated, Expanded 'General Options' Testimonials Widget 
 * Update "Shortcode and Widget Options" verbiage
