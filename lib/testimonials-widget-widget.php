@@ -113,42 +113,158 @@ class Testimonials_Widget_Widget extends WP_Widget {
 		$do_number				= true;
 
 		if ( empty( $instance ) ) {
-			$do_number			= false;
+			$do_number		= false;
+
 			if ( empty( $defaults['char_limit']	) )
 				$defaults['char_limit']	= 500;
 
 			if ( empty( $defaults['random']	) )
-				$defaults['random']		= 'true';
+				$defaults['random']		= 1;
 
 			$instance			= array();
 		}
 
 		$instance				= wp_parse_args( $instance, $defaults );
-
-		// TODO pull form_parts from master
-
-		$form_parts				= array();
+		$form_parts				= Testimonials_Widget_Settings::get_settings();
 
 		if ( $do_number ) {
 			$number				= $this->number;
 			$class				= ' .' . Testimonials_Widget::id . $number;
-			$form_parts['css_class']	= '<p><label for="' . $this->get_field_id( 'css_class' ) . '">' . __( 'CSS class', 'testimonials-widget' ) . '</label><input class="widefat" type="text" readonly="readonly" id="' . $this->get_field_id( 'css_class' ) . '" name="' . $this->get_field_name( 'css_class' ) . '" value="' . $class . '" /><br/><span class="setting-description"><small>' . __( 'Widget\'s unique CSS class for styling', 'testimonials-widget' ) . '</small></span></p>';
+			$form_parts['css_class']	= array(
+				'section'		=> 'widget',
+				'type'			=> 'readonly',
+				'title'   		=> __( 'CSS Class', 'testimonials-widget' ),
+				'desc'			=> __( 'This widget\'s unique CSS class for styling', 'testimonials-widget' ),
+				'std'			=> $class,
+			);
 		}
 
+		// remove non-widget parts
+		unset( $form_parts['paging'] );
+		unset( $form_parts['debug_mode'] );
 
-		// $form_parts['keep_whitespace']	= '<p><input type="checkbox" id="' . $this->get_field_id( 'keep_whitespace' ) . '" name="' . $this->get_field_name( 'keep_whitespace' ) . '" value="true"' . checked( $instance['keep_whitespace'], 'true', false ) . ' /> <label for="' . $this->get_field_id( 'keep_whitespace' ) . '">' . __( 'Keep whitespace?', 'testimonials-widget' ) . '</label><br/><span class="setting-description"><small>' . __( 'Keeps testimonials looking as entered than sans auto-formatting', 'testimonials-widget' ) . '</small></span></p>';
+		// fixme make reset work
+		unset( $form_parts['reset_defaults'] );
 
-		$form_parts['adv_key']	= "<p style=\"text-align:left;\"><small><a id=\"" . $this->get_field_id( 'adv_key' ) . "\" style=\"cursor:pointer;\" onclick=\"jQuery( 'div#" . $this->get_field_id( 'adv_opts' ) . "' ) . slideToggle();\">" . __( 'Advanced Options', 'testimonials-widget' ) . " &raquo;</a></small></p>";
+		// fixme for Premium
+		// $form_parts				= apply_filters( 'testimonials_widget_options_form', $form_parts, $this, $instance );
 
-		$form_parts['adv_opts']	= '<div id="' . $this->get_field_id( 'adv_opts' ) . '" style="display:none">';
+		foreach ( $form_parts as $key => $part ) {
+			$part[ 'id' ]		= $key;
+			$this->display_setting( $part, $instance );
+		}
+	}
 
-		// $form_parts['widget_text']	= '<p><label for="' . $this->get_field_id( 'widget_text' ) . '">' . __( 'Widget Bottom Text', 'testimonials-widget' ) . '</label><br/><span class="setting-description"><small>' . __( 'Custom text or HTML for bottom of widgets', 'testimonials-widget' ) . '</small></span><textarea class="widefat" type="text" id="' . $this->get_field_id( 'widget_text' ) . '" name="' . $this->get_field_name( 'widget_text' ) . '" rows="8">' . htmlspecialchars($instance['widget_text'], ENT_QUOTES) . '</textarea></p>';
 
-		$form_parts['end_div']	= '</div>';
+	public function display_setting( $args = array(), $options ) {
+		$args					= wp_parse_args( $args, Testimonials_Widget_Settings::$default );
+		extract( $args );
 
-		$form_parts				= apply_filters( 'testimonials_widget_options_form', $form_parts, $this, $instance );
+		$do_return				= false;
+		switch ( $type ) {
+			case 'heading':
+				if ( ! empty( $desc ) )
+					echo '<h3>' . $desc . '</h3>';
 
-		echo implode( '', $form_parts );
+				$do_return		= true;
+			break;
+
+			case 'expand_begin':
+				if ( ! empty( $desc ) )
+					echo '<h3>' . $desc . '</h3>';
+
+				echo '<a id="' . $this->get_field_id( $id ) . '" style="cursor:pointer;" onclick="jQuery( \'div#' . $this->get_field_id( $id ) . '\' ) . slideToggle();">' . __( 'Expand/Collapse', 'testimonials-widget' ) . ' &raquo;</a>';
+				echo '<div id="' . $this->get_field_id( $id ) . '" style="display:none">';
+
+				$do_return		= true;
+				break;
+
+			case 'expand_end':
+				echo '</div>';
+
+				$do_return		= true;
+				break;
+
+			default:
+				break;
+		}
+
+		if ( $do_return )
+			return;
+
+		if ( ! isset( $options[$id] ) && $type != 'checkbox' )
+			$options[$id]		= $std;
+		elseif ( ! isset( $options[$id] ) )
+			$options[$id]		= 0;
+
+		$field_class			= '';
+		if ( ! empty( $class ) )
+			$field_class		= ' ' . $class;
+
+		echo '<p>';
+
+		switch ( $type ) {
+			case 'checkbox':
+				echo '<input class="checkbox' . $field_class . '" type="checkbox" id="' . $this->get_field_id( $id ) . '" name="' . $this->get_field_name( $id ) . '" value="1" ' . checked( $options[$id], 1, false ) . ' /> ';
+
+				echo '<label for="' . $this->get_field_id( $id ) . '">' . $title . '</label>';
+				break;
+
+			case 'select':
+				echo '<label for="' . $this->get_field_id( $id ) . '">' . $title . '</label>';
+				echo '<select id="' . $this->get_field_id( $id ) . '"class="select' . $field_class . '" name="' . $this->get_field_name( $id ) . '">';
+
+				foreach ( $choices as $value => $label )
+					echo '<option value="' . esc_attr( $value ) . '"' . selected( $options[$id], $value, false ) . '>' . $label . '</option>';
+
+				echo '</select>';
+				break;
+
+			case 'radio':
+				$i				= 0;
+				$count_options	= count( $options ) - 1;
+				foreach ( $choices as $value => $label ) {
+					echo '<input class="radio' . $field_class . '" type="radio" name="' . $this->get_field_name( $id ) . '" id="' . $this->get_field_name( $id . $i ) . '" value="' . esc_attr( $value ) . '" ' . checked( $options[$id], $value, false ) . '> <label for="' . $this->get_field_name( $id . $i ) . '">' . $label . '</label>';
+					if ( $i < $count_options )
+						echo '<br />';
+					$i++;
+				}
+
+				echo '<label for="' . $this->get_field_id( $id ) . '">' . $title . '</label>';
+				break;
+
+			case 'textarea':
+				echo '<label for="' . $this->get_field_id( $id ) . '">' . $title . '</label>';
+
+				echo '<textarea class="widefat' . $field_class . '" id="' . $this->get_field_id( $id ) . '" name="' . $this->get_field_name( $id ) . '" placeholder="' . $std . '" rows="5" cols="30">' . wp_htmledit_pre( $options[$id] ) . '</textarea>';
+				break;
+
+			case 'password':
+				echo '<label for="' . $this->get_field_id( $id ) . '">' . $title . '</label>';
+
+				echo '<input class="widefat' . $field_class . '" type="password" id="' . $this->get_field_id( $id ) . '" name="' . $this->get_field_name( $id ) . '" value="' . esc_attr( $options[$id] ) . '" />';
+				break;
+
+			case 'readonly':
+				echo '<label for="' . $this->get_field_id( $id ) . '">' . $title . '</label>';
+
+				echo '<input class="widefat' . $field_class . '" type="text" id="' . $this->get_field_id( $id ) . '" name="' . $this->get_field_name( $id ) . '" value="' . esc_attr( $options[$id] ) . '" readonly="readonly" />';
+				break;
+
+			case 'text':
+				echo '<label for="' . $this->get_field_id( $id ) . '">' . $title . '</label>';
+
+		 		echo '<input class="widefat' . $field_class . '" type="text" id="' . $this->get_field_id( $id ) . '" name="' . $this->get_field_name( $id ) . '" placeholder="' . $std . '" value="' . esc_attr( $options[$id] ) . '" />';
+		 		break;
+
+			default:
+		 		break;
+		}
+
+		if ( ! empty( $desc ) )
+			echo '<br /><span class="setting-description"><small>' . $desc . '</small></span>';
+
+		echo '</p>';
 	}
 }
 

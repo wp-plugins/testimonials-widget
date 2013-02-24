@@ -92,8 +92,9 @@ Testimonials Widget Premium extends the Testimonials Widget plugin with addition
 * Widget Title
 	* `title1 - default "Testimonials"
 * Title Link - URL or Post ID to link widget title to
+	* `title_link` - default none; title_link=123, title_link=http://example.com
 * Category Filter - Comma separated category slug-names
-	* `category` - default none; category=product or category="product,services"
+	* `category` - default none; category=product or category="category-a, another-category"
 * Character Limit - Number of characters to limit testimonial views to
 	* `char_limit` - default none; char_limit=200
 	* Widget - default 500
@@ -103,13 +104,13 @@ Testimonials Widget Premium extends the Testimonials Widget plugin with addition
 	* `hide_company` - default show; hide_company=true
 * Hide Email?
 	* `hide_email` - default show; hide_email=true
-* Hide Gravatar?
+* Hide Gravatar Image?
 	* `hide_gravatar` - default show; hide_gravatar=true
 * Hide Image?
 	* `hide_image` - default show; hide_image=true
 * Hide "Testimonials Not Found"?
 	* `hide_not_found` - default show; hide_not_found=true
-* Hide Source? - Don't display "Post Title" in cite
+* Hide Author/Source? - Don't display "Post Title" in cite
 	* `hide_source` - default show; hide_source=true
 * Hide Title?
 	* `hide_title` - default show; hide_title=true
@@ -122,11 +123,11 @@ Testimonials Widget Premium extends the Testimonials Widget plugin with addition
 	* The citation has no whitespace adaptions. It's straight text, except for email or URL links. The presentation is handled strictly by CSS.
 * Limit - Number of testimonials to rotate through via widget or show at a time when listing
 	* `limit` - default 10; limit=25
-* ORDER BY meta_key - Used when Random order is disabled and sorting by a testimonials meta key is needed
+* ORDER BY meta_key - Used when "Random Order" is disabled and sorting by a testimonials meta key is needed
 	* `meta_key` - default none [testimonials-widget-company|testimonials-widget-email|testimonials-widget-title|testimonials-widget-url]; meta_key=testimonials-widget-company
-* Minimum Height - Set for minimum display height
+* Minimum Height - Set for minimum display height, in pixels
 	* `min_height` - default none; min_height=100
-* Maximum Height - Set for maximum display height
+* Maximum Height - Set for maximum display height, in pixels
 	* `max_height` - default none; max_height=250
 * ORDER BY Order - DESC or ASC
 	* `order` - [default DESC](http://codex.wordpress.org/Class_Reference/WP_Query#Order_.26_Orderby_Parameters); order=ASC
@@ -138,19 +139,19 @@ Testimonials Widget Premium extends the Testimonials Widget plugin with addition
 		* `before` – display paging only before testimonial entries
 		* `after` – display paging only after testimonial entries
 	* Widget - Not functional
-* Random Order? - Unchecking this will rotate testimonials per ORDER BY and ORDER BY Order
+* Random Order? - Unchecking this will rotate testimonials per ORDER BY and ORDER BY Order. Widgets are random by default automatically
 	* `random` - default none; random=true (overrides `order` and `orderby`)
 	* Widget = default true
-* Rotation speed - Seconds between testimonial rotations or 0 for no refresh
+* Rotation speed - Seconds between testimonial rotations or 0 for no rotation at all
 	* `refresh_interval` - default 5; refresh_interval=0
 * Require All Tags - Select only testimonials with all of the given tags
 	* `tags_all` - default OR; tags_all=true
 * Tags Filter - Comma separated tag slug-names
-	* `tags` - default none; tags=fire or tags="fire,water"
-* URL Target
+	* `tags` - default none; tags=fire or tags="tag-a, another-tag"
+* URL Target - Adds target to all URLs; leave blank if none
 	* `target` - default none; target=_new
-* Widget Bottom Text - Custom text or HTML for bottom of widgets
-	* `widget_text` - default none; widget_text="`<h3><a href="http://example.com">All testimonials</a></h3>`"
+* Testimonial Bottom Text - Custom text or HTML for bottom of testimonials
+	* `bottom_text` - default none; bottom_text="`<h3><a href="http://example.com">All testimonials</a></h3>`"
 
 = Shortcode Examples =
 
@@ -689,7 +690,7 @@ add_filter( 'testimonials_widget_content_more', 'my_content_more' );
 			</span>
 		</cite>
 		<div class="testimonialswidget_extra">Custom extra text</div>
-		<div class="testimonialswidget_widget_text">Custom widget text</div>
+		<div class="testimonialswidget_bottom_text">Custom widget text</div>
 	</div>
 	<!-- individual testimonial wrapper end -->
 </div>
@@ -725,7 +726,7 @@ See FAQ 61 for NNN identification.
 			</span>
 		</cite>
 		<div class="testimonialswidget_extra">Custom extra text</div>
-		<div class="testimonialswidget_widget_text">Custom widget text</div>
+		<div class="testimonialswidget_bottom_text">Custom widget text</div>
 	</div>
 	<!-- individual testimonial wrapper end -->
 </div>
@@ -780,7 +781,7 @@ add_filter( 'testimonials_widget_defaults', 'my_testimonials_widget_defaults' );
 
 = 39. How do I style the custom widget text? =
 
-In your theme's `styles.css` file use the CSS class `.testimonialswidget_widget_text` to style the custom widget text.
+In your theme's `styles.css` file use the CSS class `.testimonialswidget_bottom_text` to style the custom widget text.
 
 = 40. How do I get page numbers for pagination? =
 
@@ -901,7 +902,7 @@ Also see FAQ 48.
 `
 add_filter( 'testimonials_widget_get_testimonial_html', 'my_testimonials_widget_get_testimonial_html', 10, 13 );
 
-function my_testimonials_widget_get_testimonial_html( $html, $testimonial, $atts, $is_list, $is_first, $widget_number, $div_open, $image, $quote, $cite, $extra, $widget_text, $div_close ) {
+function my_testimonials_widget_get_testimonial_html( $html, $testimonial, $atts, $is_list, $is_first, $widget_number, $div_open, $image, $quote, $cite, $extra, $bottom_text, $div_close ) {
 	// do stuff… see Testimonials_Widget::get_testimonials_html for default processing
 	if ( is_page( 437 ) ) {
 		$source					= '';
@@ -914,7 +915,7 @@ function my_testimonials_widget_get_testimonial_html( $html, $testimonial, $atts
 			. $quote
 			// . $cite
 			// . $extra
-			// . $widget_text
+			// . $bottom_text
 			. $div_close;
 		return $html;
 	} elseif ( false && $is_list ) {
@@ -1056,7 +1057,7 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 1. Testimonials admin interface
 2. Edit testimonial
 3. Collasped Testimonials Widget options
-4. Expanded Testimonials Widget options
+4. Expanded 'General Options' in Testimonials Widget options
 5. Testimonial widget in the sidebar 
 6. [testimonialswidget_list] in post
 7. [testimonialswidget_list] results with paging
@@ -1074,18 +1075,35 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 19. `[testimonialswidget_widget unique=true]` Show multiple testimonials in rotation - [Testimonials Widget Premium plugin](http://aihr.us/wordpress/testimonials-widget-premium/)
 20. Alternating background colors – Courtesy of [placeofstillness](http://www.heartattune.com/clients-say/) - [Testimonials Widget Premium plugin](http://aihr.us/wordpress/testimonials-widget-premium/)
 21. Poedit Catalog properties
+22. Testimonials Widget Settings > General tab
+23. Expanded 'Selection Options' in Testimonials Widget options
+24. Expanded 'Ordering Options' in Testimonials Widget options
+25. Testimonials Widget Settings > Selection tab
 
 
 == Changelog ==
 = trunk =
 * Add `tw_get_options`
+* Add settings page 'Selection', 'Ordering', and 'Widget' tabs
 * BUG with "Post Types Order"
+* BUGFIX paging when not in singular view
 * Configure settings within Testimonials_Widget_Settings class
-* Enable settings pages
-* Revise about page content
-* Revise settings page footer
+* Enable 'Expand/Collapse' view in Widget options
+* FEATURE Testimonials Widget Settings screen
+* Rename `widget_text` to `bottom_text`
+* Revise About page content
+* Revise Settings page footer
+* Screenshot 3 updated
+* Screenshot 4 updated, Expanded 'General Options' Testimonials Widget 
+* Screenshot 22 Testimonials Widget Settings > General tab
+* Screenshot 23 Expanded 'Selection Options' Testimonials Widget 
+* Screenshot 24 Expanded 'Ordering Options' Testimonials Widget 
+* Screenshot 25 Testimonials Widget Settings > Selection tab
 * Update "Shortcode and Widget Options" verbiage
-* Widget validates via Testimonials_Widget_Settings::validate_settings 
+* Update POT file
+* Use defaults via Testimonials_Widget_Settings class
+* Validate shortcode and widget options via Testimonials_Widget_Settings::validate_settings
+* Verbiage updates
 
 = 2.7.17 =
 * Add purchase Testimonials Widget Premium plugin meta link
@@ -1749,6 +1767,11 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 
 
 == Upgrade Notice ==
+
+= 2.8.0 =
+* Deprecated
+	* `hide_author` now `hide_source`
+* Renamed `widget_text` to `bottom_text`
 
 = 2.7.3 =
 * Quotes are no longer handled via `q`, `p:before`, or `p:after` CSS. It's handled via `.testimonialswidget_testimonial .testimonialswidget_open_quote:before` and `.testimonialswidget_testimonial .testimonialswidget_close_quote:after`
