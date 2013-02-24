@@ -1070,7 +1070,7 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 == Screenshots ==
 
 1. Testimonials admin interface
-2. Edit testimonial
+2. Edit testimonial with "Excerpt" and "Read More Link" fields - [Testimonials Widget Premium plugin](http://aihr.us/wordpress/testimonials-widget-premium/)
 3. Collasped Testimonials Widget options
 4. Expanded 'General Options' in Testimonials Widget options
 5. Testimonial widget in the sidebar 
@@ -1084,7 +1084,6 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 13. Widget with clickable title and custom text/HTML on bottom
 14. [WP-PageNavi compatible](http://wordpress.org/extend/plugins/wp-pagenavi/) for page numbers than default arrows
 15. `[testimonialswidgetpremium_link_list]` Shortcode examples, unstyled - [Testimonials Widget Premium plugin](http://aihr.us/wordpress/testimonials-widget-premium/)
-16. Edit testimonial with "Excerpt" and "Read More Link" fields - [Testimonials Widget Premium plugin](http://aihr.us/wordpress/testimonials-widget-premium/)
 17. Single `[testimonialswidget_list]` entry with and without 'Read more' link - [Testimonials Widget Premium plugin](http://aihr.us/wordpress/testimonials-widget-premium/)
 18. `[testimonialswidgetpremium_count]` Examples - [Testimonials Widget Premium plugin](http://aihr.us/wordpress/testimonials-widget-premium/)
 19. `[testimonialswidget_widget unique=true]` Show multiple testimonials in rotation - [Testimonials Widget Premium plugin](http://aihr.us/wordpress/testimonials-widget-premium/)
@@ -1098,6 +1097,9 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 
 == Changelog ==
 = trunk =
+* Screenshot 2 updated
+* Screenshot 11 updated
+* Screenshot 16 removed
 * Add `tw_get_options`
 * Add filter `testimonials_widget_sections` – Alter section options
 * Add filter `testimonials_widget_settings` – Alter setting options
