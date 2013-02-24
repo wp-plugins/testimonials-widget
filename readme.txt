@@ -192,8 +192,7 @@ Testimonials Widget Premium extends the Testimonials Widget plugin with addition
 * `testimonials_widget_image_size` - Change the image size
 * `testimonials_widget_meta_box` - Modify Testimonial Data fields
 * `testimonials_widget_next_posts_link` - Configure Next page indicator
-* `testimonials_widget_options_form` - Customize widget form
-* `testimonials_widget_options_update` - Widget update helper
+* `testimonials_widget_validate_settings` - Validate settings helper
 * `testimonials_widget_posts_custom_column` - Customize testimonial posts column contents
 * `testimonials_widget_previous_posts_link_text` - Configure Previous page indicator
 * `testimonials_widget_query_args` - Alter WP_Query arguments for testimonial selection
@@ -203,6 +202,8 @@ Testimonials Widget Premium extends the Testimonials Widget plugin with addition
 * `testimonials_widget_testimonials_css` - Alter dynamically generated CSS
 * `testimonials_widget_testimonials_js` - Alter dynamically generated JavaScript
 * `testimonials_widget_wp_pagenavi` - Configure WP-PageNavi specifically for Testimonial Widgets
+* `testimonials_widget_sections` – Alter section options
+* `testimonials_widget_settings` – Alter setting options
 
 = Notes =
 
@@ -1098,6 +1099,8 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 == Changelog ==
 = trunk =
 * Add `tw_get_options`
+* Add filter `testimonials_widget_sections` – Alter section options
+* Add filter `testimonials_widget_settings` – Alter setting options
 * Add settings page 'Selection', 'Ordering', and 'Widget' tabs
 * BUG with "Post Types Order"
 * BUGFIX paging when not in singular view
@@ -1105,9 +1108,11 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 * Enable 'Expand/Collapse' view in Widget options
 * FAQ 65 Disable the stylesheet
 * FEATURE Testimonials Widget Settings screen
+* Removed filters `testimonials_widget_options_update`, `testimonials_widget_options_form`
 * Rename `widget_text` to `bottom_text`
 * Revise About page content
 * Revise Settings page footer
+* Revise widget options update and validation
 * Screenshot 3 updated
 * Screenshot 4 updated, Expanded 'General Options' Testimonials Widget 
 * Screenshot 22 Testimonials Widget Settings > General tab
@@ -1786,7 +1791,9 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 = 2.8.0 =
 * Deprecated
 	* `hide_author` now `hide_source`
-* Renamed `widget_text` to `bottom_text`
+* Removed filters `testimonials_widget_options_update`, `testimonials_widget_options_form`
+	* Use `testimonials_widget_validate_settings` and `testimonials_widget_settings` instead
+* Renamed variable and related class `widget_text` to `bottom_text`
 
 = 2.7.3 =
 * Quotes are no longer handled via `q`, `p:before`, or `p:after` CSS. It's handled via `.testimonialswidget_testimonial .testimonialswidget_open_quote:before` and `.testimonialswidget_testimonial .testimonialswidget_close_quote:after`
@@ -1822,8 +1829,6 @@ Visit the [support forum](http://wordpress.org/support/plugin/testimonials-widge
 
 Is there something you want done? Write it up on the [support forums](http://wordpress.org/support/plugin/testimonials-widget) and then [donate](http://aihr.us/about-aihrus/donate/) or [send along](http://aihr.us/contact-aihrus/) an [awesome testimonial](http://aihr.us/about-aihrus/testimonials/).
 
-* Admin panel
-	* set display defaults
 * BUG
 	* [JetPack J-Shortcodes conflict](http://wordpress.org/support/topic/just-realised-my-testimonial-is-not-rotating)
 	* [Post Types Order](http://wordpress.org/support/topic/random-order-doesnt-work)

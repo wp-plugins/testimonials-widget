@@ -41,6 +41,8 @@ class Testimonials_Widget_Settings {
 		// self::$sections['testing']	= __( 'Testing' , 'testimonials-widget');
 		self::$sections['reset']		= __( 'Reset' , 'testimonials-widget');
 		self::$sections['about']		= __( 'About Testimonials Widget' , 'testimonials-widget');
+
+		self::$sections			= apply_filters( 'testimonials_widget_sections', self::$sections );
 	}
 
 
@@ -346,6 +348,12 @@ class Testimonials_Widget_Settings {
 			)
 		);
 		}
+
+		self::$settings			= apply_filters( 'testimonials_widget_settings', self::$settings );
+
+		foreach ( self::$settings as $id => $parts ) {
+			self::$settings[ $id ]	= wp_parse_args( $parts, self::$default );
+		}
 	}
 
 
@@ -386,7 +394,7 @@ class Testimonials_Widget_Settings {
 
 
 	public function create_setting( $args = array() ) {
-		extract( wp_parse_args( $args, self::$default ) );
+		extract( $args );
 
 		if ( preg_match( '#(_expand_begin|_expand_end)#', $id ) )
 			return;
@@ -440,7 +448,7 @@ class Testimonials_Widget_Settings {
 			<p>If you like this plugin, <a href="http://aihr.us/about-aihrus/donate/" title="Donate for Good Karma">please donate</a> or <a href="http://aihr.us/wordpress/testimonials-widget-premium/" title="purchase Testimonials Widget Premium">purchase Testimonials Widget Premium</a> to help fund further development and <a href="http://wordpress.org/support/plugin/testimonials-widget" title="Support forums">support</a>.</p>
 		';
 
-		$text					= __( 'Copyright &copy;%1$s %2$s.' );
+		$text					= __( 'Copyright &copy;%1$s %2$s.' , 'testimonials-widget');
 		$link					= '<a href="http://aihr.us">Aihrus</a>';
 		$copyright				= '<div class="copyright">' . sprintf( $text, date( 'Y' ), $link ) . '</div>';
 		echo $copyright;
@@ -619,14 +627,9 @@ EOD;
 
 
 	public function initialize_settings() {
-		$default_settings		= array();
+		$defaults				= self::get_defaults();
 
-		foreach ( self::$settings as $id => $setting ) {
-			if ( $setting['type'] != 'heading' )
-				$default_settings[$id]	= $setting['std'];
-		}
-
-		update_option( self::id, $default_settings );
+		update_option( self::id, $defaults );
 	}
 
 
@@ -695,6 +698,8 @@ EOD;
 		$input['target']		= ( empty( $input['target'] ) || preg_match( '#^\w+$#', $input['target'] ) ) ? $input['target'] : self::$defaults['target'];
 		$input['title']			= wp_kses_post( $input['title'] );
 		$input['title_link']	= wp_kses_data( $input['title_link'] );
+
+		$input					= apply_filters( 'testimonials_widget_validate_settings', $input );
 
 		return $input;
 	}

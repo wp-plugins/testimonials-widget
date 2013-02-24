@@ -100,10 +100,7 @@ class Testimonials_Widget_Widget extends WP_Widget {
 
 
 	public function update( $new_instance, $old_instance ) {
-		$new_instance				= Testimonials_Widget_Settings::validate_settings( $new_instance );
-		$old_instance				= array_merge( $old_instance, $new_instance );
-
-		$instance					= apply_filters( 'testimonials_widget_options_update', $old_instance, $new_instance );
+		$instance				= Testimonials_Widget_Settings::validate_settings( $new_instance );
 
 		return $instance;
 	}
@@ -129,13 +126,13 @@ class Testimonials_Widget_Widget extends WP_Widget {
 
 		if ( $do_number ) {
 			$number				= $this->number;
-			$class				= ' .' . Testimonials_Widget::id . $number;
+			$std				= ' .' . Testimonials_Widget::id . $number;
 			$form_parts['css_class']	= array(
 				'section'		=> 'widget',
 				'type'			=> 'readonly',
 				'title'   		=> __( 'CSS Class', 'testimonials-widget' ),
 				'desc'			=> __( 'This widget\'s unique CSS class for styling', 'testimonials-widget' ),
-				'std'			=> $class,
+				'std'			=> $std,
 			);
 		}
 
@@ -146,9 +143,6 @@ class Testimonials_Widget_Widget extends WP_Widget {
 		// fixme make reset work
 		unset( $form_parts['reset_defaults'] );
 
-		// fixme for Premium
-		// $form_parts				= apply_filters( 'testimonials_widget_options_form', $form_parts, $this, $instance );
-
 		foreach ( $form_parts as $key => $part ) {
 			$part[ 'id' ]		= $key;
 			$this->display_setting( $part, $instance );
@@ -157,7 +151,6 @@ class Testimonials_Widget_Widget extends WP_Widget {
 
 
 	public function display_setting( $args = array(), $options ) {
-		$args					= wp_parse_args( $args, Testimonials_Widget_Settings::$default );
 		extract( $args );
 
 		$do_return				= false;

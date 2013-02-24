@@ -446,6 +446,7 @@ class Testimonials_Widget {
 
 		$atts					= wp_parse_args( $atts, self::get_defaults() );
 		$atts					= Testimonials_Widget_Settings::validate_settings( $atts );
+
 		$atts['paging']			= false;
 		$atts['type']			= 'testimonialswidget_widget';
 		$atts['widget_number']	= $widget_number;
