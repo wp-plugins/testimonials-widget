@@ -5,7 +5,7 @@ Donate link: http://aihr.us/about-aihrus/donate/
 Tags: client, customer, quotations, quote, quotes, random, review, quote, recommendation, reference, testimonial, testimonials, testimony, widget, wpml
 Requires at least: 3.4
 Tested up to: 3.6.0
-Stable tag: 2.12.8
+Stable tag: 2.13.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -26,10 +26,10 @@ The single testimonial view supports image, source, title, location, email, comp
 
 = Primary Features =
 
+* API to manipulate testimonials output and selection
 * Admin interface to add, edit and manage testimonials
 * Capable of handling multiple widgets per page or post
 * Fields for source, testimonial, image, title, location, email, company and URL details
-* Filters to manipulate testimonials output
 * Multiple paging options for testimonials listings
 * Settings export/import
 * Settings screen for site-wide option defaults
@@ -43,6 +43,7 @@ The single testimonial view supports image, source, title, location, email, comp
 Testimonials Widget Premium plugin extends the best [Testimonials Widget](http://wordpress.org/extend/plugins/testimonials-widget/) plugin for WordPress with [caching, excerpts, filters, read more links](http://aihr.us/downloads/testimonials-widget-premium-wordpress-plugin/), more selection options, and advanced capabilities like selecting posts, pages and other custom post types as testimonials. Additionally, users can add testimonials via a front-end form shortcode or widget.
 
 * "Read more" link column on testimonial posts admin page
+* API for caching and more link control, text replacement, and more
 * Akismet anti-spam checking
 * Alternate destinations for "Read more" links
 * Alternating `.even` and `.odd` CSS classes for styling testimonial list entries
@@ -55,7 +56,6 @@ Testimonials Widget Premium plugin extends the best [Testimonials Widget](http:/
 * Disable caching for widget, shortcode or theme functions
 * Email notification for user submitted testimonials
 * Excerpts for widget view, with read more link to complete testimonial
-* Filters for caching and more link control, text replacement, and more
 * Front-end entry form for user supplied testimonials. [Live demo](http://aihr.us/about-aihrus/testimonials/add-testimonial/)
 * Math-based CAPTCHA
 * Multiple anti-spam traps
@@ -202,6 +202,8 @@ Further, global settings are the baseline for shortcodes. If you want to alter t
 	* The citation has no whitespace adaptations. It's straight text, except for email or URL links. The presentation is handled strictly by CSS.
 * Height - Testimonials height, in pixels. Overrides minimum and maximum height
 	* `height` - default none; height=300
+* Disable animation? - Disable animation between testimonial transitions. Useful when stacking.
+	* `disable_animation` - default false; disable_animation=true
 * Minimum Height - Set for minimum display height, in pixels
 	* `min_height` - default none; min_height=100
 * Maximum Height - Set for maximum display height, in pixels
@@ -253,36 +255,9 @@ Further, global settings are the baseline for shortcodes. If you want to alter t
 * `testimonialswidget_list()` - Testimonials listing with paging 
 * `testimonialswidget_widget()` - Rotating testimonials
 
-= Filters =
+= API =
 
-* `testimonials_widget_cache_get` - Caching grabber
-* `testimonials_widget_cache_set` - Caching setter
-* `testimonials_widget_cite_html` - Adjust cite contents
-* `testimonials_widget_columns` - Customize testimonial posts column headers
-* `testimonials_widget_content_more` - More content ellipsis
-* `testimonials_widget_content` - Testimonial content parser helper
-* `testimonials_widget_data` - Process testimonials data before display processing
-* `testimonials_widget_defaults_single` - Create a global or central Testimonials Widget configuration for single view
-* `testimonials_widget_defaults` - Create a global or central Testimonials Widget configuration
-* `testimonials_widget_get_testimonial_html` - Customize testimonial contents and layout within `get_testimonial_html`. Useful for moving processed parts around than regenerating everything from scratch.
-* `testimonials_widget_gravatar_size` - Change the Gravatar size
-* `testimonials_widget_image_size` - Change the image size
-* `testimonials_widget_meta_box` - Modify Testimonial Data fields
-* `testimonials_widget_next_posts_link_text` - Configure Next page indicator
-* `testimonials_widget_posts_custom_column` - Customize testimonial posts column contents
-* `testimonials_widget_previous_posts_link_text` - Configure Previous page indicator
-* `testimonials_widget_query_args` - Alter WP_Query arguments for testimonial selection
-* `testimonials_widget_sections` – Alter section options
-* `testimonials_widget_settings` – Alter setting options
-* `testimonials_widget_testimonial_html_single_content` - Customize single view content before appending filter `testimonials_widget_testimonial_html_single` results
-* `testimonials_widget_testimonial_html_single` - Customize testimonials single view output post `get_testimonial_html`
-* `testimonials_widget_testimonial_html` - Customize testimonials list and widget output post `get_testimonial_html`
-* `testimonials_widget_testimonials_css` - Alter dynamically generated CSS
-* `testimonials_widget_testimonials_js` - Alter dynamically generated JavaScript
-* `testimonials_widget_validate_settings` - Validate settings helper
-* `testimonials_widget_version` - Version tracking for settings
-* `testimonials_widget_widget_options` – Alters displayed widget options
-* `testimonials_widget_wp_pagenavi` - Configure WP-PageNavi specifically for Testimonial Widgets
+* Read the [Testimonials Widget API](https://github.com/michael-cannon/testimonials-widget/blob/master/API.md).
 
 = Notes =
 
@@ -320,6 +295,8 @@ Prior to version 2.0.0, this plugin was a fork of [Quotes Collection](http://sri
 = Support =
 
 Please visit the [Testimonials Widget Knowledge Base](https://aihrus.zendesk.com/categories/20104507-Testimonials-Widget) for frequently asked questions, offering ideas, or getting support.
+
+If you want to contribute and I hope you do, visit the [Testimonials Widget Github repository](https://github.com/michael-cannon/testimonials-widget).
 
 
 == Installation ==
@@ -438,16 +415,14 @@ See [Changelog](http://aihr.us/testimonials-widget/changelog/)
 
 == Beta Testers Needed ==
 
-I really want Testimonials Widget and Testimonials Widget Premium to be the best WordPress plugins of their type. However, it's getting beyond me to do it alone.
+I really want Testimonials Widget and Testimonials Widget Premium to be the best WordPress plugins of their type. However, it's beyond me to do it alone.
 
 I need beta testers to help with ensuring pending releases of Testimonials Widget and Testimonials Widget Premium are solid. This would benefit us all by helping reduce the number of releases and raise code quality.
 
 [Please contact me directly](http://aihr.us/contact-aihrus/).
 
-Beta testers benefit directly with latest versions, free access to Testimonials Widget Premium, and personal support assistance by me.
+Beta testers benefit directly with latest versions, a free 1-site license for Testimonials Widget Premium, and personalized support assistance.
 
 == TODO ==
 
 Is there something you want done? Write it up on the [support forums](http://wordpress.org/support/plugin/testimonials-widget) and then [donate](http://aihr.us/about-aihrus/donate/) or [write an awesome testimonial](http://aihr.us/about-aihrus/testimonials/add-testimonial/).
-
-* BUG [IE8 + Google Font Issue](http://wordpress.org/support/topic/ie8-google-font-issue)
