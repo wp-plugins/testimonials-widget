@@ -21,6 +21,8 @@
  *
  * Based upon http://alisothegeek.com/2011/01/wordpress-settings-api-tutorial-1/
  */
+
+
 class Testimonials_Widget_Settings {
 	const ID = 'testimonialswidget_settings';
 
@@ -134,6 +136,7 @@ class Testimonials_Widget_Settings {
 			'title' => esc_html__( 'Disable animation?', 'testimonials-widget' ),
 			'desc' => esc_html__( 'Disable animation between testimonial transitions. Useful when stacking widgets.', 'testimonials-widget' ),
 			'type' => 'checkbox',
+			'std' => 1,
 		);
 
 		self::$settings['min_height'] = array(
