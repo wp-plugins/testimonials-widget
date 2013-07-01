@@ -3,11 +3,13 @@
  * Plugin Name: Testimonials Widget
  * Plugin URI: http://wordpress.org/extend/plugins/testimonials-widget/
  * Description: Testimonials Widget plugin allows you to display random or selected portfolio, quotes, reviews, showcases, or text with images on your WordPress blog.
- * Version: 2.13.0
+ * Version: 2.13.1
  * Author: Michael Cannon
  * Author URI: http://aihr.us/about-aihrus/michael-cannon-resume/
  * License: GPLv2 or later
  */
+
+
 /**
  * Copyright 2013 Michael Cannon (email: mc@aihr.us)
  * This program is free software; you can redistribute it and/or modify
@@ -21,14 +23,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
-
-
 class Testimonials_Widget {
 	const ID          = 'testimonials-widget-testimonials';
 	const OLD_NAME    = 'testimonialswidget';
 	const PLUGIN_FILE = 'testimonials-widget/testimonials-widget.php';
 	const PT          = 'testimonials-widget';
-	const VERSION     = '2.13.0';
+	const VERSION     = '2.13.1';
 
 	private static $base          = null;
 	private static $max_num_pages = 0;
@@ -55,7 +55,6 @@ class Testimonials_Widget {
 		add_action( 'widgets_init', array( &$this, 'widgets_init' ) );
 		add_shortcode( 'testimonialswidget_list', array( &$this, 'testimonialswidget_list' ) );
 		add_shortcode( 'testimonialswidget_widget', array( &$this, 'testimonialswidget_widget' ) );
-		load_plugin_textdomain( self::PT, false, 'testimonials-widget/languages' );
 	}
 
 
@@ -65,9 +64,9 @@ class Testimonials_Widget {
 		$this->add_meta_box_testimonials_widget();
 		$this->update();
 		add_action( 'gettext', array( &$this, 'gettext_testimonials' ) );
-		add_action( 'manage_' . self::PT . '_posts_custom_column', array( &$this, 'manage_testimonialswidget_posts_custom_column' ), 10, 2 );
+		add_action( 'manage_' . self::PT . '_posts_custom_column', array( &$this, 'manage_posts_custom_column' ), 10, 2 );
 		add_action( 'right_now_content_table_end', array( &$this, 'right_now_content_table_end' ) );
-		add_filter( 'manage_' . self::PT . '_posts_columns', array( &$this, 'manage_edit_testimonialswidget_columns' ) );
+		add_filter( 'manage_' . self::PT . '_posts_columns', array( &$this, 'manage_posts_columns' ) );
 		add_filter( 'plugin_action_links', array( &$this, 'plugin_action_links' ), 10, 2 );
 		add_filter( 'plugin_row_meta', array( &$this, 'plugin_row_meta' ), 10, 2 );
 		add_filter( 'post_updated_messages', array( &$this, 'post_updated_messages' ) );
@@ -77,6 +76,9 @@ class Testimonials_Widget {
 
 
 	public function init() {
+		add_filter( 'the_content', array( &$this, 'get_single' ) );
+		load_plugin_textdomain( self::PT, false, 'testimonials-widget/languages' );
+		self::$base          = plugin_basename( __FILE__ );
 		self::$cpt_category  = self::PT . '-category';
 		self::$cpt_tags      = self::PT . '-post_tag';
 		self::$donate_button = <<<EOD
@@ -88,8 +90,6 @@ class Testimonials_Widget {
 </form>
 EOD;
 
-		add_filter( 'the_content', array( &$this, 'get_single' ) );
-		self::$base = plugin_basename( __FILE__ );
 		self::init_post_type();
 		self::styles();
 	}
@@ -153,11 +153,6 @@ EOD;
 	}
 
 
-	/**
-	 *
-	 *
-	 * @SuppressWarnings(PHPMD.Superglobals)
-	 */
 	public function activation() {
 		if ( ! current_user_can( 'activate_plugins' ) )
 			return;
@@ -168,11 +163,6 @@ EOD;
 	}
 
 
-	/**
-	 *
-	 *
-	 * @SuppressWarnings(PHPMD.Superglobals)
-	 */
 	public function deactivation() {
 		if ( ! current_user_can( 'activate_plugins' ) )
 			return;
@@ -259,7 +249,7 @@ EOD;
 
 	public function admin_notices_donate() {
 		$content  = '<div class="updated"><p>';
-		$content .= sprintf( __( 'Please donate $2 towards keeping Testimonials Widget plugin supported and maintained %s', 'testimonials-widget' ), self::$donate_button );
+		$content .= sprintf( __( 'Please donate $2 towards development and support of this Testimonials Widget plugin. %s', 'testimonials-widget' ), self::$donate_button );
 		$content .= '</p></div>';
 
 		echo $content;
@@ -275,7 +265,7 @@ EOD;
 			tw_set_option( 'admin_notices' );
 		}
 
-		// display donate on major/minor version release or if it's been a month
+		// display donate on major/minor version release
 		$donate_version = tw_get_option( 'donate_version', false );
 		if ( ! $donate_version || ( $donate_version != self::VERSION && preg_match( '#\.0$#', self::VERSION ) ) ) {
 			add_action( 'admin_notices', array( $this, 'admin_notices_donate' ) );
@@ -389,7 +379,7 @@ EOD;
 	}
 
 
-	public function manage_testimonialswidget_posts_custom_column( $column, $post_id ) {
+	public function manage_posts_custom_column( $column, $post_id ) {
 		$result = false;
 
 		switch ( $column ) {
@@ -451,7 +441,7 @@ EOD;
 	}
 
 
-	public function manage_edit_testimonialswidget_columns( $columns ) {
+	public function manage_posts_columns( $columns ) {
 		// order of keys matches column ordering
 		$columns = array(
 			'cb' => '<input type="checkbox" />',
@@ -1630,6 +1620,14 @@ EOF;
 
 
 add_action( 'plugins_loaded', 'testimonialswidget_init' );
+
+
+/**
+ *
+ *
+ * @SuppressWarnings(PHPMD.LongVariable)
+ * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+ */
 function testimonialswidget_init() {
 	require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
