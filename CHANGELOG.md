@@ -1,6 +1,12 @@
 # CHANGELOG Testimonials Widget
 
-# master
+## master
+
+## 2.13.2
+* Add StillMaintained.com notice
+* BUGFIX Extra meta box fields are no show
+* Disengaged from hard coded wp-content path
+* Escape translations
 
 ## 2.13.1
 * Add demo link
