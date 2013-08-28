@@ -217,7 +217,7 @@ class Testimonials_Widget_Settings {
 		);
 
 		self::$settings['hide_title'] = array(
-			'title' => esc_html__( 'Hide Title?', 'testimonials-widget' ),
+			'title' => esc_html__( 'Hide Job Title?', 'testimonials-widget' ),
 			'type' => 'checkbox',
 		);
 
@@ -254,6 +254,12 @@ class Testimonials_Widget_Settings {
 			),
 			'std' => 1,
 			'widget' => 0,
+		);
+
+		self::$settings['do_shortcode'] = array(
+			'title' => esc_html__( 'Do [shortcodes]?', 'testimonials-widget' ),
+			'desc' => esc_html__( 'If unchecked, shortcodes are stripped.', 'testimonials-widget' ),
+			'type' => 'checkbox',
 		);
 
 		self::$settings['general_expand_end'] = array(
@@ -353,7 +359,7 @@ class Testimonials_Widget_Settings {
 			'type' => 'select',
 			'choices' => array(
 				'' => esc_html__( 'None', 'testimonials-widget' ),
-				'testimonials-widget-title' => esc_html__( 'Title', 'testimonials-widget' ),
+				'testimonials-widget-title' => esc_html__( 'Job Title', 'testimonials-widget' ),
 				'testimonials-widget-email' => esc_html__( 'Email', 'testimonials-widget' ),
 				'testimonials-widget-location' => esc_html__( 'Location', 'testimonials-widget' ),
 				'testimonials-widget-company' => esc_html__( 'Company', 'testimonials-widget' ),

@@ -3,7 +3,7 @@
  * Plugin Name: Testimonials Widget
  * Plugin URI: http://wordpress.org/extend/plugins/testimonials-widget/
  * Description: Testimonials Widget plugin allows you to display random or selected portfolio, quotes, reviews, showcases, or text with images on your WordPress blog.
- * Version: 2.13.2
+ * Version: 2.13.3
  * Author: Michael Cannon
  * Author URI: http://aihr.us/about-aihrus/michael-cannon-resume/
  * License: GPLv2 or later
@@ -28,7 +28,7 @@ class Testimonials_Widget {
 	const OLD_NAME    = 'testimonialswidget';
 	const PLUGIN_FILE = 'testimonials-widget/testimonials-widget.php';
 	const PT          = 'testimonials-widget';
-	const VERSION     = '2.13.2';
+	const VERSION     = '2.13.3';
 
 	private static $base          = null;
 	private static $max_num_pages = 0;
@@ -239,7 +239,7 @@ EOD;
 
 
 	public function admin_notices_2_12_0() {
-		$content  = '<div class="updated"><p>';
+		$content  = '<div class="updated fade"><p>';
 		$content .= sprintf( __( 'If your Testimonials Widget display has gone to funky town, please <a href="%s">read the FAQ</a> about possible CSS fixes.', 'testimonials-widget' ), 'https://aihrus.zendesk.com/entries/23722573-Major-Changes-Since-2-10-0' );
 		$content .= '</p></div>';
 
@@ -248,7 +248,7 @@ EOD;
 
 
 	public function admin_notices_donate() {
-		$content  = '<div class="updated"><p>';
+		$content  = '<div class="updated fade"><p>';
 		$content .= sprintf( esc_html__( 'Please donate $2 towards development and support of this Testimonials Widget plugin. %s', 'testimonials-widget' ), self::$donate_button );
 		$content .= '</p></div>';
 
@@ -448,7 +448,7 @@ EOD;
 			'thumbnail' => esc_html__( 'Image', 'testimonials-widget' ),
 			'title' => esc_html__( 'Source', 'testimonials-widget' ),
 			'shortcode' => esc_html__( 'Shortcodes', 'testimonials-widget' ),
-			'testimonials-widget-title' => esc_html__( 'Title', 'testimonials-widget' ),
+			'testimonials-widget-title' => esc_html__( 'Job Title', 'testimonials-widget' ),
 			'testimonials-widget-location' => esc_html__( 'Location', 'testimonials-widget' ),
 			'testimonials-widget-email' => esc_html__( 'Email', 'testimonials-widget' ),
 			'testimonials-widget-company' => esc_html__( 'Company', 'testimonials-widget' ),
@@ -1176,6 +1176,7 @@ EOF;
 			return $content;
 
 		$keep_whitespace = $atts['keep_whitespace'];
+		$do_shortcode    = $atts['do_shortcode'];
 
 		// wrap our own quote class around the content before any formatting
 		// happens
@@ -1185,20 +1186,20 @@ EOF;
 		$temp_content .= self::$tag_close_quote;
 
 		$content = $temp_content;
-
 		$content = trim( $content );
 		$content = wptexturize( $content );
 		$content = convert_smilies( $content );
 		$content = convert_chars( $content );
 
-		if ( is_null( $widget_number ) ) {
+		if ( is_null( $widget_number ) || $keep_whitespace )
 			$content = wpautop( $content );
-			$content = shortcode_unautop( $content );
-		} elseif ( $keep_whitespace ) {
-			$content = wpautop( $content );
-		} else {
+
+		$content = shortcode_unautop( $content );
+
+		if ( $do_shortcode )
+			$content = do_shortcode( $content );
+		else
 			$content = strip_shortcodes( $content );
-		}
 
 		$content = str_replace( ']]>', ']]&gt;', $content );
 		$content = trim( $content );
@@ -1490,7 +1491,7 @@ EOF;
 
 		$fields = array(
 			array(
-				'name' => esc_html__( 'Title', 'testimonials-widget' ),
+				'name' => esc_html__( 'Job Title', 'testimonials-widget' ),
 				'id' => 'testimonials-widget-title',
 				'type' => 'text',
 				'desc' => '',
