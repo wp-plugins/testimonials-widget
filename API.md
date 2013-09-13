@@ -4,7 +4,9 @@ The [Testimonials Widget plugin](http://wordpress.org/plugins/testimonials-widge
 
 ## Actions
 
-None at this time.
+* `testimonials_widget_scripts`
+
+	Made additional `wp_register_script` and `wp_enqueue_script` calls as needed.
 
 ## Filters
 
@@ -50,6 +52,10 @@ None at this time.
 
 	Customize testimonials list and widget output post `get_testimonial_html`. [example](https://aihrus.zendesk.com/entries/23693413-How-do-I-customize-my-testimonial-list-and-widget-output-)
 
+* `testimonials_widget_get_testimonial_html_class`
+
+	Alter dynamically generated CSS per testimonial
+
 * `testimonials_widget_testimonials_css`
 
 	Alter dynamically generated CSS
@@ -57,6 +63,10 @@ None at this time.
 * `testimonials_widget_testimonials_js`
 
 	Alter dynamically generated JavaScript. [example](https://gist.github.com/michael-cannon/5833678)
+
+* `testimonials_widget_testimonials_js_internal`
+
+	Inject dynamically generated JavaScript to `active/next` functional area..
 
 * `testimonials_widget_wp_pagenavi`
 
