@@ -3,7 +3,7 @@
  * Plugin Name: Testimonials Widget
  * Plugin URI: http://wordpress.org/extend/plugins/testimonials-widget/
  * Description: Testimonials Widget plugin allows you to display random or selected portfolio, quotes, reviews, showcases, or text with images on your WordPress blog.
- * Version: 2.13.3
+ * Version: 2.13.4
  * Author: Michael Cannon
  * Author URI: http://aihr.us/about-aihrus/michael-cannon-resume/
  * License: GPLv2 or later
@@ -28,7 +28,7 @@ class Testimonials_Widget {
 	const OLD_NAME    = 'testimonialswidget';
 	const PLUGIN_FILE = 'testimonials-widget/testimonials-widget.php';
 	const PT          = 'testimonials-widget';
-	const VERSION     = '2.13.3';
+	const VERSION     = '2.13.4';
 
 	private static $base          = null;
 	private static $max_num_pages = 0;
@@ -41,20 +41,22 @@ class Testimonials_Widget {
 	public static $css_called      = false;
 	public static $donate_button   = '';
 	public static $instance_number = 0;
+	public static $instance_widget = 0;
 	public static $scripts         = array();
 	public static $scripts_called  = false;
 	public static $settings_link   = '';
 	public static $tag_close_quote = '<span class="close-quote"></span>';
 	public static $tag_open_quote  = '<span class="open-quote"></span>';
+	public static $use_instance    = false;
 	public static $widget_number   = 100000;
 
 
 	public function __construct() {
-		add_action( 'admin_init', array( &$this, 'admin_init' ) );
-		add_action( 'init', array( &$this, 'init' ) );
-		add_action( 'widgets_init', array( &$this, 'widgets_init' ) );
-		add_shortcode( 'testimonialswidget_list', array( &$this, 'testimonialswidget_list' ) );
-		add_shortcode( 'testimonialswidget_widget', array( &$this, 'testimonialswidget_widget' ) );
+		add_action( 'admin_init', array( $this, 'admin_init' ) );
+		add_action( 'init', array( $this, 'init' ) );
+		add_action( 'widgets_init', array( $this, 'widgets_init' ) );
+		add_shortcode( 'testimonialswidget_list', array( $this, 'testimonialswidget_list' ) );
+		add_shortcode( 'testimonialswidget_widget', array( $this, 'testimonialswidget_widget' ) );
 	}
 
 
@@ -63,20 +65,20 @@ class Testimonials_Widget {
 
 		$this->add_meta_box_testimonials_widget();
 		$this->update();
-		add_action( 'gettext', array( &$this, 'gettext_testimonials' ) );
-		add_action( 'manage_' . self::PT . '_posts_custom_column', array( &$this, 'manage_posts_custom_column' ), 10, 2 );
-		add_action( 'right_now_content_table_end', array( &$this, 'right_now_content_table_end' ) );
-		add_filter( 'manage_' . self::PT . '_posts_columns', array( &$this, 'manage_posts_columns' ) );
-		add_filter( 'plugin_action_links', array( &$this, 'plugin_action_links' ), 10, 2 );
-		add_filter( 'plugin_row_meta', array( &$this, 'plugin_row_meta' ), 10, 2 );
-		add_filter( 'post_updated_messages', array( &$this, 'post_updated_messages' ) );
-		add_filter( 'pre_get_posts', array( &$this, 'pre_get_posts_author' ) );
+		add_action( 'gettext', array( $this, 'gettext_testimonials' ) );
+		add_action( 'manage_' . self::PT . '_posts_custom_column', array( $this, 'manage_posts_custom_column' ), 10, 2 );
+		add_action( 'right_now_content_table_end', array( $this, 'right_now_content_table_end' ) );
+		add_filter( 'manage_' . self::PT . '_posts_columns', array( $this, 'manage_posts_columns' ) );
+		add_filter( 'plugin_action_links', array( $this, 'plugin_action_links' ), 10, 2 );
+		add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
+		add_filter( 'post_updated_messages', array( $this, 'post_updated_messages' ) );
+		add_filter( 'pre_get_posts', array( $this, 'pre_get_posts_author' ) );
 		self::support_thumbnails();
 	}
 
 
 	public function init() {
-		add_filter( 'the_content', array( &$this, 'get_single' ) );
+		add_filter( 'the_content', array( $this, 'get_single' ) );
 		load_plugin_textdomain( self::PT, false, 'testimonials-widget/languages' );
 		self::$base          = plugin_basename( __FILE__ );
 		self::$cpt_category  = self::PT . '-category';
@@ -103,13 +105,20 @@ EOD;
 	}
 
 
-	public static function get_instance() {
-		return self::$instance_number;
+	public static function add_instance() {
+		self::$use_instance = false;
+		self::$instance_number++;
 	}
 
 
-	public static function add_instance() {
-		self::$instance_number++;
+	public static function get_instance() {
+		return self::$use_instance ? self::$instance_number : self::$instance_widget;
+	}
+
+
+	public static function set_instance( $widget_number ) {
+		self::$use_instance    = true;
+		self::$instance_widget = $widget_number;
 	}
 
 
@@ -226,6 +235,10 @@ EOD;
 	public static function plugin_row_meta( $input, $file ) {
 		if ( $file != self::$base )
 			return $input;
+
+		$disable_donate = tw_get_option( 'disable_donate' );
+		if ( $disable_donate )
+			return;
 
 		$links = array(
 			'<a href="http://aihr.us/about-aihrus/donate/"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" border="0" alt="PayPal - The safer, easier way to pay online!" /></a>',
@@ -586,7 +599,7 @@ EOD;
 
 		$atts['type'] = 'testimonialswidget_list';
 
-		$content = apply_filters( 'testimonials_widget_cache_get', false, $atts );
+		$content = apply_filters( 'testimonials_widget_cache_get', $atts );
 
 		if ( false === $content ) {
 			$testimonials = self::get_testimonials( $atts );
@@ -599,15 +612,14 @@ EOD;
 
 
 	public static function testimonialswidget_widget( $atts, $widget_number = null ) {
-		self::add_instance();
-		self::scripts();
-
 		if ( empty( $widget_number ) ) {
 			$widget_number = self::$widget_number++;
 
-			if ( empty( $atts['random'] ) )
+			if ( ! isset( $atts['random'] ) )
 				$atts['random'] = 1;
 		}
+
+		self::set_instance( $widget_number );
 
 		$atts = wp_parse_args( $atts, self::get_defaults() );
 		$atts = Testimonials_Widget_Settings::validate_settings( $atts );
@@ -616,9 +628,11 @@ EOD;
 		$atts['type']          = 'testimonialswidget_widget';
 		$atts['widget_number'] = $widget_number;
 
+		self::scripts( $atts );
+
 		$testimonials = self::get_testimonials( $atts );
 
-		$content = apply_filters( 'testimonials_widget_cache_get', false, $atts );
+		$content = apply_filters( 'testimonials_widget_cache_get', $atts );
 
 		if ( false === $content ) {
 			$content = self::get_testimonials_html( $testimonials, $atts, false, $widget_number );
@@ -627,7 +641,7 @@ EOD;
 
 		// Generate CSS
 		$atts['type'] = 'testimonialswidget_widget_css';
-		$css          = apply_filters( 'testimonials_widget_cache_get', false, $atts );
+		$css          = apply_filters( 'testimonials_widget_cache_get', $atts );
 
 		if ( false === $css ) {
 			$css = self::get_testimonials_html_css( $atts, $widget_number );
@@ -641,7 +655,7 @@ EOD;
 
 		// Generate JS
 		$atts['type'] = 'testimonialswidget_widget_js';
-		$js           = apply_filters( 'testimonials_widget_cache_get', false, $atts );
+		$js           = apply_filters( 'testimonials_widget_cache_get', $atts );
 
 		if ( false === $js ) {
 			$js = self::get_testimonials_html_js( $testimonials, $atts, $widget_number );
@@ -657,8 +671,10 @@ EOD;
 	}
 
 
-	public static function scripts() {
+	public static function scripts( $atts ) {
 		wp_enqueue_script( 'jquery' );
+
+		do_action( 'testimonials_widget_scripts', $atts );
 	}
 
 
@@ -748,6 +764,8 @@ function nextTestimonial{$widget_number}() {
 			next.removeClass('display-none');
 			next.addClass('active');
 
+			{INTERNAL_SCRIPTS}
+
 			if ( {$enable_animation} ) {
 				// added padding
 				{$tw_wrapper}.animate({ height: next.height() + {$tw_padding} });
@@ -770,7 +788,12 @@ EOF;
 			$scripts[ $id_base ] = $javascript;
 		}
 
-		$scripts = apply_filters( 'testimonials_widget_testimonials_js', $scripts, $testimonials, $atts, $widget_number );
+		$scripts          = apply_filters( 'testimonials_widget_testimonials_js', $scripts, $testimonials, $atts, $widget_number );
+		$scripts_internal = apply_filters( 'testimonials_widget_testimonials_js_internal', array(), $testimonials, $atts, $widget_number );
+		$internal_scripts = implode( "\n", $scripts_internal );
+		$scripts          = str_replace( '{INTERNAL_SCRIPTS}', $internal_scripts, $scripts );
+
+		ksort( $scripts );
 
 		return $scripts;
 	}
@@ -850,13 +873,13 @@ EOF;
 		if ( $keep_whitespace )
 			$class .= ' whitespace';
 
-		$div_open = '<div class="';
 		if ( ! empty( $testimonial['post_id'] ) )
-			$div_open .= join( ' ', get_post_class( $class, $testimonial['post_id'] ) );
+			$class = join( ' ', get_post_class( $class, $testimonial['post_id'] ) );
 		else
-			$div_open .= 'testimonials-widget type-testimonials-widget status-publish hentry ' . $class;
+			$class = 'testimonials-widget type-testimonials-widget status-publish hentry ' . $class;
 
-		$div_open .= '">';
+		$class    = apply_filters( 'testimonials_widget_get_testimonial_html_class', $class, $testimonial, $atts, $is_list, $is_first, $widget_number );
+		$div_open = '<div class="' . $class . '">';
 
 		if ( $remove_hentry )
 			$div_open = str_replace( ' hentry', '', $div_open );
@@ -1391,7 +1414,7 @@ EOF;
 		$args          = self::get_query_args( $atts );
 		$args['query'] = true;
 
-		$testimonials = apply_filters( 'testimonials_widget_cache_get', false, $args );
+		$testimonials = apply_filters( 'testimonials_widget_cache_get', $args );
 
 		if ( false === $testimonials ) {
 			$testimonials = new WP_Query( $args );
@@ -1448,7 +1471,7 @@ EOF;
 			$testimonial_data[] = $data;
 		}
 
-		$testimonial_data = apply_filters( 'testimonials_widget_data', $testimonial_data );
+		$testimonial_data = apply_filters( 'testimonials_widget_data', $testimonial_data, $atts );
 
 		return $testimonial_data;
 	}
@@ -1546,7 +1569,7 @@ EOF;
 	 * @return string $translation
 	 */
 	public function gettext_testimonials( $translation ) {
-		remove_action( 'gettext', array( &$this, 'gettext_testimonials' ) );
+		remove_action( 'gettext', array( $this, 'gettext_testimonials' ) );
 
 		global $post;
 
@@ -1558,7 +1581,7 @@ EOF;
 			}
 		}
 
-		add_action( 'gettext', array( &$this, 'gettext_testimonials' ) );
+		add_action( 'gettext', array( $this, 'gettext_testimonials' ) );
 
 		return $translation;
 	}
