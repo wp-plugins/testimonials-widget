@@ -2,6 +2,23 @@
 
 ## master
 
+## 2.13.6
+* Add IDs column to edit testimonials listing page
+* Add filter `testimonials_widget_settings_add_help_tabs`
+* Add option Fade In Speed
+* Add option Fade Out Speed
+* Add settings page help tab
+* BUGFIX index has_archive and rewrite_slug not set
+* BUGFIX plugin_row_meta not returning default state
+* IE7 CSS moved to separate file. Include via Testimonials > Settings if needed
+* Localize text
+* Pass YSlow and Google PageSpeed testing
+* Performance optimizations
+* Prevent Testimonials Widget custom post type URL slug naming conflicts
+* Update premium shortcodes
+* Validate URL submissions
+* [Begin CSS testing](http://www.netmagazine.com/tutorials/4-tools-automatic-css-testing)
+
 ## 2.13.5
 * BUGFIX Caching defaults not correct
 
