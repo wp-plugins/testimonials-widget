@@ -5,7 +5,7 @@ Donate link: http://aihr.us/about-aihrus/donate/
 Tags: client, customer, quotations, quote, quotes, random, review, quote, recommendation, reference, testimonial, testimonials, testimony, widget, wpml
 Requires at least: 3.4
 Tested up to: 3.6.1
-Stable tag: 2.13.5
+Stable tag: 2.13.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -48,15 +48,21 @@ The single testimonial view supports image, source, title, location, email, comp
 Testimonials Widget Premium plugin extends the best [Testimonials Widget](http://wordpress.org/extend/plugins/testimonials-widget/) plugin for WordPress with [caching, excerpts, filters, read more links](http://aihr.us/downloads/testimonials-widget-premium-wordpress-plugin/), more selection options, and advanced capabilities like selecting posts, pages and other custom post types as testimonials. Additionally, users can add testimonials via a front-end form shortcode or widget.
 
 * "Read more" link column on testimonial posts admin page
+* Admin mode only anti-spam debug help text
 * Akismet anti-spam checking
 * Alternate destinations for "Read more" links
 * Alternating `.even` and `.odd` CSS classes for styling testimonial list entries
+* Automatically change to the next testimonial, per the sort order, whenever a user navigates to another page.
 * Built-in update notification
+* Cache per page when you use custom testimonials instance per page
 * Caching of testimonials queries and content to decrease server load time improve page loading speed by 1/10 to 1/2 a second
+* Clear cache when WP Super Cache, FlexiCache, Hyper Cache, DB Cache Reloaded Fix does
+* CSS or HTML table based testimonials submissions form layout
 * Deactivates self if no active or incorrect version of Testimonials Widget plugin
 * Default post author, category, and status options for user testimonial submissions
 * Deletes old and related testimonial cache entries automatically
 * Disable caching for widget, shortcode or theme functions
+* Disable donate and purchase related text and links
 * Email notification for user submitted testimonials
 * Excerpts for widget view, with read more link to complete testimonial
 * Filters for caching and more link control, text replacement, and more
@@ -78,12 +84,21 @@ Testimonials Widget Premium plugin extends the best [Testimonials Widget](http:/
 * Show excerpts with list and single views
 * Show unique testimonials on page with multiple testimonial instances
 * Testimonial links listing with image, source, title, location, company, and URL fields
+* Upload images by browsing or URL
+* WP Admin > Testmonials > Clear Cache menu link
 * WPML compatible
+
+= Premium Shortcodes =
+
+* Count of testimonials `[[testimonialswidgetpremium_count]]`
+* List of testimonial source and title linking to full entry `[[testimonialswidgetpremium_link_list]]` 
+* Testimonials entry form `[[testimonialswidgetpremium_form]]`
 
 [Buy Testimonials Widget Premium](http://aihr.us/downloads/testimonials-widget-premium-wordpress-plugin/) plugin for WordPress.
 
 = Additional Testimonials Widget Features =
 
+* Adjustable animation speed
 * Auto-migration from pre-2.0.0 custom table to new Testimonials Widget custom post type
 * Automatic linking of email and URL fields via source or company fields
 * Clickable widget titles
@@ -101,13 +116,16 @@ Testimonials Widget Premium plugin extends the best [Testimonials Widget](http:/
 * Easy to configure Next and Previous page indicators
 * Editors and admins can edit testimonial publisher
 * Flush URLs on deactivation 
+* IDs column shown in testimonials edit page
 * IE7 CSS hacks for quotes and join parts
 * Image, email based Gravatar, category and tag enabled
 * Internal version tracking for compatibility checks and automatic settings update
 * Localizable via `languages/testimonials-widget.pot`
 * Optional commenting on testimonial single-view pages
+* Performance optimizations
 * Respects meta capabilities
 * Rotation JavaScript in footer than body
+* Settings page contextual help
 * Shortcodes allowed inside of testimonials content
 * Supports [WP-PageNavi](http://wordpress.org/extend/plugins/wp-pagenavi/)
 * Testimonial content supports HTML
@@ -212,6 +230,10 @@ Further, global settings are the baseline for shortcodes. If you want to alter t
 	* `height` - default none; height=300
 * Disable animation? - Disable animation between testimonial transitions. Useful when stacking.
 	* `disable_animation` - default false; disable_animation=true
+* Fade Out Speed - Transition duration in milliseconds; higher values indicate slower animations, not faster ones.
+	* `fade_out_speed` - default 1250; fade_out_speed=400
+* Fade In Speed - Transition duration in milliseconds; higher values indicate slower animations, not faster ones.
+	* `fade_in_speed` - default 500; fade_in_speed=800
 * Minimum Height - Set for minimum display height, in pixels
 	* `min_height` - default none; min_height=100
 * Maximum Height - Set for maximum display height, in pixels
@@ -229,6 +251,7 @@ Further, global settings are the baseline for shortcodes. If you want to alter t
 
 **Compatibility & Reset**
 
+* Include IE7 CSS? - IE7 specific CSS moved to separate CSS file in version 2.13.6.
 * Remove `.hentry` CSS? – Some themes use class `.hentry` in a manner that breaks Testimonials Widgets CSS
 	* `remove_hentry` - default none; remove_hentry=true
 * Use `<q>` tag? – Pre 2.11.0. Not HTML5 compliant
@@ -374,6 +397,10 @@ See [Changelog](https://github.com/michael-cannon/testimonials-widget/blob/maste
 
 
 == Upgrade Notice ==
+
+= 2.13.6 =
+
+* IE 7 CSS moved to separate file. Include via Testimonials > Settings if needed
 
 = 2.12.0 =
 
