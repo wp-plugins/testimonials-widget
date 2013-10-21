@@ -3,7 +3,7 @@
  * Plugin Name: Testimonials Widget
  * Plugin URI: http://wordpress.org/extend/plugins/testimonials-widget/
  * Description: Testimonials Widget plugin allows you to display random or selected portfolio, quotes, reviews, showcases, or text with images on your WordPress blog.
- * Version: 2.13.6
+ * Version: 2.14.0
  * Author: Michael Cannon
  * Author URI: http://aihr.us/about-aihrus/michael-cannon-resume/
  * License: GPLv2 or later
@@ -28,9 +28,10 @@ class Testimonials_Widget {
 	const OLD_NAME    = 'testimonialswidget';
 	const PLUGIN_FILE = 'testimonials-widget/testimonials-widget.php';
 	const PT          = 'testimonials-widget';
-	const VERSION     = '2.13.6';
+	const VERSION     = '2.14.0';
 
 	private static $base          = null;
+	private static $found_posts   = 0;
 	private static $max_num_pages = 0;
 	private static $post_count    = 0;
 	private static $wp_query      = null;
@@ -49,6 +50,42 @@ class Testimonials_Widget {
 	public static $tag_open_quote  = '<span class="open-quote"></span>';
 	public static $use_instance    = false;
 	public static $widget_number   = 100000;
+
+	public static $agg_count  = 'reviewCount';
+	public static $agg_schema = 'http://schema.org/AggregateRating';
+
+	public static $cw_author     = 'author';
+	public static $cw_date       = 'datePublished';
+	public static $cw_date_mod   = 'dateModified';
+	public static $cw_aggregate  = 'aggregateRating';
+	public static $cw_review     = 'review';
+	public static $cw_source_org = 'sourceOrganization';
+
+	public static $org_location = 'location';
+	public static $org_schema   = 'http://schema.org/Organization';
+
+	public static $person_email     = 'email';
+	public static $person_home      = 'homeLocation';
+	public static $person_job_title = 'jobTitle';
+	public static $person_schema    = 'http://schema.org/Person';
+	public static $person_member    = 'memberOf';
+
+	public static $place_schema = 'http://schema.org/Place';
+
+	public static $review_body   = 'reviewBody';
+	public static $review_item   = 'itemReviewed';
+	public static $review_schema = 'http://schema.org/Review';
+
+	public static $schema_div_open  = '<div itemscope itemtype="%1$s">';
+	public static $schema_div_prop  = '<div itemprop="%1$s" itemscope itemtype="%2$s">%3$s</div>';
+	public static $schema_item_prop = 'itemprop="%1$s"';
+	public static $schema_meta      = '<meta itemprop="%1$s" content="%2$s" />';
+	public static $schema_span      = '<span itemprop="%1$s">%2$s</span>';
+
+	public static $thing_image  = 'image';
+	public static $thing_name   = 'name';
+	public static $thing_schema = 'http://schema.org/Thing';
+	public static $thing_url    = 'url';
 
 
 	public function __construct() {
@@ -93,7 +130,6 @@ EOD;
 		self::$cpt_category = self::PT . '-category';
 		self::$cpt_tags     = self::PT . '-post_tag';
 		self::init_post_type();
-		self::styles();
 	}
 
 
@@ -108,6 +144,8 @@ EOD;
 	public static function add_instance() {
 		self::$use_instance = false;
 		self::$instance_number++;
+
+		return self::$instance_number;
 	}
 
 
@@ -151,14 +189,35 @@ EOD;
 		$atts['ids']          = $post->ID;
 		$atts['type']         = 'get_single';
 
-		$testimonials = self::get_testimonials( $atts );
-		$testimonial  = $testimonials[0];
+		$instance              = self::add_instance();
+		$atts['widget_number'] = $instance;
 
-		$details = self::get_testimonial_html( $testimonial, $atts );
-		$details = apply_filters( 'testimonials_widget_testimonial_html_single', $details, $testimonial, $atts );
-		$content = apply_filters( 'testimonials_widget_testimonial_html_single_content', $content, $testimonial, $atts );
+		$testimonials = array();
 
-		return $content . $details;
+		$text = apply_filters( 'testimonials_widget_cache_get', false, $atts );
+		if ( false === $text ) {
+			$testimonials = self::get_testimonials( $atts );
+			$testimonial  = $testimonials[0];
+
+			$details = self::get_testimonial_html( $testimonial, $atts );
+			$details = apply_filters( 'testimonials_widget_testimonial_html_single', $details, $testimonial, $atts );
+
+			$do_schema = $atts['enable_schema'];
+			if ( $do_schema )
+				$content = self::create_schema_span( self::$review_body, $content );
+
+			$content = apply_filters( 'testimonials_widget_testimonial_html_single_content', $content, $testimonial, $atts );
+
+			$text = $content . $details;
+			if ( $do_schema )
+				$text = self::create_schema_div_prop( self::$cw_review, self::$review_schema, $text );
+
+			$text = apply_filters( 'testimonials_widget_cache_set', $text, $atts );
+		}
+
+		self::call_scripts_styles( $testimonials, $atts, $instance );
+
+		return $text;
 	}
 
 
@@ -253,7 +312,7 @@ EOD;
 
 	public function admin_notices_2_12_0() {
 		$content  = '<div class="updated fade"><p>';
-		$content .= sprintf( __( 'If your Testimonials Widget display has gone to funky town, please <a href="%s">read the FAQ</a> about possible CSS fixes.', 'testimonials-widget' ), 'https://aihrus.zendesk.com/entries/23722573-Major-Changes-Since-2-10-0' );
+		$content .= sprintf( __( 'If your Testimonials Widget display has gone to funky town, please <a href="%s">read the FAQ</a> about possible CSS fixes.', 'testimonials-widget' ), esc_url( 'https://aihrus.zendesk.com/entries/23722573-Major-Changes-Since-2-10-0' ) );
 		$content .= '</p></div>';
 
 		echo $content;
@@ -274,6 +333,9 @@ EOD;
 		if ( $prior_version ) {
 			if ( $prior_version < '2.12.0' )
 				add_action( 'admin_notices', array( $this, 'admin_notices_2_12_0' ) );
+
+			if ( $prior_version < self::VERSION )
+				do_action( 'testimonials_widget_update' );
 
 			tw_set_option( 'admin_notices' );
 		}
@@ -552,8 +614,6 @@ EOD;
 				'slug' => $rewrite_slug,
 				'with_front' => false,
 			),
-			'show_in_menu' => true,
-			'show_ui' => true,
 			'supports' => $supports,
 			'taxonomies' => $taxonomies,
 		);
@@ -570,10 +630,12 @@ EOD;
 	public static function register_taxonomies() {
 		$args = array(
 			'hierarchical' => true,
+			'show_admin_column' => true,
 		);
 		register_taxonomy( self::$cpt_category, self::PT, $args );
 
 		$args = array(
+			'show_admin_column' => true,
 			'update_count_callback' => '_update_post_term_count',
 		);
 		register_taxonomy( self::$cpt_tags, self::PT, $args );
@@ -589,8 +651,6 @@ EOD;
 
 
 	public function testimonialswidget_list( $atts ) {
-		self::add_instance();
-
 		$atts = wp_parse_args( $atts, self::get_defaults() );
 		$atts = Testimonials_Widget_Settings::validate_settings( $atts );
 
@@ -604,13 +664,19 @@ EOD;
 
 		$atts['type'] = 'testimonialswidget_list';
 
-		$content = apply_filters( 'testimonials_widget_cache_get', false, $atts );
+		$instance              = self::add_instance();
+		$atts['widget_number'] = $instance;
 
+		$testimonials = array();
+
+		$content = apply_filters( 'testimonials_widget_cache_get', false, $atts );
 		if ( false === $content ) {
 			$testimonials = self::get_testimonials( $atts );
 			$content      = self::get_testimonials_html( $testimonials, $atts );
 			$content      = apply_filters( 'testimonials_widget_cache_set', $content, $atts );
 		}
+
+		self::call_scripts_styles( $testimonials, $atts, $instance );
 
 		return $content;
 	}
@@ -624,53 +690,25 @@ EOD;
 				$atts['random'] = 1;
 		}
 
-		self::set_instance( $widget_number );
-
 		$atts = wp_parse_args( $atts, self::get_defaults() );
 		$atts = Testimonials_Widget_Settings::validate_settings( $atts );
 
-		$atts['paging']        = false;
-		$atts['type']          = 'testimonialswidget_widget';
+		$atts['paging'] = false;
+		$atts['type']   = 'testimonialswidget_widget';
+
+		self::set_instance( $widget_number );
 		$atts['widget_number'] = $widget_number;
 
-		self::scripts( $atts );
-
-		$testimonials = self::get_testimonials( $atts );
+		$testimonials = array();
 
 		$content = apply_filters( 'testimonials_widget_cache_get', false, $atts );
-
 		if ( false === $content ) {
-			$content = self::get_testimonials_html( $testimonials, $atts, false, $widget_number );
-			$content = apply_filters( 'testimonials_widget_cache_set', $content, $atts );
+			$testimonials = self::get_testimonials( $atts );
+			$content      = self::get_testimonials_html( $testimonials, $atts, false, $widget_number );
+			$content      = apply_filters( 'testimonials_widget_cache_set', $content, $atts );
 		}
 
-		// Generate CSS
-		$atts['type'] = 'testimonialswidget_widget_css';
-		$css          = apply_filters( 'testimonials_widget_cache_get', false, $atts );
-
-		if ( false === $css ) {
-			$css = self::get_testimonials_html_css( $atts, $widget_number );
-			$css = apply_filters( 'testimonials_widget_cache_set', $css, $atts );
-		}
-
-		if ( ! empty( $css ) ) {
-			self::$css = array_merge( $css, self::$css );
-			add_action( 'wp_footer', array( 'Testimonials_Widget', 'get_testimonials_css' ), 20 );
-		}
-
-		// Generate JS
-		$atts['type'] = 'testimonialswidget_widget_js';
-		$js           = apply_filters( 'testimonials_widget_cache_get', false, $atts );
-
-		if ( false === $js ) {
-			$js = self::get_testimonials_html_js( $testimonials, $atts, $widget_number );
-			$js = apply_filters( 'testimonials_widget_cache_set', $js, $atts );
-		}
-
-		if ( ! empty( $js ) ) {
-			self::$scripts = array_merge( $js, self::$scripts );
-			add_action( 'wp_footer', array( 'Testimonials_Widget', 'get_testimonials_scripts' ), 20 );
-		}
+		self::call_scripts_styles( $testimonials, $atts, $widget_number );
 
 		return $content;
 	}
@@ -690,49 +728,57 @@ EOD;
 		if ( is_admin() )
 			return;
 
-		wp_register_style( 'testimonials-widget', plugins_url( 'testimonials-widget.css', __FILE__ ) );
-		wp_enqueue_style( 'testimonials-widget' );
+		wp_register_style( __CLASS__, plugins_url( 'testimonials-widget.css', __FILE__ ) );
+		wp_enqueue_style( __CLASS__ );
 
 		$include_ie7_css = tw_get_option( 'include_ie7_css' );
 		if ( $include_ie7_css ) {
-			wp_register_style( 'testimonials-widget-ie7', plugins_url( 'testimonials-widget-ie7.css', __FILE__ ) );
-			wp_enqueue_style( 'testimonials-widget-ie7' );
+			wp_register_style( __CLASS__ . '-ie7', plugins_url( 'testimonials-widget-ie7.css', __FILE__ ) );
+			wp_enqueue_style( __CLASS__ . '-ie7' );
 		}
+
+		do_action( 'testimonials_widget_styles' );
 	}
 
 
 	public static function get_testimonials_html_css( $atts, $widget_number = null ) {
-		// display attributes
-		$height     = $atts['height'];
-		$max_height = $atts['max_height'];
-		$min_height = $atts['min_height'];
+		$css = array();
 
-		if ( $height ) {
-			$max_height = $height;
-			$min_height = $height;
-		}
+		switch ( $atts['type'] ) {
+		case 'testimonialswidget_widget':
+			// display attributes
+			$height     = $atts['height'];
+			$max_height = $atts['max_height'];
+			$min_height = $atts['min_height'];
 
-		$css     = array();
-		$id_base = self::ID . $widget_number;
+			if ( $height ) {
+				$max_height = $height;
+				$min_height = $height;
+			}
 
-		if ( $min_height ) {
-			$css[] = <<<EOF
+			$css     = array();
+			$id_base = self::ID . $widget_number;
+
+			if ( $min_height ) {
+				$css[] = <<<EOF
 <style>
 .$id_base {
 min-height: {$min_height}px;
 }
 </style>
 EOF;
-		}
+			}
 
-		if ( $max_height ) {
-			$css[] = <<<EOF
+			if ( $max_height ) {
+				$css[] = <<<EOF
 <style>
 .$id_base {
 	max-height: {$max_height}px;
 }
 </style>
 EOF;
+			}
+			break;
 		}
 
 		$css = apply_filters( 'testimonials_widget_testimonials_css', $css, $atts, $widget_number );
@@ -742,42 +788,42 @@ EOF;
 
 
 	public static function get_testimonials_html_js( $testimonials, $atts, $widget_number = null ) {
-		// display attributes
-		$refresh_interval = $atts['refresh_interval'];
+		$scripts          = array();
+		$scripts_internal = array();
 
-		$id_base    = self::ID . $widget_number;
-		$scripts    = array();
-		$tw_padding = 'tw_padding' . $widget_number;
-		$tw_wrapper = 'tw_wrapper' . $widget_number;
+		switch ( $atts['type'] ) {
+		case 'testimonialswidget_widget':
+			// display attributes
+			$refresh_interval = $atts['refresh_interval'];
 
-		$disable_animation = $atts['disable_animation'];
-		$fade_in_speed     = $atts['fade_in_speed'];
-		$fade_out_speed    = $atts['fade_out_speed'];
-		$height            = $atts['height'];
-		$max_height        = $atts['max_height'];
-		$min_height        = $atts['min_height'];
+			$id_base    = self::ID . $widget_number;
+			$scripts    = array();
+			$tw_padding = 'tw_padding' . $widget_number;
+			$tw_wrapper = 'tw_wrapper' . $widget_number;
 
-		$enable_animation = 1;
-		if ( $disable_animation || $height || $max_height || $min_height )
-			$enable_animation = 0;
+			$disable_animation = $atts['disable_animation'];
+			$fade_in_speed     = $atts['fade_in_speed'];
+			$fade_out_speed    = $atts['fade_out_speed'];
+			$height            = $atts['height'];
+			$max_height        = $atts['max_height'];
+			$min_height        = $atts['min_height'];
 
-		if ( $refresh_interval && 1 < count( $testimonials ) ) {
-			$javascript = <<<EOF
-<script type="text/javascript">
-if ( {$enable_animation} ) {
-	var {$tw_wrapper} = jQuery('.{$id_base}');
-	// tw_padding is the difference in height to take into account all styling options
-	var {$tw_padding} = {$tw_wrapper}.height() - jQuery('.{$id_base} .testimonials-widget').height();
-	// fixes first animation by defining height to adjust to
-	{$tw_wrapper}.height( {$tw_wrapper}.height() );
-}
+			$enable_animation = 1;
+			if ( $disable_animation || $height || $max_height || $min_height )
+				$enable_animation = 0;
 
+			$javascript = '';
+			if ( 1 < count( $testimonials ) ) {
+				$javascript .= '<script type="text/javascript">' . "\n";
+
+				if ( $refresh_interval ) {
+					$javascript .= <<<EOF
 function nextTestimonial{$widget_number}() {
 	if ( ! jQuery('.{$id_base}').first().hasClass('hovered') ) {
 		var active = jQuery('.{$id_base} .active');
 		var next   = (jQuery('.{$id_base} .active').next().length > 0) ? jQuery('.{$id_base} .active').next() : jQuery('.{$id_base} .testimonials-widget-testimonial:first-child');
 
-		active.fadeOut({$fade_out_speed}, function(){
+		active.fadeOut({$fade_out_speed}, function() {
 			active.removeClass('active');
 			next.fadeIn({$fade_in_speed});
 			next.removeClass('display-none');
@@ -785,34 +831,51 @@ function nextTestimonial{$widget_number}() {
 
 			{INTERNAL_SCRIPTS}
 
-			if ( {$enable_animation} ) {
-				// added padding
+			// added padding
+			if ( {$enable_animation} )
 				{$tw_wrapper}.animate({ height: next.height() + {$tw_padding} });
-			}
 		});
 	}
 }
 
-jQuery(document).ready(function(){
+jQuery(document).ready(function() {
 	jQuery('.{$id_base}').hover(function() {
 		jQuery(this).addClass('hovered')
 	}, function() {
 		jQuery(this).removeClass('hovered')
 	});
+
 	nextTestimonial{$widget_number}interval = setInterval('nextTestimonial{$widget_number}()', {$refresh_interval} * 1000);
 });
+
+EOF;
+				}
+
+				$javascript .= <<<EOF
+if ( {$enable_animation} ) {
+	var {$tw_wrapper} = jQuery('.{$id_base}');
+	var {$tw_padding} = 0;
+
+	jQuery(document).ready(function() {
+		// tw_padding is the difference in height to take into account all styling options
+		{$tw_padding} = {$tw_wrapper}.height() - jQuery('.{$id_base} .testimonials-widget-testimonial').height();
+
+		// fixes first animation by defining height to adjust to
+		{$tw_wrapper}.height( {$tw_wrapper}.height() );
+	});
+}
 </script>
 EOF;
 
-			$scripts[ $id_base ] = $javascript;
+				$scripts[ $id_base ] = $javascript;
+			}
+			break;
 		}
 
 		$scripts          = apply_filters( 'testimonials_widget_testimonials_js', $scripts, $testimonials, $atts, $widget_number );
-		$scripts_internal = apply_filters( 'testimonials_widget_testimonials_js_internal', array(), $testimonials, $atts, $widget_number );
+		$scripts_internal = apply_filters( 'testimonials_widget_testimonials_js_internal', $scripts_internal, $testimonials, $atts, $widget_number );
 		$internal_scripts = implode( "\n", $scripts_internal );
 		$scripts          = str_replace( '{INTERNAL_SCRIPTS}', $internal_scripts, $scripts );
-
-		ksort( $scripts );
 
 		return $scripts;
 	}
@@ -875,6 +938,8 @@ EOF;
 		$disable_quotes  = $atts['disable_quotes'];
 		$do_image        = ! $atts['hide_image'] && ! empty( $testimonial['testimonial_image'] );
 		$do_image_single = ! $atts['hide_image_single'];
+		$do_content      = ! $atts['hide_content'];
+		$do_schema       = $atts['enable_schema'];
 		$keep_whitespace = $atts['keep_whitespace'];
 		$remove_hentry   = $atts['remove_hentry'];
 
@@ -900,13 +965,18 @@ EOF;
 		$class    = apply_filters( 'testimonials_widget_get_testimonial_html_class', $class, $testimonial, $atts, $is_list, $is_first, $widget_number );
 		$div_open = '<div class="' . $class . '">';
 
+		if ( $do_schema && $do_content )
+			$div_open .= sprintf( self::$schema_div_open, self::$review_schema );
+
 		if ( $remove_hentry )
 			$div_open = str_replace( ' hentry', '', $div_open );
 
 		$image = '';
 		if ( $do_image ) {
+			$pic = $testimonial['testimonial_image'];
+
 			$image .= '<span class="image">';
-			$image .= $testimonial['testimonial_image'];
+			$image .= $pic;
 			$image .= '</span>';
 		}
 
@@ -914,7 +984,16 @@ EOF;
 			$image = '';
 
 		$quote = self::get_quote( $testimonial, $atts, $widget_number );
-		$cite  = self::get_cite( $testimonial, $atts );
+
+		$cite = '';
+		if ( 1 < count( $testimonial ) ) {
+			$cite = self::get_cite( $testimonial, $atts );
+
+			if ( $do_schema ) {
+				$schema = self::get_schema( $testimonial, $atts );
+				$cite  .= $schema;
+			}
+		}
 
 		$extra = '';
 		if ( ! empty( $testimonial['testimonial_extra'] ) ) {
@@ -931,6 +1010,8 @@ EOF;
 		}
 
 		$div_close = '</div>';
+		if ( $do_schema && $do_content )
+			$div_close .= '</div>';
 
 		$html = $div_open
 			. $image
@@ -957,11 +1038,15 @@ EOF;
 		$content_more  = apply_filters( 'testimonials_widget_content_more', esc_html__( '…', 'testimonials-widget' ) );
 		$content_more .= self::$tag_close_quote;
 		$do_content    = ! $atts['hide_content'] && ! empty( $testimonial['testimonial_content'] );
+		$do_schema     = $atts['enable_schema'];
 		$use_quote_tag = $atts['use_quote_tag'];
 
 		$quote = '';
 		if ( $do_content ) {
 			$content = $testimonial['testimonial_content'];
+			if ( $do_schema )
+				$content = self::create_schema_span( self::$review_body, $content );
+
 			$content = self::format_content( $content, $widget_number, $atts );
 
 			if ( $char_limit ) {
@@ -996,29 +1081,37 @@ EOF;
 		$do_url        = ! $atts['hide_url'] && ! empty( $testimonial['testimonial_url'] );
 		$use_quote_tag = $atts['use_quote_tag'];
 
-		$cite     = '';
+		$testimonial_company  = $testimonial['testimonial_company'];
+		$testimonial_email    = $testimonial['testimonial_email'];
+		$testimonial_location = $testimonial['testimonial_location'];
+		$testimonial_source   = $testimonial['testimonial_source'];
+		$testimonial_title    = $testimonial['testimonial_title'];
+		$testimonial_url      = $testimonial['testimonial_url'];
+
+		$cite = '';
+
 		$done_url = false;
 		if ( $do_source && $do_email ) {
 			$cite .= '<span class="author">';
-			$cite .= '<a href="mailto:' . $testimonial['testimonial_email'] . '">';
-			$cite .= $testimonial['testimonial_source'];
+			$cite .= '<a href="mailto:' . $testimonial_email . '">';
+			$cite .= $testimonial_source;
 			$cite .= '</a>';
 			$cite .= '</span>';
 		} elseif ( $do_source && ! $do_company && $do_url ) {
 			$done_url = true;
 
 			$cite .= '<span class="author">';
-			$cite .= '<a href="' . $testimonial['testimonial_url'] . '" rel="nofollow">';
-			$cite .= $testimonial['testimonial_source'];
+			$cite .= '<a href="' . $testimonial_url . '" rel="nofollow">';
+			$cite .= $testimonial_source;
 			$cite .= '</a>';
 			$cite .= '</span>';
 		} elseif ( $do_source ) {
 			$cite .= '<span class="author">';
-			$cite .= $testimonial['testimonial_source'];
+			$cite .= $testimonial_source;
 			$cite .= '</span>';
 		} elseif ( $do_email ) {
 			$cite .= '<span class="email">';
-			$cite .= make_clickable( $testimonial['testimonial_email'] );
+			$cite .= make_clickable( $testimonial_email );
 			$cite .= '</span>';
 		}
 
@@ -1027,7 +1120,7 @@ EOF;
 
 		if ( $do_title ) {
 			$cite .= '<span class="title">';
-			$cite .= $testimonial['testimonial_title'];
+			$cite .= $testimonial_title;
 			$cite .= '</span>';
 		}
 
@@ -1036,7 +1129,7 @@ EOF;
 
 		if ( $do_location ) {
 			$cite .= '<span class="location">';
-			$cite .= $testimonial['testimonial_location'];
+			$cite .= $testimonial_location;
 			$cite .= '</span>';
 		}
 
@@ -1045,17 +1138,17 @@ EOF;
 
 		if ( $do_company && $do_url ) {
 			$cite .= '<span class="company">';
-			$cite .= '<a href="' . $testimonial['testimonial_url'] . '" rel="nofollow">';
-			$cite .= $testimonial['testimonial_company'];
+			$cite .= '<a href="' . $testimonial_url . '" rel="nofollow">';
+			$cite .= $testimonial_company;
 			$cite .= '</a>';
 			$cite .= '</span>';
 		} elseif ( $do_company ) {
 			$cite .= '<span class="company">';
-			$cite .= $testimonial['testimonial_company'];
+			$cite .= $testimonial_company;
 			$cite .= '</span>';
 		} elseif ( $do_url && ! $done_url ) {
 			$cite .= '<span class="url">';
-			$cite .= make_clickable( $testimonial['testimonial_url'] );
+			$cite .= make_clickable( $testimonial_url );
 			$cite .= '</span>';
 		}
 
@@ -1340,9 +1433,6 @@ EOF;
 			$order   = false;
 		}
 
-		if ( ! empty( $type ) && 'testimonialswidget_widget' == $type && empty( $refresh_interval ) )
-			$limit = 1;
-
 		$args = array(
 			'orderby' => $orderby,
 			'post_status' => array(
@@ -1426,6 +1516,11 @@ EOF;
 	}
 
 
+	/**
+	 *
+	 *
+	 * @SuppressWarnings(PHPMD.LongVariable)
+	 */
 	public static function get_testimonials( $atts ) {
 		$hide_gravatar = $atts['hide_gravatar'];
 
@@ -1433,7 +1528,6 @@ EOF;
 		$args['query'] = true;
 
 		$testimonials = apply_filters( 'testimonials_widget_cache_get', false, $args );
-
 		if ( false === $testimonials ) {
 			$testimonials = new WP_Query( $args );
 			$testimonials = apply_filters( 'testimonials_widget_cache_set', $testimonials, $args );
@@ -1443,13 +1537,21 @@ EOF;
 			remove_filter( 'posts_results', array( 'Testimonials_Widget', 'posts_results_sort_none' ) );
 
 		self::$max_num_pages = $testimonials->max_num_pages;
+		self::$found_posts   = $testimonials->found_posts;
 		self::$post_count    = $testimonials->post_count;
 		self::$wp_query      = $testimonials;
 
 		wp_reset_postdata();
 
-		$image_size    = apply_filters( 'testimonials_widget_image_size', 'thumbnail' );
-		$gravatar_size = apply_filters( 'testimonials_widget_gravatar_size', 96 );
+		$image_size = apply_filters( 'testimonials_widget_image_size', 'thumbnail' );
+
+		global $_wp_additional_image_sizes;
+		if ( ! empty( $_wp_additional_image_sizes[ $image_size ] ) )
+			$gravatar_size = $_wp_additional_image_sizes[ $image_size ]['width'];
+		else
+			$gravatar_size = get_option( $image_size . '_size_w' );
+
+		$gravatar_size = apply_filters( 'testimonials_widget_gravatar_size', $gravatar_size );
 
 		$testimonial_data = array();
 
@@ -1458,16 +1560,16 @@ EOF;
 
 		foreach ( $testimonials->posts as $row ) {
 			$post_id = $row->ID;
+			$email   = get_post_meta( $post_id, 'testimonials-widget-email', true );
 
-			$email = get_post_meta( $post_id, 'testimonials-widget-email', true );
-
-			if ( has_post_thumbnail( $post_id ) ) {
+			if ( has_post_thumbnail( $post_id ) )
 				$image = get_the_post_thumbnail( $post_id, $image_size );
-			} elseif ( ! $hide_gravatar && is_email( $email ) ) {
+			elseif ( ! $hide_gravatar && is_email( $email ) ) {
 				$image = get_avatar( $email, $gravatar_size );
-			} else {
+
+				self::make_gravatar_featured( $post_id, $email );
+			} else
 				$image = false;
-			}
 
 			$url = get_post_meta( $post_id, 'testimonials-widget-url', true );
 			if ( ! empty( $url ) && 0 === preg_match( '#https?://#', $url ) )
@@ -1655,6 +1757,281 @@ EOF;
 			$result = sprintf( $content, Testimonials_Widget::PT, $count_f, $name, '', '' );
 
 		echo $result;
+	}
+
+
+	public static function clean_string( $string ) {
+		if ( ! is_string( $string ) )
+			return $string;
+
+		return trim( strip_tags( $string ) );
+	}
+
+
+	public static function get_schema( $testimonial, $atts ) {
+		foreach ( $testimonial as $key => $value ) {
+			if ( 'testimonial_image' != $key )
+				$testimonial[ $key ] = self::clean_string( $value );
+		}
+
+		$do_company  = ! $atts['hide_company'] && ! empty( $testimonial['testimonial_company'] );
+		$do_email    = ! $atts['hide_email'] && ! empty( $testimonial['testimonial_email'] ) && is_email( $testimonial['testimonial_email'] );
+		$do_image    = ! $atts['hide_image'] && ! empty( $testimonial['testimonial_image'] );
+		$do_location = ! $atts['hide_location'] && ! empty( $testimonial['testimonial_location'] );
+		$do_source   = ! $atts['hide_source'] && ! empty( $testimonial['testimonial_source'] );
+		$do_title    = ! $atts['hide_title'] && ! empty( $testimonial['testimonial_title'] );
+		$do_url      = ! $atts['hide_url'] && ! empty( $testimonial['testimonial_url'] );
+
+		$testimonial_company  = $testimonial['testimonial_company'];
+		$testimonial_content  = $testimonial['testimonial_content'];
+		$testimonial_email    = $testimonial['testimonial_email'];
+		$testimonial_image    = $testimonial['testimonial_image'];
+		$testimonial_location = $testimonial['testimonial_location'];
+		$testimonial_source   = $testimonial['testimonial_source'];
+		$testimonial_title    = $testimonial['testimonial_title'];
+		$testimonial_url      = $testimonial['testimonial_url'];
+
+		$item_reviewed     = self::clean_string( $atts['item_reviewed'] );
+		$item_reviewed_url = self::clean_string( $atts['item_reviewed_url'] );
+
+		$schema = '';
+
+		$agg_meta      = array();
+		$author_meta   = array();
+		$item_meta     = array();
+		$location_meta = array();
+		$org_meta      = array();
+		$review_meta   = array();
+
+		if ( $do_source )
+			$author_meta[ self::$thing_name ] = $testimonial_source;
+
+		if ( $do_title )
+			$author_meta[ self::$person_job_title ] = $testimonial_title;
+
+		if ( $do_email )
+			$author_meta[ self::$person_email ] = $testimonial_email;
+
+		if ( ! $do_company ) {
+			if ( $do_url )
+				$author_meta[ self::$thing_url ] = $testimonial_url;
+		} else {
+			if ( $do_url )
+				$org_meta[ self::$thing_url ] = $testimonial_url;
+
+			$org_meta[ self::$thing_name ] = $testimonial_company;
+		}
+
+		if ( $do_location ) {
+			$location_meta[ self::$thing_name ] = $testimonial_location;
+
+			if ( ! $do_company )
+				$author_meta[ self::$person_home ] = array( self::$place_schema, $location_meta );
+			else
+				$org_meta[ self::$org_location ] = array( self::$place_schema, $location_meta );
+		}
+
+		if ( ! empty( $author_meta ) && ! empty( $org_meta ) )
+			$author_meta[ self::$person_member ] = array( self::$org_schema, $org_meta );
+		elseif ( ! empty( $org_meta ) )
+			$author_meta[ self::$cw_source_org ] = array( self::$org_schema, $org_meta );
+
+		$author_meta = apply_filters( 'testimonials_widget_schema_author', $author_meta, $testimonial, $atts );
+		$author      = self::create_schema_div_prop( self::$cw_author, self::$person_schema, $author_meta );
+		$schema     .= $author;
+
+		$post         = get_post( $testimonial['post_id'] );
+		$the_date     = mysql2date( 'Y-m-d', $post->post_date );
+		$the_date_mod = mysql2date( 'Y-m-d', $post->post_modified );
+
+		$review_name_length = apply_filters( 'testimonials_widget_review_name_length', 156 );
+
+		$review_meta[ self::$cw_date ]     = $the_date;
+		$review_meta[ self::$cw_date_mod ] = $the_date_mod;
+		$review_meta[ self::$thing_name ]  = self::testimonials_truncate( $testimonial_content, $review_name_length );
+		$review_meta[ self::$thing_url ]   = post_permalink( $post->ID );
+
+		if ( $do_image ) {
+			$src = self::get_image_src( $testimonial_image );
+
+			$review_meta[ self::$thing_image ] = $src;
+		}
+
+		$review_meta = apply_filters( 'testimonials_widget_schema_review', $review_meta, $testimonial, $atts );
+		$review      = self::create_schema_meta( $review_meta );
+		$schema     .= $review;
+
+		$agg_meta[ self::$agg_count ] = self::$found_posts;
+
+		$agg_meta  = apply_filters( 'testimonials_widget_schema_aggregate', $agg_meta, $testimonial, $atts );
+		$aggregate = self::create_schema_div_prop( self::$cw_aggregate, self::$agg_schema, $agg_meta );
+		$schema   .= $aggregate;
+
+		$item_meta[ self::$thing_name ] = $item_reviewed;
+		$item_meta[ self::$thing_url ]  = $item_reviewed_url;
+
+		$item_meta = apply_filters( 'testimonials_widget_schema_item', $item_meta, $testimonial, $atts );
+		$item      = self::create_schema_div_prop( self::$review_item, self::$thing_schema, $item_meta );
+		$schema   .= $item;
+
+		$schema = apply_filters( 'testimonials_widget_schema', $schema, $testimonial, $atts );
+
+		return $schema;
+	}
+
+
+	public static function create_schema_meta( $meta_data ) {
+		$meta = '';
+
+		if ( empty( $meta_data ) )
+			return $meta;
+
+		foreach ( $meta_data as $key => $value ) {
+			if ( is_array( $value ) )
+				$meta .= self::create_schema_div_prop( $key, $value[ 0 ], $value[ 1 ] );
+			else
+				$meta .= sprintf( self::$schema_meta, $key, $value );
+		}
+
+		return $meta;
+	}
+
+
+	public static function create_schema_span( $property_name, $span_data ) {
+		$span = '';
+
+		if ( empty( $span_data ) )
+			return $span;
+
+		$span = sprintf( self::$schema_span, $property_name, $span_data );
+
+		return $span;
+	}
+
+
+	public static function create_schema_div_prop( $property_name, $schema_name, $meta_data ) {
+		$meta   = '';
+		$schema = '';
+
+		if ( empty( $meta_data ) )
+			return $schema;
+
+		if ( is_array( $meta_data ) ) {
+			foreach ( $meta_data as $key => $value ) {
+				if ( is_array( $value ) )
+					$meta .= self::create_schema_div_prop( $key, $value[ 0 ], $value[ 1 ] );
+				else
+					$meta .= sprintf( self::$schema_meta, $key, $value );
+			}
+
+			$schema = sprintf( self::$schema_div_prop, $property_name, $schema_name, $meta );
+		} else
+			$schema = sprintf( self::$schema_div_prop, $property_name, $schema_name, $meta_data );
+
+		return $schema;
+	}
+
+
+	public static function generate_css( $atts, $widget_number = null ) {
+		$atts['subtype'] = 'css';
+
+		$css = apply_filters( 'testimonials_widget_cache_get', false, $atts );
+		if ( false === $css ) {
+			$css = self::get_testimonials_html_css( $atts, $widget_number );
+			$css = apply_filters( 'testimonials_widget_cache_set', $css, $atts );
+		}
+
+		if ( ! empty( $css ) ) {
+			self::$css = array_merge( $css, self::$css );
+			add_action( 'wp_footer', array( 'Testimonials_Widget', 'get_testimonials_css' ), 20 );
+		}
+	}
+
+
+	public static function generate_js( $testimonials, $atts, $widget_number = null ) {
+		$atts['subtype'] = 'js';
+
+		$js = apply_filters( 'testimonials_widget_cache_get', false, $atts );
+		if ( false === $js ) {
+			$js = self::get_testimonials_html_js( $testimonials, $atts, $widget_number );
+			$js = apply_filters( 'testimonials_widget_cache_set', $js, $atts );
+		}
+
+		if ( ! empty( $js ) ) {
+			self::$scripts = array_merge( $js, self::$scripts );
+			add_action( 'wp_footer', array( 'Testimonials_Widget', 'get_testimonials_scripts' ), 20 );
+		}
+	}
+
+
+	public static function call_scripts_styles( $testimonials, $atts, $widget_number = null ) {
+		if ( is_null( $widget_number ) )
+			$widget_number = Testimonials_Widget::get_instance();
+
+		self::scripts( $atts );
+		self::styles();
+
+		self::generate_css( $atts );
+		self::generate_js( $testimonials, $atts, $widget_number );
+	}
+
+
+	public static function make_gravatar_featured( $post_id, $email ) {
+		$size  = get_option( 'large_size_w' );
+		$image = get_avatar( $email, $size );
+		$src   = self::get_image_src( $image );
+		$file  = sanitize_title( $email ) . '.jpeg';
+
+		$file_move = wp_upload_bits( $file, null, self::file_get_contents_curl( $src ) );
+		$filename  = $file_move['file'];
+
+		$wp_filetype = wp_check_filetype( $file, null );
+		$attachment  = array(
+			'post_mime_type' => $wp_filetype['type'],
+			'post_status' => 'inherit',
+			'post_title' => $file,
+		);
+
+		require_once ABSPATH . 'wp-admin/includes/image.php';
+		
+		$image_id = wp_insert_attachment( $attachment, $filename, $post_id );
+		$metadata = wp_generate_attachment_metadata( $image_id, $filename );
+
+		wp_update_attachment_metadata( $image_id, $metadata );
+		update_post_meta( $post_id, '_thumbnail_id', $image_id );
+	}
+
+
+	public static function get_image_src( $image ) {
+		$doc = new DOMDocument();
+		$doc->loadHTML( $image );
+		$xpath = new DOMXPath( $doc );
+		$src   = $xpath->evaluate( 'string(//img/@src)' );
+
+		return $src;
+	}
+
+
+	/**
+	 * Thank you Tobylewis
+	 *
+	 * file_get_contents support on some shared systems is turned off
+	 *
+	 * @ref http://wordpress.org/support/topic/plugin-flickr-shortcode-importer-file_get_contents-with-url-isp-does-not-support?replies=2#post-2878241
+	 */
+	public static function file_get_contents_curl( $url ) {
+		$ch = curl_init();
+
+		curl_setopt( $ch, CURLOPT_AUTOREFERER, true );
+		curl_setopt( $ch, CURLOPT_HEADER, 0 );
+		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+		curl_setopt( $ch, CURLOPT_URL, $url );
+		curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
+
+		$data = curl_exec( $ch );
+		curl_close( $ch );
+
+		return $data;
 	}
 
 
