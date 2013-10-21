@@ -175,13 +175,15 @@ class Testimonials_Widget_Settings {
 			'title' => esc_html__( 'Keep Whitespace?', 'testimonials-widget' ),
 			'desc' => esc_html__( 'Keeps testimonials looking as entered than sans auto-formatting', 'testimonials-widget' ),
 			'type' => 'checkbox',
+			'validate' => 'is_true',
 		);
 
 		self::$settings['disable_animation'] = array(
 			'section' => 'widget',
-			'title' => esc_html__( 'Disable animation?', 'testimonials-widget' ),
+			'title' => esc_html__( 'Disable Animation?', 'testimonials-widget' ),
 			'desc' => esc_html__( 'Disable animation between testimonial transitions. Useful when stacking widgets.', 'testimonials-widget' ),
 			'type' => 'checkbox',
+			'validate' => 'is_true',
 			'std' => 1,
 		);
 
@@ -234,68 +236,103 @@ class Testimonials_Widget_Settings {
 			'type' => 'expand_begin',
 		);
 
+		$desc = __( 'Adds HTML tag markup per the <a href="%s">Review schema</a> to testimonials. Search engines including Bing, Google, Yahoo! and Yandex rely on this markup to improve the display of search results.', 'testimonials-widget' );
+
+		self::$settings['enable_schema'] = array(
+			'title' => esc_html__( 'Enable Review Schema?', 'testimonials-widget' ),
+			'desc' => sprintf( $desc, 'http://schema.org/Review' ),
+			'type' => 'checkbox',
+			'validate' => 'is_true',
+			'std' => 1,
+		);
+
+		self::$settings['item_reviewed'] = array(
+			'title' => esc_html__( 'Reviewed Item?', 'testimonials-widget' ),
+			'desc' => esc_html__( 'Name of thing being referenced in testimonials', 'testimonials-widget' ),
+			'std' => get_option( 'blogname' ),
+		);
+
+		self::$settings['item_reviewed_url'] = array(
+			'title' => esc_html__( 'Reviewed Item URL?', 'testimonials-widget' ),
+			'desc' => esc_html__( 'URL of thing being referenced in testimonials', 'testimonials-widget' ),
+			'std' => network_site_url(),
+			'validate' => 'url',
+		);
+
 		self::$settings['disable_quotes'] = array(
 			'title' => esc_html__( 'Hide built-in quotes?', 'testimonials-widget' ),
 			'desc' => esc_html__( 'Remove open and close quote span tags surrounding testimonial content', 'testimonials-widget' ),
 			'type' => 'checkbox',
+			'validate' => 'is_true',
 		);
 
 		self::$settings['hide_not_found'] = array(
 			'title' => esc_html__( 'Hide "Testimonials Not Found"?', 'testimonials-widget' ),
 			'type' => 'checkbox',
+			'validate' => 'is_true',
 		);
 
 		self::$settings['hide_gravatar'] = array(
 			'title' => esc_html__( 'Hide Gravatar Image?', 'testimonials-widget' ),
 			'type' => 'checkbox',
+			'validate' => 'is_true',
 		);
 
 		self::$settings['hide_image'] = array(
 			'title' => esc_html__( 'Hide Image?', 'testimonials-widget' ),
 			'type' => 'checkbox',
+			'validate' => 'is_true',
 		);
 
 		self::$settings['hide_image_single'] = array(
 			'title' => esc_html__( 'Hide Image in Single View?', 'testimonials-widget' ),
 			'type' => 'checkbox',
+			'validate' => 'is_true',
 			'widget' => 0,
 		);
 
 		self::$settings['hide_content'] = array(
 			'title' => esc_html__( 'Hide Testimonial Content?', 'testimonials-widget' ),
 			'type' => 'checkbox',
+			'validate' => 'is_true',
 		);
 
 		self::$settings['hide_source'] = array(
 			'title' => esc_html__( 'Hide Author/Source?', 'testimonials-widget' ),
 			'type' => 'checkbox',
+			'validate' => 'is_true',
 			'desc' => esc_html__( 'Don\'t display "Post Title" in cite', 'testimonials-widget' ),
 		);
 
 		self::$settings['hide_email'] = array(
 			'title' => esc_html__( 'Hide Email?', 'testimonials-widget' ),
 			'type' => 'checkbox',
+			'validate' => 'is_true',
 			'std' => 1,
 		);
 
 		self::$settings['hide_title'] = array(
 			'title' => esc_html__( 'Hide Job Title?', 'testimonials-widget' ),
 			'type' => 'checkbox',
+			'validate' => 'is_true',
 		);
 
 		self::$settings['hide_location'] = array(
 			'title' => esc_html__( 'Hide Location?', 'testimonials-widget' ),
 			'type' => 'checkbox',
+			'validate' => 'is_true',
 		);
 
 		self::$settings['hide_company'] = array(
 			'title' => esc_html__( 'Hide Company?', 'testimonials-widget' ),
 			'type' => 'checkbox',
+			'validate' => 'is_true',
 		);
 
 		self::$settings['hide_url'] = array(
 			'title' => esc_html__( 'Hide URL?', 'testimonials-widget' ),
 			'type' => 'checkbox',
+			'validate' => 'is_true',
 		);
 
 		self::$settings['target'] = array(
@@ -322,6 +359,8 @@ class Testimonials_Widget_Settings {
 			'title' => esc_html__( 'Do [shortcodes]?', 'testimonials-widget' ),
 			'desc' => esc_html__( 'If unchecked, shortcodes are stripped.', 'testimonials-widget' ),
 			'type' => 'checkbox',
+			'validate' => 'is_true',
+			'std' => 1,
 		);
 
 		self::$settings['general_expand_end'] = array(
@@ -354,6 +393,7 @@ class Testimonials_Widget_Settings {
 			'title' => esc_html__( 'Require All Tags?', 'testimonials-widget' ),
 			'desc' => esc_html__( 'Select only testimonials with all of the given tags', 'testimonials-widget' ),
 			'type' => 'checkbox',
+			'validate' => 'is_true',
 		);
 
 		self::$settings['ids'] = array(
@@ -395,6 +435,7 @@ class Testimonials_Widget_Settings {
 			'title' => esc_html__( 'Random Order?', 'testimonials-widget' ),
 			'desc' => esc_html__( 'If checked, ignores ORDER BY, ORDER BY meta_key, and ORDER BY Order. Widgets are random by default automatically', 'testimonials-widget' ),
 			'type' => 'checkbox',
+			'validate' => 'is_true',
 		);
 
 		self::$settings['orderby'] = array(
@@ -453,12 +494,13 @@ class Testimonials_Widget_Settings {
 			'title' => esc_html__( 'Allow Comments?', 'testimonials-widget' ),
 			'desc' => esc_html__( 'Only affects the Testimonials Widget post edit page. Your theme controls the front-end view.', 'testimonials-widget' ),
 			'type' => 'checkbox',
+			'validate' => 'is_true',
 			'widget' => 0,
 		);
 
 		$desc        = __( 'URL slug-name for <a href="%1s">testimonials archive</a> page.', 'testimonials-widget' );
 		$has_archive = tw_get_option( 'has_archive', '' );
-		$site_url    = site_url( '/' . $has_archive . '/' );
+		$site_url    = network_site_url( '/' . $has_archive . '/' );
 
 		self::$settings['has_archive'] = array(
 			'section' => 'post_type',
@@ -469,7 +511,7 @@ class Testimonials_Widget_Settings {
 			'widget' => 0,
 		);
 
-		$desc = esc_html__( 'URL slug-name for testimonial view pages. Shouldn\'t be the same as Archive Page URL.', 'testimonials-widget' );
+		$desc = esc_html__( 'URL slug-name for testimonial view pages. Shouldn\'t be the same as the Archive Page URL nor should it match a page URL slug.', 'testimonials-widget' );
 
 		self::$settings['rewrite_slug'] = array(
 			'section' => 'post_type',
@@ -492,6 +534,7 @@ class Testimonials_Widget_Settings {
 			'title' => esc_html__( 'Include IE7 CSS?', 'testimonials-widget' ),
 			'desc' => esc_html__( 'IE7 specific CSS moved to separate CSS file in version 2.13.6.', 'testimonials-widget' ),
 			'type' => 'checkbox',
+			'validate' => 'is_true',
 			'backwards' => array(
 				'version' => '2.13.6',
 				'std' => 1,
@@ -504,6 +547,7 @@ class Testimonials_Widget_Settings {
 			'title' => esc_html__( 'Remove `.hentry` CSS?', 'testimonials-widget' ),
 			'desc' => esc_html__( 'Pre 2.6.4. Some themes use class `.hentry` in a manner that breaks Testimonials Widgets CSS', 'testimonials-widget' ),
 			'type' => 'checkbox',
+			'validate' => 'is_true',
 			'backwards' => array(
 				'version' => '2.6.4',
 				'std' => 1,
@@ -515,6 +559,7 @@ class Testimonials_Widget_Settings {
 			'title' => esc_html__( 'Use `&lt;q&gt;` tag?', 'testimonials-widget' ),
 			'desc' => esc_html__( 'Pre 2.11.0. Not HTML5 compliant', 'testimonials-widget' ),
 			'type' => 'checkbox',
+			'validate' => 'is_true',
 			'backwards' => array(
 				'version' => '2.11.0',
 				'std' => 1,
@@ -525,6 +570,7 @@ class Testimonials_Widget_Settings {
 			'section' => 'reset',
 			'title' => esc_html__( 'Don\'t Use Default Taxonomies?', 'testimonials-widget' ),
 			'type' => 'checkbox',
+			'validate' => 'is_true',
 			'desc' => esc_html__( 'If checked, use Testimonials Widget\'s own category and tag taxonomies instead', 'testimonials-widget' ),
 			'widget' => 0,
 		);
@@ -556,6 +602,7 @@ class Testimonials_Widget_Settings {
 			'section' => 'reset',
 			'title' => esc_html__( 'Remove Plugin Data on Deletion?', 'testimonials-widget' ),
 			'type' => 'checkbox',
+			'validate' => 'is_true',
 			'class' => 'warning', // Custom class for CSS
 			'desc' => esc_html__( 'Delete all Testimonials Widget data and options from database on plugin deletion', 'testimonials-widget' ),
 			'widget' => 0,
@@ -565,6 +612,7 @@ class Testimonials_Widget_Settings {
 			'section' => 'reset',
 			'title' => esc_html__( 'Reset to Defaults?', 'testimonials-widget' ),
 			'type' => 'checkbox',
+			'validate' => 'is_true',
 			'class' => 'warning', // Custom class for CSS
 			'desc' => esc_html__( 'Check this box to reset options to their defaults', 'testimonials-widget' ),
 			'widget' => 0,
@@ -750,7 +798,7 @@ class Testimonials_Widget_Settings {
 	public function display_about_section() {
 		echo '
 			<div id="about" style="width: 70%; min-height: 225px;">
-				<p><img class="alignright size-medium" title="Michael in Red Square, Moscow, Russia" src="' . WP_PLUGIN_URL . '/testimonials-widget/media/michael-cannon-red-square-300x2251.jpg" alt="Michael in Red Square, Moscow, Russia" width="300" height="225" /><a href="http://wordpress.org/extend/plugins/testimonials-widget/">Testimonials Widget</a> is by <a href="http://aihr.us/about-aihrus/michael-cannon-resume/">Michael Cannon</a>. He\'s <a title="Lot\'s of stuff about Peichi Liu…" href="http://peimic.com/t/peichi-liu/">Peichi’s</a> smiling man, an adventurous <a title="Water rat" href="http://www.chinesehoroscope.org/chinese_zodiac/rat/" target="_blank">water-rat</a>, <a title="Axelerant – Open Source. Engineered." href="http://axelerant.com/who-we-are">chief people officer</a>, <a title="Aihrus – website support made easy since 1999" href="http://aihr.us/about-aihrus/">chief technology officer</a>, <a title="Road biker, cyclist, biking; whatever you call, I love to ride" href="http://peimic.com/c/biking/">cyclist</a>, <a title="Michael\'s poetic like literary ramblings" href="http://peimic.com/t/poetry/">poet</a>, <a title="World Wide Opportunities on Organic Farms" href="http://peimic.com/t/WWOOF/">WWOOF’er</a> and <a title="My traveled to country list, is more than my age." href="http://peimic.com/c/travel/">world traveler</a>.</p>
+				<p><img class="alignright size-medium" title="Michael in Red Square, Moscow, Russia" src="' . WP_PLUGIN_URL . '/testimonials-widget/media/michael-cannon-red-square-300x2251.jpg" alt="Michael in Red Square, Moscow, Russia" width="300" height="225" /><a href="http://wordpress.org/extend/plugins/testimonials-widget/">Testimonials Widget</a> is by <a href="http://aihr.us/about-aihrus/michael-cannon-resume/">Michael Cannon</a>. He\'s <a title="Lot\'s of stuff about Peichi Liu…" href="http://peimic.com/t/peichi-liu/">Peichi’s</a> smiling man, an adventurous <a title="Water rat" href="http://www.chinesehoroscope.org/chinese_zodiac/rat/" target="_blank">water-rat</a>, <a title="Axelerant – Open Source. Engineered." href="http://axelerant.com/who-we-are">chief people officer</a>, <a title="Road biker, cyclist, biking; whatever you call, I love to ride" href="http://peimic.com/c/biking/">cyclist</a>, <a title="Aihrus – website support made easy since 1999" href="http://aihr.us/about-aihrus/">full stack developer</a>, <a title="Michael\'s poetic like literary ramblings" href="http://peimic.com/t/poetry/">poet</a>, <a title="World Wide Opportunities on Organic Farms" href="http://peimic.com/t/WWOOF/">WWOOF’er</a> and <a title="My traveled to country list, is more than my age." href="http://peimic.com/c/travel/">world traveler</a>.</p>
 			</div>
 		';
 	}
@@ -761,6 +809,9 @@ class Testimonials_Widget_Settings {
 
 		extract( $args );
 
+		if ( ! isset( $no_code ) )
+			$no_code = false;
+
 		if ( is_null( $input ) ) {
 			$options = get_option( self::ID );
 		} else {
@@ -768,11 +819,10 @@ class Testimonials_Widget_Settings {
 			$options[$id] = $input;
 		}
 
-		if ( ! isset( $options[$id] ) && $type != 'checkbox' ) {
+		if ( ! isset( $options[$id] ) && $type != 'checkbox' )
 			$options[$id] = $std;
-		} elseif ( ! isset( $options[$id] ) ) {
+		elseif ( ! isset( $options[$id] ) )
 			$options[$id] = 0;
-		}
 
 		$field_class = '';
 		if ( ! empty( $class ) )
@@ -792,6 +842,8 @@ class Testimonials_Widget_Settings {
 			if ( ! empty( $desc ) )
 				$content .= '<label for="' . $id . '"><span class="description">' . $desc . '</span></label>';
 
+			if ( ! $no_code )
+				$content .= '<br /><code>' . $id . '</code>';
 			break;
 
 		case 'file':
@@ -834,6 +886,8 @@ class Testimonials_Widget_Settings {
 			if ( ! empty( $desc ) )
 				$content .= '<br /><span class="description">' . $desc . '</span>';
 
+			if ( ! $no_code )
+				$content .= '<br /><code>' . $id . '</code>';
 			break;
 
 		case 'readonly':
@@ -855,6 +909,8 @@ class Testimonials_Widget_Settings {
 			if ( ! empty( $desc ) )
 				$content .= '<br /><span class="description">' . $desc . '</span>';
 
+			if ( ! $no_code )
+				$content .= '<br /><code>' . $id . '</code>';
 			break;
 
 		case 'text':
@@ -863,6 +919,8 @@ class Testimonials_Widget_Settings {
 			if ( ! empty( $desc ) )
 				$content .= '<br /><span class="description">' . $desc . '</span>';
 
+			if ( ! $no_code )
+				$content .= '<br /><code>' . $id . '</code>';
 			break;
 
 		case 'textarea':
@@ -871,9 +929,12 @@ class Testimonials_Widget_Settings {
 			if ( ! empty( $desc ) )
 				$content .= '<br /><span class="description">' . $desc . '</span>';
 
+			if ( ! $no_code )
+				$content .= '<br /><code>' . $id . '</code>';
 			break;
 
 		default:
+			$content = apply_filters( 'testimonials_widget_display_setting', '', $args, $input );
 			break;
 		}
 
@@ -918,7 +979,10 @@ class Testimonials_Widget_Settings {
 
 
 	public function styles() {
-		wp_enqueue_style( 'jquery-style', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css' );
+		if ( ! is_ssl() )
+			wp_enqueue_style( 'jquery-style', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css' );
+		else
+			wp_enqueue_style( 'jquery-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css' );
 	}
 
 
@@ -994,17 +1058,33 @@ class Testimonials_Widget_Settings {
 			}
 		}
 
-		if ( isset( $input['has_archive'] ) && isset( $input['rewrite_slug'] ) ) {
-			// same has_archive and rewrite_slug causes problems
-			if ( $input['has_archive'] == $input['rewrite_slug'] )
-				$input['rewrite_slug'] = $defaults['rewrite_slug'];
+		if ( ! empty( $input['has_archive'] ) )
+			$input['has_archive'] = self::prevent_slug_conflict( $input['has_archive'] );
+		else
+			$input['has_archive'] = $defaults['has_archive'];
 
-			// did URL slugs change?
-			$has_archive  = tw_get_option( 'has_archive' );
-			$rewrite_slug = tw_get_option( 'rewrite_slug' );
-			if ( $has_archive != $input['has_archive'] || $rewrite_slug != $input['rewrite_slug'] )
-				flush_rewrite_rules();
+		if ( ! empty( $input['rewrite_slug'] ) )
+			$input['rewrite_slug'] = self::prevent_slug_conflict( $input['rewrite_slug'] );
+		else
+			$input['rewrite_slug'] = $defaults['rewrite_slug'];
+
+		$flush_rewrite_rules = false;
+		// same has_archive and rewrite_slug causes problems
+		if ( $input['has_archive'] == $input['rewrite_slug'] ) {
+			$input['has_archive']  = $defaults['has_archive'];
+			$input['rewrite_slug'] = $defaults['rewrite_slug'];
+
+			$flush_rewrite_rules = true;
 		}
+
+		// did URL slugs change?
+		$has_archive  = tw_get_option( 'has_archive' );
+		$rewrite_slug = tw_get_option( 'rewrite_slug' );
+		if ( $has_archive != $input['has_archive'] || $rewrite_slug != $input['rewrite_slug'] )
+			$flush_rewrite_rules = true;
+
+		if ( $flush_rewrite_rules )
+			flush_rewrite_rules();
 
 		$input['version']        = self::$version;
 		$input['donate_version'] = Testimonials_Widget::VERSION;
@@ -1023,6 +1103,28 @@ class Testimonials_Widget_Settings {
 		}
 
 		return $validated;
+	}
+
+
+	public static function prevent_slug_conflict( $slug ) {
+		global $wpdb;
+
+		// slugs must be unique within their own trees
+		$check_sql  = "SELECT post_name FROM $wpdb->posts WHERE post_name = %s AND post_parent = 0 LIMIT 1";
+		$slug_check = $wpdb->get_var( $wpdb->prepare( $check_sql, $slug ) );
+
+		if ( $slug_check ) {
+			$suffix = 2;
+			do {
+				$alt_slug   = _truncate_post_slug( $slug, 200 - ( strlen( $suffix ) + 1 ) ) . "-$suffix";
+				$slug_check = $wpdb->get_var( $wpdb->prepare( $check_sql, $alt_slug ) );
+				$suffix++;
+			} while ( $slug_check );
+
+			$slug = $alt_slug;
+		}
+
+		return $slug;
 	}
 
 
@@ -1116,6 +1218,10 @@ class Testimonials_Widget_Settings {
 			$input[ $id ] = self::validate_url( $input[ $id ], $default );
 			break;
 
+		case 'is_true':
+			$input[ $id ] = self::is_true( $input[ $id ] );
+			break;
+
 		default:
 			$input[ $id ] = $validate( $input[ $id ] );
 			break;
@@ -1195,8 +1301,10 @@ class Testimonials_Widget_Settings {
 			return;
 
 		$screen->set_help_sidebar(
-			'<p><strong>' . esc_html__( 'For more information:', 'testimonials-widget' ) . '</strong></p><p>' .
+			'<p>' .
 			esc_html__( 'These Testimonials Widget Settings establish the default option values for shortcodes, theme functions, and widget instances. Widgets, once created no longer inherit these global settings. Therefore, you\'ll need to update each widget with the new settings. It might be easier to delete the widget and then recreate it.', 'testimonials-widget' ) .
+			'</p><p>' .
+			esc_html__( 'Shortcode option names are listed below each entry.', 'testimonials-widget' ) .
 			'</p><p>' .
 			sprintf(
 				__( 'View the <a href="%s">Testimonials Widget documentation</a>.', 'testimonials-widget' ),

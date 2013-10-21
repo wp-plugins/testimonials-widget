@@ -10,7 +10,15 @@ The [Testimonials Widget plugin](http://wordpress.org/plugins/testimonials-widge
 
 * `testimonials_widget_scripts`
 
-	Made additional `wp_register_script` and `wp_enqueue_script` calls as needed.
+	Make additional `wp_register_script` and `wp_enqueue_script` calls as needed.
+
+* `testimonials_widget_styles`
+
+	Make additional `wp_register_style` and `wp_enqueue_style` calls as needed.
+
+* `testimonials_widget_update`
+
+	Make additional update related calls as needed.
 
 ## Filters
 
@@ -76,6 +84,30 @@ The [Testimonials Widget plugin](http://wordpress.org/plugins/testimonials-widge
 
 	Configure WP-PageNavi specifically for Testimonial Widgets. [example](https://aihrus.zendesk.com/entries/23679361-How-do-I-get-page-numbers-for-pagination-)
 
+* `testimonials_widget_review_name_length`
+
+	Maximium length of review schema's name. Default is 156 characters.
+
+* `testimonials_widget_schema`
+
+	Customize schema contents.
+
+* `testimonials_widget_schema_review`
+
+	Customize schema review meta contents.
+
+* `testimonials_widget_schema_agg_rating`
+
+	Customize schema aggregate rating for item.
+
+* `testimonials_widget_schema_author`
+
+	Customize schema author contents.
+
+* `testimonials_widget_schema_item`
+
+	Customize schema reviewed item contents.
+
 
 ### Backend
 
@@ -139,6 +171,9 @@ The [Testimonials Widget plugin](http://wordpress.org/plugins/testimonials-widge
 
 	Alters displayed widget options. [example](https://gist.github.com/michael-cannon/5833782)
 
+* `testimonials_widget_display_setting`
+
+	Alows for display of custom input types.
 
 ## Need More?
 
