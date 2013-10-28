@@ -38,16 +38,18 @@ class Testimonials_Widget_Settings {
 		'id' => 'default_field',
 		'section' => 'general',
 		'std' => '', // default key or value
+		'suggest' => false, // attempt for auto-suggest on inputs
 		'title' => '',
 		'type' => 'text', // textarea, checkbox, radio, select, hidden, heading, password, expand_begin, expand_end
 		'validate' => '', // required, term, slug, slugs, ids, order, single paramater PHP functions
 		'widget' => 1, // show in widget options, 0 off
 	);
 
-	public static $defaults = array();
-	public static $sections = array();
-	public static $settings = array();
-	public static $version  = null;
+	public static $defaults   = array();
+	public static $sections   = array();
+	public static $settings   = array();
+	public static $suggest_id = 0;
+	public static $version    = null;
 
 
 	public function __construct() {
@@ -149,13 +151,6 @@ class Testimonials_Widget_Settings {
 			'validate' => 'absint',
 		);
 
-		self::$settings['height'] = array(
-			'section' => 'widget',
-			'title' => esc_html__( 'Height', 'testimonials-widget' ),
-			'desc' => esc_html__( 'Testimonials height, in pixels. Overrides minimum and maximum height', 'testimonials-widget' ),
-			'validate' => 'min1',
-		);
-
 		self::$settings['refresh_interval'] = array(
 			'section' => 'widget',
 			'title' => esc_html__( 'Rotation Speed', 'testimonials-widget' ),
@@ -170,51 +165,42 @@ class Testimonials_Widget_Settings {
 			'type' => 'expand_begin',
 		);
 
+		self::$settings['transition_mode'] = array(
+			'section' => 'widget',
+			'title' => esc_html__( 'Transition Mode?', 'testimonials-widget' ),
+			'desc' => esc_html__( 'Type of transition between slides', 'testimonials-widget' ),
+			'type' => 'select',
+			'choices' => array(
+				'fade' => esc_html__( 'Fade', 'testimonials-widget' ),
+				'horizontal' => esc_html__( 'Horizontal', 'testimonials-widget' ),
+				'vertical' => esc_html__( 'Vertical', 'testimonials-widget' ),
+			),
+			'std' => 'fade',
+		);
+
+		self::$settings['show_start_stop'] = array(
+			'section' => 'widget',
+			'title' => esc_html__( 'Show Play/Pause?', 'testimonials-widget' ),
+			'desc' => esc_html__( 'Display start and stop buttons underneath the testimonial slider.', 'testimonials-widget' ),
+			'type' => 'checkbox',
+			'validate' => 'is_true',
+			'std' => 1,
+		);
+
+		self::$settings['enable_video'] = array(
+			'section' => 'widget',
+			'title' => esc_html__( 'Enable Video?', 'testimonials-widget' ),
+			'desc' => esc_html__( 'Only enable when displaying video content.', 'testimonials-widget' ),
+			'type' => 'checkbox',
+			'validate' => 'is_true',
+		);
+
 		self::$settings['keep_whitespace'] = array(
 			'section' => 'widget',
 			'title' => esc_html__( 'Keep Whitespace?', 'testimonials-widget' ),
 			'desc' => esc_html__( 'Keeps testimonials looking as entered than sans auto-formatting', 'testimonials-widget' ),
 			'type' => 'checkbox',
 			'validate' => 'is_true',
-		);
-
-		self::$settings['disable_animation'] = array(
-			'section' => 'widget',
-			'title' => esc_html__( 'Disable Animation?', 'testimonials-widget' ),
-			'desc' => esc_html__( 'Disable animation between testimonial transitions. Useful when stacking widgets.', 'testimonials-widget' ),
-			'type' => 'checkbox',
-			'validate' => 'is_true',
-			'std' => 1,
-		);
-
-		self::$settings['fade_out_speed'] = array(
-			'section' => 'widget',
-			'title' => esc_html__( 'Fade Out Speed', 'testimonials-widget' ),
-			'desc' => esc_html__( 'Transition duration in milliseconds; higher values indicate slower animations, not faster ones.', 'testimonials-widget' ),
-			'std' => 1250,
-			'validate' => 'absint',
-		);
-
-		self::$settings['fade_in_speed'] = array(
-			'section' => 'widget',
-			'title' => esc_html__( 'Fade In Speed', 'testimonials-widget' ),
-			'desc' => esc_html__( 'Transition duration in milliseconds; higher values indicate slower animations, not faster ones.', 'testimonials-widget' ),
-			'std' => 500,
-			'validate' => 'absint',
-		);
-
-		self::$settings['min_height'] = array(
-			'section' => 'widget',
-			'title' => esc_html__( 'Minimum Height', 'testimonials-widget' ),
-			'desc' => esc_html__( 'Set for minimum display height, in pixels', 'testimonials-widget' ),
-			'validate' => 'min1',
-		);
-
-		self::$settings['max_height'] = array(
-			'section' => 'widget',
-			'title' => esc_html__( 'Maximum Height', 'testimonials-widget' ),
-			'desc' => esc_html__( 'Set for maximum display height, in pixels', 'testimonials-widget' ),
-			'validate' => 'min1',
 		);
 
 		self::$settings['bottom_text'] = array(
@@ -250,6 +236,7 @@ class Testimonials_Widget_Settings {
 			'title' => esc_html__( 'Reviewed Item?', 'testimonials-widget' ),
 			'desc' => esc_html__( 'Name of thing being referenced in testimonials', 'testimonials-widget' ),
 			'std' => get_option( 'blogname' ),
+			'widget' => 0,
 		);
 
 		self::$settings['item_reviewed_url'] = array(
@@ -257,6 +244,7 @@ class Testimonials_Widget_Settings {
 			'desc' => esc_html__( 'URL of thing being referenced in testimonials', 'testimonials-widget' ),
 			'std' => network_site_url(),
 			'validate' => 'url',
+			'widget' => 0,
 		);
 
 		self::$settings['disable_quotes'] = array(
@@ -377,15 +365,17 @@ class Testimonials_Widget_Settings {
 		self::$settings['category'] = array(
 			'section' => 'selection',
 			'title' => esc_html__( 'Category Filter', 'testimonials-widget' ),
-			'desc' => esc_html__( 'Comma separated category slug-names. Ex: category-a, another-category', 'testimonials-widget' ),
-			'validate' => 'slugs',
+			'desc' => esc_html__( 'Comma separated category names. Ex: Category A, Another category', 'testimonials-widget' ),
+			'validate' => 'terms',
+			'suggest' => true,
 		);
 
 		self::$settings['tags'] = array(
 			'section' => 'selection',
 			'title' => esc_html__( 'Tags Filter', 'testimonials-widget' ),
-			'desc' => esc_html__( 'Comma separated tag slug-names. Ex: tag-a, another-tag', 'testimonials-widget' ),
-			'validate' => 'slugs',
+			'desc' => esc_html__( 'Comma separated tag names. Ex: Tag A, Another tag', 'testimonials-widget' ),
+			'validate' => 'terms',
+			'suggest' => true,
 		);
 
 		self::$settings['tags_all'] = array(
@@ -529,43 +519,6 @@ class Testimonials_Widget_Settings {
 			'type' => 'expand_begin',
 		);
 
-		self::$settings['include_ie7_css'] = array(
-			'section' => 'reset',
-			'title' => esc_html__( 'Include IE7 CSS?', 'testimonials-widget' ),
-			'desc' => esc_html__( 'IE7 specific CSS moved to separate CSS file in version 2.13.6.', 'testimonials-widget' ),
-			'type' => 'checkbox',
-			'validate' => 'is_true',
-			'backwards' => array(
-				'version' => '2.13.6',
-				'std' => 1,
-			),
-			'widget' => 1,
-		);
-
-		self::$settings['remove_hentry'] = array(
-			'section' => 'reset',
-			'title' => esc_html__( 'Remove `.hentry` CSS?', 'testimonials-widget' ),
-			'desc' => esc_html__( 'Pre 2.6.4. Some themes use class `.hentry` in a manner that breaks Testimonials Widgets CSS', 'testimonials-widget' ),
-			'type' => 'checkbox',
-			'validate' => 'is_true',
-			'backwards' => array(
-				'version' => '2.6.4',
-				'std' => 1,
-			),
-		);
-
-		self::$settings['use_quote_tag'] = array(
-			'section' => 'reset',
-			'title' => esc_html__( 'Use `&lt;q&gt;` tag?', 'testimonials-widget' ),
-			'desc' => esc_html__( 'Pre 2.11.0. Not HTML5 compliant', 'testimonials-widget' ),
-			'type' => 'checkbox',
-			'validate' => 'is_true',
-			'backwards' => array(
-				'version' => '2.11.0',
-				'std' => 1,
-			),
-		);
-
 		self::$settings['use_cpt_taxonomy'] = array(
 			'section' => 'reset',
 			'title' => esc_html__( 'Don\'t Use Default Taxonomies?', 'testimonials-widget' ),
@@ -616,6 +569,120 @@ class Testimonials_Widget_Settings {
 			'class' => 'warning', // Custom class for CSS
 			'desc' => esc_html__( 'Check this box to reset options to their defaults', 'testimonials-widget' ),
 			'widget' => 0,
+		);
+
+		self::$settings['version_options_heading'] = array(
+			'section' => 'reset',
+			'desc' => esc_html__( 'Version Based Options', 'testimonials-widget' ),
+			'type' => 'heading',
+		);
+
+		self::$settings['use_bxslider'] = array(
+			'section' => 'reset',
+			'title' => esc_html__( 'Use bxSlider?', 'testimonials-widget' ),
+			'desc' => esc_html__( 'Pre 2.15.0, Testimonials Widgets used custom JavaScript for transitions.', 'testimonials-widget' ),
+			'type' => 'checkbox',
+			'validate' => 'is_true',
+			'backwards' => array(
+				'version' => '2.15.0',
+				'std' => 0,
+			),
+			'std' => 1,
+		);
+
+		self::$settings['disable_animation'] = array(
+			'section' => 'reset',
+			'title' => esc_html__( 'Disable Animation?', 'testimonials-widget' ),
+			'desc' => esc_html__( 'Pre 2.15.0, Disable animation between testimonial transitions. Useful when stacking widgets.', 'testimonials-widget' ),
+			'type' => 'checkbox',
+			'validate' => 'is_true',
+			'std' => 1,
+		);
+
+		self::$settings['fade_out_speed'] = array(
+			'section' => 'reset',
+			'title' => esc_html__( 'Fade Out Speed', 'testimonials-widget' ),
+			'desc' => esc_html__( 'Pre 2.15.0, Transition duration in milliseconds; higher values indicate slower animations, not faster ones.', 'testimonials-widget' ),
+			'std' => 1250,
+			'validate' => 'absint',
+		);
+
+		self::$settings['fade_in_speed'] = array(
+			'section' => 'reset',
+			'title' => esc_html__( 'Fade In Speed', 'testimonials-widget' ),
+			'desc' => esc_html__( 'Pre 2.15.0, Transition duration in milliseconds; higher values indicate slower animations, not faster ones.', 'testimonials-widget' ),
+			'std' => 500,
+			'validate' => 'absint',
+		);
+
+		self::$settings['height'] = array(
+			'section' => 'reset',
+			'title' => esc_html__( 'Height', 'testimonials-widget' ),
+			'desc' => esc_html__( 'Pre 2.15.0, Testimonials height, in pixels. Overrides minimum and maximum height', 'testimonials-widget' ),
+			'validate' => 'min1',
+		);
+
+		self::$settings['min_height'] = array(
+			'section' => 'reset',
+			'title' => esc_html__( 'Minimum Height', 'testimonials-widget' ),
+			'desc' => esc_html__( 'Pre 2.15.0, Set for minimum display height, in pixels', 'testimonials-widget' ),
+			'validate' => 'min1',
+		);
+
+		self::$settings['max_height'] = array(
+			'section' => 'reset',
+			'title' => esc_html__( 'Maximum Height', 'testimonials-widget' ),
+			'desc' => esc_html__( 'Pre 2.15.0, Set for maximum display height, in pixels', 'testimonials-widget' ),
+			'validate' => 'min1',
+		);
+
+		self::$settings['force_css_loading'] = array(
+			'section' => 'reset',
+			'title' => esc_html__( 'Always Load CSS?', 'testimonials-widget' ),
+			'desc' => esc_html__( 'Pre 2.14.0, Testimonials Widgets CSS was always loaded, whether needed or not', 'testimonials-widget' ),
+			'type' => 'checkbox',
+			'validate' => 'is_true',
+			'backwards' => array(
+				'version' => '2.14.0',
+				'std' => 1,
+			),
+		);
+
+		self::$settings['include_ie7_css'] = array(
+			'section' => 'reset',
+			'title' => esc_html__( 'Include IE7 CSS?', 'testimonials-widget' ),
+			'desc' => esc_html__( 'IE7 specific CSS moved to separate CSS file in version 2.13.6.', 'testimonials-widget' ),
+			'type' => 'checkbox',
+			'validate' => 'is_true',
+			'backwards' => array(
+				'version' => '2.13.6',
+				'std' => 1,
+			),
+			'widget' => 1,
+		);
+
+		self::$settings['use_quote_tag'] = array(
+			'section' => 'reset',
+			'title' => esc_html__( 'Use `&lt;q&gt;` tag?', 'testimonials-widget' ),
+			'desc' => esc_html__( 'Pre 2.11.0, not HTML5 compliant', 'testimonials-widget' ),
+			'type' => 'checkbox',
+			'validate' => 'is_true',
+			'backwards' => array(
+				'version' => '2.11.0',
+				'std' => 1,
+			),
+		);
+
+		self::$settings['remove_hentry'] = array(
+			'section' => 'reset',
+			'title' => esc_html__( 'Remove `.hentry` CSS?', 'testimonials-widget' ),
+			'desc' => esc_html__( 'Pre 2.6.4, some themes use class `.hentry` in a manner that breaks Testimonials Widgets CSS', 'testimonials-widget' ),
+			'type' => 'checkbox',
+			'validate' => 'is_true',
+			'backwards' => array(
+				'version' => '2.6.4',
+				'std' => 1,
+			),
 		);
 
 		self::$settings['reset_expand_end'] = array(
@@ -679,13 +746,14 @@ class Testimonials_Widget_Settings {
 			return;
 
 		$field_args = array(
-			'type' => $type,
-			'id' => $id,
-			'desc' => $desc,
-			'std' => $std,
 			'choices' => $choices,
-			'label_for' => $id,
 			'class' => $class,
+			'desc' => $desc,
+			'id' => $id,
+			'label_for' => $id,
+			'std' => $std,
+			'suggest' => $suggest,
+			'type' => $type,
 		);
 
 		self::$defaults[$id] = $std;
@@ -804,6 +872,11 @@ class Testimonials_Widget_Settings {
 	}
 
 
+	/**
+	 *
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+	 */
 	public static function display_setting( $args = array(), $do_echo = true, $input = null ) {
 		$content = '';
 
@@ -914,7 +987,12 @@ class Testimonials_Widget_Settings {
 			break;
 
 		case 'text':
-			$content .= '<input class="regular-text' . $field_class . '" type="text" id="' . $id . '" name="' . self::ID . '[' . $id . ']" placeholder="' . $std . '" value="' . $options[$id] . '" />';
+			$suggest_id = 'suggest_' . self::$suggest_id++;
+
+			$content .= '<input class="regular-text' . $field_class . ' ' . $suggest_id . '" type="text" id="' . $id . '" name="' . self::ID . '[' . $id . ']" placeholder="' . $std . '" value="' . $options[$id] . '" />';
+
+			if ( $suggest )
+				$content .= self::get_suggest( $id, $suggest_id );
 
 			if ( ! empty( $desc ) )
 				$content .= '<br /><span class="description">' . $desc . '</span>';
@@ -979,10 +1057,7 @@ class Testimonials_Widget_Settings {
 
 
 	public function styles() {
-		if ( ! is_ssl() )
-			wp_enqueue_style( 'jquery-style', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css' );
-		else
-			wp_enqueue_style( 'jquery-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css' );
+		wp_enqueue_style( 'jquery-style', '//ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css' );
 	}
 
 
@@ -1211,7 +1286,10 @@ class Testimonials_Widget_Settings {
 
 		case 'term':
 			$input[ $id ] = self::validate_term( $input[ $id ], $default );
-			$input[ $id ] = strtolower( $input[ $id ] );
+			break;
+
+		case 'terms':
+			$input[ $id ] = self::validate_terms( $input[ $id ], $default );
 			break;
 
 		case 'url':
@@ -1264,6 +1342,14 @@ class Testimonials_Widget_Settings {
 	public static function validate_term( $input, $default ) {
 		if ( preg_match( '#^\w+$#', $input ) )
 			return $input;
+
+		return $default;
+	}
+
+
+	public static function validate_terms( $input, $default ) {
+		if ( preg_match( '#^(([\w- ]+)(,\s?)?)+$#', $input ) )
+			return preg_replace( '#,\s*$#', '', $input );
 
 		return $default;
 	}
@@ -1362,6 +1448,44 @@ class Testimonials_Widget_Settings {
 		);
 
 		do_action( 'testimonials_widget_settings_add_help_tabs', $screen );
+	}
+
+
+	public static function get_suggest( $id, $suggest_id ) {
+		wp_enqueue_script( 'suggest' );
+
+		$use_cpt_taxonomy = tw_get_option( 'use_cpt_taxonomy', false );
+
+		switch ( $id ) {
+		case 'category':
+			if ( ! $use_cpt_taxonomy )
+				$taxonomy = 'category';
+			else
+				$taxonomy = self::$cpt_category;
+
+			break;
+
+		case 'tags':
+			if ( ! $use_cpt_taxonomy )
+				$taxonomy = 'post_tag';
+			else
+				$taxonomy = self::$cpt_tags;
+
+			break;
+		}
+
+		$ajax_url   = site_url() . '/wp-admin/admin-ajax.php';
+		$suggest_js = "suggest( '{$ajax_url}?action=ajax-tag-search&tax={$taxonomy}', { delay: 500, minchars: 2, multiple: true, multipleSep: ', ' } )";
+
+		$scripts = <<<EOD
+<script type="text/javascript">
+jQuery(document).ready( function() {
+	jQuery( '.{$suggest_id}' ).{$suggest_js};
+});
+</script>
+EOD;
+
+		return $scripts;
 	}
 
 
