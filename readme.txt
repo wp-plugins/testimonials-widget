@@ -3,9 +3,9 @@
 Contributors: comprock
 Donate link: http://aihr.us/about-aihrus/donate/
 Tags: client, customer, portfolio, quotations, quote, quotes, random, recommendation, reference, review, reviews, testimonial, testimonials, testimony, wpml
-Requires at least: 3.4
-Tested up to: 3.6.1
-Stable tag: 2.14.0
+Requires at least: 3.6
+Tested up to: 3.8.0
+Stable tag: 2.15.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -20,6 +20,19 @@ Testimonials Widget plugin allows you to display random or selected portfolio, q
 **[Video introduction](http://youtu.be/bhUhuQ-2m8s)**
 
 **View a [Live Testimonials Widget Demo](http://aihr.us/good-work-deserves-good-words-testimonials-widget-examples/)**
+
+= Awesome Content Slider Capabilities! =
+
+* Slide Images - responsive image slideshow
+* Slide Videos - video slideshow
+* Slide Text - useful for rotating testimonials
+* Slide Mixed Content: slideshow having video slides, images slides, and text slides. Each individual slide can also have mixed content.
+* Shortcode compatible - slide content that is rendered using shortcodes. i.e. stock Worpdress Galleries and Gravity Forms
+* Widget ready
+* Shortcode ready 
+* Random display
+* Fade and slide transitions
+* Filter slideshow content by WordPress' built in categories, tags, or post-ID
 
 More than one Testimonials Widget instance can be displayed at a time pulls from the `testimonials-widget` custom post type. Additionally, with shortcodes and theme functions, you can display a short or long list or rotation of testimonials. Each Testimonial Widget has its own CSS identifier for custom styling.
 
@@ -43,57 +56,25 @@ The single testimonial view supports image, source, title, location, email, comp
 * Single testimonial view includes image, source, title, location, email, company and URL details
 * Testimonials archive view
 * Use custom taxonomy or WordPress's own for categories and tags
+* Use's [bxSlider](http://bxslider.com) for transitions
 
-= Testimonials Widget Premium Plugin Features =
+= Testimonials Widget Premium =
 
-Testimonials Widget Premium adds onto the best WordPress testimonials plugin there is, [Testimonials Widget](http://wordpress.org/extend/plugins/testimonials-widget/). Testimonials Widget Premium offers [caching, excerpts, filters, read more links](http://aihr.us/downloads/testimonials-widget-premium-wordpress-plugin/), more selection options, and advanced capabilities like using custom post types as testimonials. Additionally, testimonials can be rated and users can submit their own testimonials via a front-end form shortcode or widget.
+Testimonials Widget Premium adds onto the best WordPress testimonials plugin there is, [Testimonials Widget](http://wordpress.org/extend/plugins/testimonials-widget/). Testimonials Widget Premium offers [caching, excerpts, filters, read more links](http://aihr.us/downloads/testimonials-widget-premium-wordpress-plugin/), more selection options, and advanced capabilities like using custom post types as testimonials. Additionally, testimonials support ratings and users can submit their own testimonials via a front-end form shortcode or widget.
 
-* "Read more" link column on testimonial posts admin page
-* Admin mode only anti-spam debug help text
-* Akismet anti-spam checking
+= Primary Premium Features =
+
+* Akismet, math-based CAPTCHA, and more anti-spam traps
 * Alternate destinations for "Read more" links
-* Alternating `.even` and `.odd` CSS classes for styling testimonial list entries
-* Automatically change to the next testimonial, per the sort order, whenever a user navigates to another page.
-* Built-in update notification
+* Auto rotate testimonials by page
 * CSS or HTML table based testimonials submissions form layout
-* Cache per page when you use custom testimonials instance per page
 * Caching of testimonials queries and content to decrease server load time improve page loading speed by 1/10 to 1/2 a second
-* Clear cache when WP Super Cache, FlexiCache, Hyper Cache, DB Cache Reloaded Fix does
-* Deactivates self if no active or incorrect version of Testimonials Widget plugin
-* Default post author, category, and status options for user testimonial submissions
-* Deletes old and related testimonial cache entries automatically
-* Disable caching for widget, shortcode or theme functions
-* Disable donate and purchase related text and links
+* Carousel mode for rotating multiple testimonials at the same time
 * Displays ratings to grant testimonials more power!
-* Email notification for user submitted testimonials
 * Excerpts for widget view, with read more link to complete testimonial
-* Fields for rating, item reviewed, and item URL per testimonial
-* Filters for caching and more link control, text replacement, and more
-* Form "Testimonial" header text is customizable to "Specials" or other terms
 * Front-end entry form for user supplied testimonials. **[Live form demo](http://aihr.us/about-aihrus/testimonials/add-testimonial/)**
-* Math-based CAPTCHA
-* Multiple anti-spam traps
-* Multiple user-entry forms on same page are allowed
-* Override Review schema author name
-* Plugin version tracking to ensure compatibility
-* Premium tab on settings screen for site-wide option defaults
-* Prevent duplicate testimonials when using multiple testimonial instances
-* Read more links for testimonials exceeding the character limit
-* Require minimumal testimonial rating for display
-* Review microdata format per schema.org
-* Right Now Dashboard widget displays "Pending Testimonials" counts
 * Select only testimonials with excerpts, images or of arbitrary maximum and minimum length
-* Select post, page and other custom post types for content rotations slider
-* Settings and URL based cache clearing
-* Shortcodes and theme functions for testimonials count and testimonial link list
-* Shortcodes, theme functions, and widget user testimonial submission form
-* Show excerpts with list and single views
-* Show unique testimonials on page with multiple testimonial instances
-* Simple, single rating per testimonials (more capabilities to come in future releases)
-* Testimonial links listing with image, source, title, location, company, and URL fields
-* Upload images by browsing or URL
-* WP Admin > Testmonials > Clear Cache menu link
-* WPML compatible
+* Show unique testimonials when displaying multiple testimonial instances
 
 = Premium Shortcodes =
 
@@ -103,11 +84,12 @@ Testimonials Widget Premium adds onto the best WordPress testimonials plugin the
 
 [Buy Testimonials Widget Premium](http://aihr.us/downloads/testimonials-widget-premium-wordpress-plugin/) plugin for WordPress.
 
-= Additional Testimonials Widget Features =
+= Additional Features =
 
 * Adjustable animation speed
 * Archive Page URL and Testimonial Page URL are prevented from being the same or matching existing pages.
 * Auto-migration from pre-2.0.0 custom table to new Testimonials Widget custom post type
+* Auto-suggest for category and tag options
 * Automatic linking of email and URL fields via source or company fields
 * Clickable widget titles
 * Commenting on testimonial single-view pages
@@ -203,9 +185,9 @@ Further, global settings are the baseline for shortcodes. If you want to alter t
 
 **Selection**
 
-* Category Filter - Comma separated category slug-names
+* Category Filter - Comma separated category names
 	* `category` - default none; category=product or category="category-a, another-category"
-* Tags Filter - Comma separated tag slug-names
+* Tags Filter - Comma separated tag names
 	* `tags` - default none; tags=fire or tags="tag-a, another-tag"
 * Require All Tags - Select only testimonials with all of the given tags
 	* `tags_all` - default OR; tags_all=true
@@ -237,23 +219,17 @@ Further, global settings are the baseline for shortcodes. If you want to alter t
 * Character Limit - Number of characters to limit testimonial views to
 	* `char_limit` - default none; char_limit=200
 	* Widget - default 500
-* Height - Testimonials height, in pixels. Overrides minimum and maximum height
-	* `height` - default none; height=300
 * Rotation speed - Seconds between testimonial rotations or 0 for no rotation at all
 	* `refresh_interval` - default 5; refresh_interval=0
+* Transition Mode? - Type of transition between slides
+	* `transition_mode` - default fade; transition_mode=horizontal|vertical|fade
+* Show Play/Pause? - Display start and stop buttons underneath the testimonial slider.
+	* `show_start_stop` - default true; show_start_stop=false
+* Enable Video? - Only enable when displaying video content.
+	* `enable_video` - default false; enable_video=true
 * Keep Whitespace? - Keeps testimonials looking as entered than sans auto-formatting
 	* `keep_whitespace` - default none; keep_whitespace=true
 	* The citation has no whitespace adaptations. It's straight text, except for email or URL links. The presentation is handled strictly by CSS.
-* Disable Animation? - Disable animation between testimonial transitions. Useful when stacking.
-	* `disable_animation` - default false; disable_animation=true
-* Fade Out Speed - Transition duration in milliseconds; higher values indicate slower animations, not faster ones.
-	* `fade_out_speed` - default 1250; fade_out_speed=400
-* Fade In Speed - Transition duration in milliseconds; higher values indicate slower animations, not faster ones.
-	* `fade_in_speed` - default 500; fade_in_speed=800
-* Minimum Height - Set for minimum display height, in pixels
-	* `min_height` - default none; min_height=100
-* Maximum Height - Set for maximum display height, in pixels
-	* `max_height` - default none; max_height=250
 * Testimonial Bottom Text - Custom text or HTML for bottom of testimonials
 	* `bottom_text` - default none; bottom_text="`&lt;h3&gt;&lt;a href="http://example.com"&gt;All testimonials&lt;/a&gt;&lt;/h3&gt;`"
 
@@ -267,16 +243,33 @@ Further, global settings are the baseline for shortcodes. If you want to alter t
 
 **Compatibility & Reset**
 
-* Include IE7 CSS? - IE7 specific CSS moved to separate CSS file in version 2.13.6.
-* Remove `.hentry` CSS? – Some themes use class `.hentry` in a manner that breaks Testimonials Widgets CSS
-	* `remove_hentry` - default none; remove_hentry=true
-* Use `<q>` tag? – Pre 2.11.0. Not HTML5 compliant
-	* `use_quote_tag` - default none; use_quote_tag=true
 * Don't Use Default Taxonomies? – If checked, use Testimonials Widget's own category and tag taxonomies instead
 * Export Settings – These are your current settings in a serialized format. Copy the contents to make a backup of your settings.
 * Import Settings – Paste new serialized settings here to overwrite your current configuration.
 * Remove Plugin Data on Deletion? - Delete all Testimonials Widget data and options from database on plugin deletion
 * Reset to Defaults? – Check this box to reset options to their defaults
+
+**Version Based Options**
+
+* Use bxSlider? - Pre 2.15.0, Testimonials Widgets used custom JavaScript for transitions.
+* Disable Animation? - Disable animation between testimonial transitions. Useful when stacking.
+	* `disable_animation` - default false; disable_animation=true
+* Fade Out Speed - Transition duration in milliseconds; higher values indicate slower animations, not faster ones.
+	* `fade_out_speed` - default 1250; fade_out_speed=400
+* Fade In Speed - Transition duration in milliseconds; higher values indicate slower animations, not faster ones.
+	* `fade_in_speed` - default 500; fade_in_speed=800
+* Height - Testimonials height, in pixels. Overrides minimum and maximum height
+	* `height` - default none; height=300
+* Minimum Height - Set for minimum display height, in pixels
+	* `min_height` - default none; min_height=100
+* Maximum Height - Set for maximum display height, in pixels
+	* `max_height` - default none; max_height=250
+* Always Load CSS? - Pre 2.14.0. Testimonials Widgets CSS was always loaded, whether needed or not
+* Include IE7 CSS? - IE7 specific CSS moved to separate CSS file in version 2.13.6.
+* Use `<q>` tag? – Pre 2.11.0. Not HTML5 compliant
+	* `use_quote_tag` - default none; use_quote_tag=true
+* Remove `.hentry` CSS? – Some themes use class `.hentry` in a manner that breaks Testimonials Widgets CSS
+	* `remove_hentry` - default none; remove_hentry=true
 
 = Shortcode Examples =
 
@@ -380,9 +373,12 @@ If you want to contribute and I hope you do, visit the [Testimonials Widget Gith
 
 1. [How do I change my widget's rotation speed or other options?](https://aihrus.zendesk.com/entries/27714083-How-do-I-change-my-widget-s-rotation-speed-or-other-options-)
 1. [Debug common theme and plugin conflicts](https://aihrus.zendesk.com/entries/25119302-How-do-you-debug-common-issues-)
-1. [Change or debug CSS](https://aihrus.zendesk.com/entries/24910733-How-to-Correct-Testimonials-Widget-CSS-Issues)
+1. [Change or debug CSS](https://aihrus.zendesk.com/entries/24910733-How-to-Correct-Testimonials-Widget-CSS-Issues) AKA "What's up with these quotes?"
 1. [Pagination is broken](https://aihrus.zendesk.com/entries/23693513-My-testimonials-list-paging-doesn-t-work)
 1. [Test Review schema output](http://www.google.com/webmasters/tools/richsnippets)
+1. [Customize bxSlider](http://bxslider.com/examples)
+
+* [Major Change for 2.15.0](https://aihrus.zendesk.com/entries/28402246-Major-Change-for-2-15-0)
 
 = Still Stuck? =
 
@@ -418,6 +414,10 @@ See [Changelog](https://github.com/michael-cannon/testimonials-widget/blob/maste
 
 
 == Upgrade Notice ==
+
+= 2.15.0 =
+
+* If upgrading, bxSlider will not be enabled by default. You must enable it in your widget and global settings. CSS customizations must be reviewed to have the `.active` and `.display-none` classes removed. The main `.testimonials-widget-testimonial` class also need the `display: none;` and `clear: left;` removed.
 
 = 2.14.0 =
 

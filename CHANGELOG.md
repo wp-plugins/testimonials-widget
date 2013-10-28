@@ -2,6 +2,35 @@
 
 ## master
 
+## 2.15.0
+* Add 2.15.0 upgrade notice
+* Add filter `testimonials_widget_get_testimonials_html`
+* Add option Always Load CSS?
+* Add option Enable Video?
+* Add option Start/Stop
+* Add option Transition Mode
+* BUGFIX JS slider_var not global 
+* BUGFIX active and display-none classes still included though using bxSlider
+* Bump $2 donation request to $5
+* Hide non-widget settings
+* If upgrading, bxSlider will not be enabled by default. You must enable it in your widget and global settings. CSS customizations must be reviewed to have the `.active` and `.display-none` classes removed. The main `.testimonials-widget-testimonial` class also need the `display: none;` and `clear: left;` removed.
+* Match transition defaults to those of current testimonials widget
+* Move 2.14.0 transition options to Compatibility tab
+* Move height options to Compatibility tab
+* Moved testimonials-widget-2.14.0.css -> css/testimonials-widget-2.14.0.css
+* Moved testimonials-widget-ie7.css -> css/testimonials-widget-ie7.css
+* Reduce `empty` usage
+* Require at least WordPress 3.6
+* Simplify `wp_enqueue_style` handling
+* Update .travis for phpmd exclusions
+* Update FAQ
+* Update PHPCS config
+* Update TODO
+* Use const JS_KEY
+* [Auto-suggest category and tag options](http://wordpress.org/support/topic/feature-request-menus-in-the-widget)
+* [Responsively set height](http://wordpress.org/support/topic/better-set-height?replies=3#post-4788316)
+* [Use bxSlider JavaScript slider](http://bxslider.com/examples/auto-show-start-stop-controls) to make the transitions and navigation more slider like with a [pause button on testimonials](http://wordpress.org/support/topic/play-pause-icon-on-testimonial)
+
 ## 2.14.0
 * Abstact schema generation
 * Add API action testimonials_widget_styles
