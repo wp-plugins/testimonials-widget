@@ -2,6 +2,10 @@
 
 ## master
 
+## 2.15.1
+* BUGFIX Fatal error: Access to undeclared static property: Testimonials_Widget_Settings::$cpt_category
+* Encapsulate shortcodes
+
 ## 2.15.0
 * Add 2.15.0 upgrade notice
 * Add filter `testimonials_widget_get_testimonials_html`
