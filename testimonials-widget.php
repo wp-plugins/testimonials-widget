@@ -1,11 +1,11 @@
 <?php
 /**
- * Plugin Name: Testimonials Widget
- * Plugin URI: http://wordpress.org/extend/plugins/testimonials-widget/
- * Description: Testimonials Widget plugin allows you to display random or selected portfolio, quotes, reviews, showcases, or text with images on your WordPress blog.
- * Version: 2.15.1
+ * Plugin Name: Testimonials
+ * Plugin URI: http://wordpress.org/plugins/testimonials-widget/
+ * Description: Testimonials lets you randomly slide or list selected portfolios, quotes, reviews, or text with images or videos on your WordPress site.
+ * Version: 2.16.0
  * Author: Michael Cannon
- * Author URI: http://aihr.us/about-aihrus/michael-cannon-resume/
+ * Author URI: http://aihr.us/resume/
  * License: GPLv2 or later
  */
 
@@ -23,27 +23,38 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
-class Testimonials_Widget {
-	const ID          = 'testimonials-widget-testimonials';
-	const JS_KEY      = 'tw_slider_';
-	const OLD_NAME    = 'testimonialswidget';
-	const PLUGIN_FILE = 'testimonials-widget/testimonials-widget.php';
-	const PT          = 'testimonials-widget';
-	const VERSION     = '2.15.1';
+if ( ! defined( 'TW_PLUGIN_DIR' ) )
+	define( 'TW_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 
-	private static $base          = null;
+if ( ! defined( 'TW_PLUGIN_DIR_LIB' ) )
+	define( 'TW_PLUGIN_DIR_LIB', TW_PLUGIN_DIR . '/lib' );
+
+require_once TW_PLUGIN_DIR_LIB . '/aihrus/class-aihrus-common.php';
+
+
+class Testimonials_Widget extends Aihrus_Common {
+	const ID          = 'testimonials-widget-testimonials';
+	const ITEM_NAME   = 'Testimonials';
+	const PLUGIN_BASE = 'testimonials-widget/testimonials-widget.php';
+	const PT          = 'testimonials-widget';
+	const SLUG        = 'tw_';
+	const VERSION     = '2.16.0';
+
 	private static $found_posts   = 0;
 	private static $max_num_pages = 0;
 	private static $post_count    = 0;
-	private static $wp_query      = null;
+	private static $wp_query;
 
+	public static $class           = __CLASS__;
 	public static $cpt_category    = '';
 	public static $cpt_tags        = '';
 	public static $css             = array();
 	public static $css_called      = false;
-	public static $donate_button   = '';
 	public static $instance_number = 0;
 	public static $instance_widget = 0;
+	public static $menu_shortcodes;
+	public static $not_found = false;
+	public static $notice_key;
 	public static $scripts         = array();
 	public static $scripts_called  = false;
 	public static $settings_link   = '';
@@ -90,7 +101,10 @@ class Testimonials_Widget {
 
 
 	public function __construct() {
+		parent::__construct();
+
 		add_action( 'admin_init', array( $this, 'admin_init' ) );
+		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 		add_action( 'init', array( $this, 'init' ) );
 		add_action( 'widgets_init', array( $this, 'widgets_init' ) );
 		add_shortcode( 'testimonialswidget_list', array( $this, 'testimonialswidget_list' ) );
@@ -99,19 +113,13 @@ class Testimonials_Widget {
 
 
 	public function admin_init() {
-		self::$donate_button = <<<EOD
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-<input type="hidden" name="cmd" value="_s-xclick">
-<input type="hidden" name="hosted_button_id" value="WM4F995W9LHXE">
-<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-</form>
-EOD;
+		self::support_thumbnails();
 
 		self::$settings_link = '<a href="' . get_admin_url() . 'edit.php?post_type=' . Testimonials_Widget::PT . '&page=' . Testimonials_Widget_Settings::ID . '">' . esc_html__( 'Settings', 'testimonials-widget' ) . '</a>';
 
 		$this->add_meta_box_testimonials_widget();
 		$this->update();
+
 		add_action( 'gettext', array( $this, 'gettext_testimonials' ) );
 		add_action( 'manage_' . self::PT . '_posts_custom_column', array( $this, 'manage_posts_custom_column' ), 10, 2 );
 		add_action( 'right_now_content_table_end', array( $this, 'right_now_content_table_end' ) );
@@ -120,16 +128,22 @@ EOD;
 		add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
 		add_filter( 'post_updated_messages', array( $this, 'post_updated_messages' ) );
 		add_filter( 'pre_get_posts', array( $this, 'pre_get_posts_author' ) );
-		self::support_thumbnails();
+	}
+
+
+	public function admin_menu() {
+		self::$menu_shortcodes = add_submenu_page( 'edit.php?post_type=' . self::PT, esc_html__( 'Testimonials Shortcode Examples', 'testimonials-widget' ), esc_html__( 'E.g. Shortcodes', 'testimonials-widget' ), 'manage_options', 'shortcodes', array( $this, 'show_shortcodes' ) );
 	}
 
 
 	public function init() {
 		add_filter( 'the_content', array( $this, 'get_single' ) );
+
 		load_plugin_textdomain( self::PT, false, 'testimonials-widget/languages' );
-		self::$base         = plugin_basename( __FILE__ );
+
 		self::$cpt_category = self::PT . '-category';
 		self::$cpt_tags     = self::PT . '-post_tag';
+
 		self::init_post_type();
 
 		$force_css_loading = tw_get_option( 'force_css_loading' );
@@ -138,8 +152,8 @@ EOD;
 	}
 
 
-	public function plugin_action_links( $links, $file ) {
-		if ( $file == self::$base )
+	public static function plugin_action_links( $links, $file ) {
+		if ( self::PLUGIN_BASE == $file )
 			array_unshift( $links, self::$settings_link );
 
 		return $links;
@@ -230,7 +244,7 @@ EOD;
 		if ( ! current_user_can( 'activate_plugins' ) )
 			return;
 
-		require_once 'lib/class-testimonials-widget-settings.php';
+		require_once TW_PLUGIN_DIR_LIB . '/class-testimonials-widget-settings.php';
 		self::init();
 		flush_rewrite_rules();
 	}
@@ -241,6 +255,7 @@ EOD;
 			return;
 
 		flush_rewrite_rules();
+		Testimonials_Widget::delete_notices();
 	}
 
 
@@ -250,11 +265,10 @@ EOD;
 
 		global $wpdb;
 
-		require_once 'lib/class-testimonials-widget-settings.php';
+		require_once TW_PLUGIN_DIR_LIB . '/class-testimonials-widget-settings.php';
 		$delete_data = tw_get_option( 'delete_data', false );
 		if ( $delete_data ) {
 			delete_option( Testimonials_Widget_Settings::ID );
-			delete_option( self::OLD_NAME );
 			$wpdb->query( 'OPTIMIZE TABLE `' . $wpdb->options . '`' );
 
 			Testimonials_Widget::delete_testimonials();
@@ -297,7 +311,7 @@ EOD;
 
 
 	public static function plugin_row_meta( $input, $file ) {
-		if ( $file != self::$base )
+		if ( self::PLUGIN_BASE != $file )
 			return $input;
 
 		$disable_donate = tw_get_option( 'disable_donate' );
@@ -305,8 +319,8 @@ EOD;
 			return $input;
 
 		$links = array(
-			'<a href="http://aihr.us/about-aihrus/donate/"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" border="0" alt="PayPal - The safer, easier way to pay online!" /></a>',
-			'<a href="http://aihr.us/downloads/testimonials-widget-premium-wordpress-plugin/">Purchase Testimonials Widget Premium</a>',
+			self::$donate_link,
+			'<a href="http://aihr.us/downloads/testimonials-widget-premium-wordpress-plugin/">Purchase Testimonials Premium</a>',
 		);
 
 		$input = array_merge( $input, $links );
@@ -315,21 +329,17 @@ EOD;
 	}
 
 
-	public function admin_notices_2_12_0() {
-		$content  = '<div class="updated fade"><p>';
-		$content .= sprintf( __( 'If your Testimonials Widget display has gone to funky town, please <a href="%s">read the FAQ</a> about possible CSS fixes.', 'testimonials-widget' ), esc_url( 'https://aihrus.zendesk.com/entries/23722573-Major-Changes-Since-2-10-0' ) );
-		$content .= '</p></div>';
+	public static function notice_2_12_0() {
+		$text = sprintf( __( 'If your Testimonials display has gone to funky town, please <a href="%s">read the FAQ</a> about possible CSS fixes.', 'testimonials-widget' ), esc_url( 'https://aihrus.zendesk.com/entries/23722573-Major-Changes-Since-2-10-0' ) );
 
-		echo $content;
+		self::notice_updated( $text );
 	}
 
 
-	public function admin_notices_donate() {
-		$content  = '<div class="updated fade"><p>';
-		$content .= sprintf( esc_html__( 'Please donate $5 towards development and support of this Testimonials Widget plugin. %s', 'testimonials-widget' ), self::$donate_button );
-		$content .= '</p></div>';
+	public static function notice_donate( $disable_donate = null, $item_name = null ) {
+		$disable_donate = tw_get_option( 'disable_donate' );
 
-		echo $content;
+		parent::notice_donate( $disable_donate, self::ITEM_NAME );
 	}
 
 
@@ -337,10 +347,10 @@ EOD;
 		$prior_version = tw_get_option( 'admin_notices' );
 		if ( $prior_version ) {
 			if ( $prior_version < '2.12.0' )
-				add_action( 'admin_notices', array( $this, 'admin_notices_2_12_0' ) );
+				self::set_notice( 'notice_2_12_0' );
 
 			if ( $prior_version < '2.15.0' )
-				add_action( 'admin_notices', array( $this, 'admin_notices_2_15_0' ) );
+				self::set_notice( 'notice_2_15_0' );
 
 			if ( $prior_version < self::VERSION )
 				do_action( 'testimonials_widget_update' );
@@ -351,103 +361,9 @@ EOD;
 		// display donate on major/minor version release
 		$donate_version = tw_get_option( 'donate_version', false );
 		if ( ! $donate_version || ( $donate_version != self::VERSION && preg_match( '#\.0$#', self::VERSION ) ) ) {
-			add_action( 'admin_notices', array( $this, 'admin_notices_donate' ) );
+			self::set_notice( 'notice_donate' );
 			tw_set_option( 'donate_version', self::VERSION );
 		}
-
-		$options = get_option( self::OLD_NAME );
-		if ( true !== $options['migrated'] )
-			$this->migrate();
-	}
-
-
-	public function migrate() {
-		global $wpdb;
-
-		$table_name       = $wpdb->prefix . self::OLD_NAME;
-		$meta_key         = '_' . self::PT . ':testimonial_id';
-		$has_table_query  = "SELECT table_name FROM information_schema.tables WHERE table_schema='{$wpdb->dbname}' AND table_name='{$table_name}'";
-		$has_table_result = $wpdb->get_col( $has_table_query );
-
-		if ( ! empty( $has_table_result ) ) {
-			// check that db table exists and has entries
-			$query = 'SELECT `testimonial_id`, `testimonial`, `author`, `source`, `tags`, `public`, `time_added`, `time_updated` FROM `' . $table_name . '`';
-
-			// ignore already imported
-			$done_import_query = 'SELECT meta_value FROM ' . $wpdb->postmeta . ' WHERE meta_key = "' . $meta_key . '"';
-			$done_import       = $wpdb->get_col( $done_import_query );
-
-			if ( ! empty( $done_import ) ) {
-				$done_import = array_unique( $done_import );
-				$query      .= ' WHERE testimonial_id NOT IN ( ' . implode( ',', $done_import ) . ' )';
-			}
-
-			$results = $wpdb->get_results( $query );
-			if ( ! empty( $results ) ) {
-				foreach ( $results as $result ) {
-					// author can contain title and company details
-					$author  = $result->author;
-					$company = false;
-
-					// ex: First Last of Company!
-					$author = str_replace( ' of ', ', ', $author );
-					// now ex: First Last, Company!
-
-					// ex: First Last, Company
-					// ex: First Last, Web Development Manager, Topcon Positioning Systems, Inc.
-					// ex: First Last, Owner, Company, LLC
-					$author     = str_replace( ' of ', ', ', $author );
-					$temp_comma = '^^^';
-					$author     = str_replace( ', LLC', $temp_comma . ' LLC', $author );
-
-					// now ex: First Last, Owner, Company^^^ LLC
-					$author = str_replace( ', Inc', $temp_comma . ' Inc', $author );
-
-					// ex: First Last, Web Development Manager, Company^^^ Inc.
-					// it's possible to have "Michael Cannon, Senior Developer" and "Senior Developer" become the company. Okay for now
-					$author = explode( ', ', $author );
-
-					if ( 1 < count( $author ) ) {
-						$company = array_pop( $author );
-						$company = str_replace( $temp_comma, ',', $company );
-					}
-
-					$author = implode( ', ', $author );
-					$author = str_replace( $temp_comma, ',', $author );
-
-					$post_data = array(
-						'post_type' => self::PT,
-						'post_status' => ( 'yes' == $result->public ) ? 'publish' : 'private',
-						'post_date' => $result->time_added,
-						'post_modified' => $result->time_updated,
-						'post_title' => $author,
-						'post_content' => $result->testimonial,
-						'tags_input' => $result->tags,
-					);
-
-					$post_id = wp_insert_post( $post_data, true );
-
-					// track/link testimonial import to new post
-					add_post_meta( $post_id, $meta_key, $result->testimonial_id );
-
-					if ( ! empty( $company ) )
-						add_post_meta( $post_id, 'testimonials-widget-company', $company );
-
-					$source = $result->source;
-					if ( ! empty( $source ) ) {
-						if ( is_email( $source ) ) {
-							add_post_meta( $post_id, 'testimonials-widget-email', $source );
-						} else {
-							add_post_meta( $post_id, 'testimonials-widget-url', $source );
-						}
-					}
-				}
-			}
-		}
-
-		$options['migrated'] = true;
-		delete_option( self::OLD_NAME );
-		add_option( self::OLD_NAME, $options );
 	}
 
 
@@ -696,6 +612,9 @@ EOD;
 
 			if ( ! isset( $atts['random'] ) )
 				$atts['random'] = 1;
+
+			if ( ! isset( $atts['enable_schema'] ) )
+				$atts['enable_schema'] = 0;
 		}
 
 		$atts = wp_parse_args( $atts, self::get_defaults() );
@@ -817,6 +736,10 @@ EOF;
 
 
 	public static function get_testimonials_html_js( $testimonials, $atts, $widget_number = null ) {
+		$not_found = self::get_not_found();
+		if ( $not_found )
+			return;
+
 		$scripts          = array();
 		$scripts_internal = array();
 
@@ -844,7 +767,7 @@ EOF;
 
 					$autoControls = $show_start_stop ? 'autoControls: true,' : '';
 
-					$slider_var  = self::JS_KEY . $widget_number;
+					$slider_var  = self::SLUG . $widget_number;
 					$javascript .= <<<EOF
 var {$slider_var} = null;
 
@@ -945,7 +868,6 @@ EOF;
 
 
 	public static function get_testimonials_html( $testimonials, $atts, $is_list = true, $widget_number = null ) {
-		// display attributes
 		$hide_not_found = $atts['hide_not_found'];
 		$paging         = Testimonials_Widget_Settings::is_true( $atts['paging'] );
 		$paging_before  = ( 'before' === strtolower( $atts['paging'] ) );
@@ -970,7 +892,10 @@ EOF;
 			$testimonials = array(
 				array( 'testimonial_content' => esc_html__( 'No testimonials found', 'testimonials-widget' ) ),
 			);
-		}
+
+			self::set_not_found( true );
+		} else
+			self::set_not_found();
 
 		$pre_paging = '';
 		if ( $paging || $paging_before )
@@ -1008,7 +933,6 @@ EOF;
 
 
 	public static function get_testimonial_html( $testimonial, $atts, $is_list = true, $is_first = false, $widget_number = null ) {
-		// display attributes
 		$disable_quotes  = $atts['disable_quotes'];
 		$do_image        = ! $atts['hide_image'] && ! empty( $testimonial['testimonial_image'] );
 		$do_image_single = ! $atts['hide_image_single'];
@@ -1033,13 +957,15 @@ EOF;
 		if ( $keep_whitespace )
 			$class .= ' whitespace';
 
-		if ( ! empty( $testimonial['post_id'] ) )
-			$class = join( ' ', get_post_class( $class, $testimonial['post_id'] ) );
+		$post_id = $testimonial['post_id'];
+		if ( ! empty( $post_id ) )
+			$class = join( ' ', get_post_class( $class, $post_id ) );
 		else
 			$class = 'testimonials-widget type-testimonials-widget status-publish hentry ' . $class;
 
-		$class    = apply_filters( 'testimonials_widget_get_testimonial_html_class', $class, $testimonial, $atts, $is_list, $is_first, $widget_number );
-		$div_open = '<div class="' . $class . '">';
+		$class     = apply_filters( 'testimonials_widget_get_testimonial_html_class', $class, $testimonial, $atts, $is_list, $is_first, $widget_number );
+		$div_open  = '<!-- ' . self::ID . ":{$post_id}: -->";
+		$div_open .= '<div class="' . $class . '">';
 
 		if ( $do_schema && $do_content )
 			$div_open .= sprintf( self::$schema_div_open, self::$review_schema );
@@ -1151,20 +1077,15 @@ EOF;
 
 
 	public static function get_cite( $testimonial, $atts ) {
-		$do_company    = ! $atts['hide_company'] && ! empty( $testimonial['testimonial_company'] );
-		$do_email      = ! $atts['hide_email'] && ! empty( $testimonial['testimonial_email'] ) && is_email( $testimonial['testimonial_email'] );
-		$do_location   = ! $atts['hide_location'] && ! empty( $testimonial['testimonial_location'] );
-		$do_source     = ! $atts['hide_source'] && ! empty( $testimonial['testimonial_source'] );
-		$do_title      = ! $atts['hide_title'] && ! empty( $testimonial['testimonial_title'] );
-		$do_url        = ! $atts['hide_url'] && ! empty( $testimonial['testimonial_url'] );
-		$use_quote_tag = $atts['use_quote_tag'];
+		extract( $testimonial );
 
-		$testimonial_company  = $testimonial['testimonial_company'];
-		$testimonial_email    = $testimonial['testimonial_email'];
-		$testimonial_location = $testimonial['testimonial_location'];
-		$testimonial_source   = $testimonial['testimonial_source'];
-		$testimonial_title    = $testimonial['testimonial_title'];
-		$testimonial_url      = $testimonial['testimonial_url'];
+		$do_company    = ! $atts['hide_company'] && ! empty( $testimonial_company );
+		$do_email      = ! $atts['hide_email'] && ! empty( $testimonial_email ) && is_email( $testimonial_email );
+		$do_location   = ! $atts['hide_location'] && ! empty( $testimonial_location );
+		$do_source     = ! $atts['hide_source'] && ! empty( $testimonial_source );
+		$do_title      = ! $atts['hide_title'] && ! empty( $testimonial_title );
+		$do_url        = ! $atts['hide_url'] && ! empty( $testimonial_url );
+		$use_quote_tag = $atts['use_quote_tag'];
 
 		$cite = '';
 
@@ -1526,7 +1447,7 @@ EOF;
 			$args['post_status'][] = 'draft';
 		}
 
-		if ( $paging && $atts['paged'] && is_singular() )
+		if ( $paging && ! empty( $atts['paged'] ) && is_singular() )
 			$args['paged'] = $atts['paged'];
 
 		if ( ! $random && $meta_key ) {
@@ -1622,14 +1543,16 @@ EOF;
 		wp_reset_postdata();
 
 		$image_size = apply_filters( 'testimonials_widget_image_size', 'thumbnail' );
+		if ( ! is_array( $image_size ) ) {
+			global $_wp_additional_image_sizes;
+			if ( ! empty( $_wp_additional_image_sizes[ $image_size ] ) )
+				$gravatar_size = $_wp_additional_image_sizes[ $image_size ]['width'];
+			else
+				$gravatar_size = get_option( $image_size . '_size_w' );
 
-		global $_wp_additional_image_sizes;
-		if ( ! empty( $_wp_additional_image_sizes[ $image_size ] ) )
-			$gravatar_size = $_wp_additional_image_sizes[ $image_size ]['width'];
-		else
-			$gravatar_size = get_option( $image_size . '_size_w' );
-
-		$gravatar_size = apply_filters( 'testimonials_widget_gravatar_size', $gravatar_size );
+			$gravatar_size = apply_filters( 'testimonials_widget_gravatar_size', $gravatar_size );
+		} else
+			$gravatar_size = apply_filters( 'testimonials_widget_gravatar_size', $image_size );
 
 		$testimonial_data = array();
 
@@ -1696,7 +1619,7 @@ EOF;
 
 
 	public function widgets_init() {
-		require_once 'lib/class-testimonials-widget-widget.php';
+		require_once TW_PLUGIN_DIR_LIB . '/class-testimonials-widget-widget.php';
 
 		register_widget( 'Testimonials_Widget_Widget' );
 	}
@@ -1708,7 +1631,7 @@ EOF;
 	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
 	 */
 	public function add_meta_box_testimonials_widget() {
-		require_once 'lib/class-redrokk-metabox-class.php';
+		require_once TW_PLUGIN_DIR_LIB . '/class-redrokk-metabox-class.php';
 
 		$fields = array(
 			array(
@@ -1746,7 +1669,7 @@ EOF;
 		$fields = apply_filters( 'testimonials_widget_meta_box', $fields );
 
 		$meta_box = redrokk_metabox_class::getInstance(
-			self::OLD_NAME,
+			self::ID,
 			array(
 				'title' => esc_html__( 'Testimonial Data', 'testimonials-widget' ),
 				'description' => '',
@@ -1842,32 +1765,30 @@ EOF;
 		if ( ! is_string( $string ) )
 			return $string;
 
-		return trim( strip_tags( $string ) );
+		return trim( strip_shortcodes( strip_tags( $string ) ) );
 	}
 
 
+	/**
+	 *
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+	 */
 	public static function get_schema( $testimonial, $atts ) {
 		foreach ( $testimonial as $key => $value ) {
 			if ( 'testimonial_image' != $key )
 				$testimonial[ $key ] = self::clean_string( $value );
 		}
 
-		$do_company  = ! $atts['hide_company'] && ! empty( $testimonial['testimonial_company'] );
-		$do_email    = ! $atts['hide_email'] && ! empty( $testimonial['testimonial_email'] ) && is_email( $testimonial['testimonial_email'] );
-		$do_image    = ! $atts['hide_image'] && ! empty( $testimonial['testimonial_image'] );
-		$do_location = ! $atts['hide_location'] && ! empty( $testimonial['testimonial_location'] );
-		$do_source   = ! $atts['hide_source'] && ! empty( $testimonial['testimonial_source'] );
-		$do_title    = ! $atts['hide_title'] && ! empty( $testimonial['testimonial_title'] );
-		$do_url      = ! $atts['hide_url'] && ! empty( $testimonial['testimonial_url'] );
+		extract( $testimonial );
 
-		$testimonial_company  = $testimonial['testimonial_company'];
-		$testimonial_content  = $testimonial['testimonial_content'];
-		$testimonial_email    = $testimonial['testimonial_email'];
-		$testimonial_image    = $testimonial['testimonial_image'];
-		$testimonial_location = $testimonial['testimonial_location'];
-		$testimonial_source   = $testimonial['testimonial_source'];
-		$testimonial_title    = $testimonial['testimonial_title'];
-		$testimonial_url      = $testimonial['testimonial_url'];
+		$do_company  = ! $atts['hide_company'] && ! empty( $testimonial_company );
+		$do_email    = ! $atts['hide_email'] && ! empty( $testimonial_email ) && is_email( $testimonial_email );
+		$do_image    = ! $atts['hide_image'] && ! empty( $testimonial_image );
+		$do_location = ! $atts['hide_location'] && ! empty( $testimonial_location );
+		$do_source   = ! $atts['hide_source'] && ! empty( $testimonial_source );
+		$do_title    = ! $atts['hide_title'] && ! empty( $testimonial_title );
+		$do_url      = ! $atts['hide_url'] && ! empty( $testimonial_url );
 
 		$item_reviewed     = self::clean_string( $atts['item_reviewed'] );
 		$item_reviewed_url = self::clean_string( $atts['item_reviewed_url'] );
@@ -2113,12 +2034,89 @@ EOF;
 	}
 
 
-	public function admin_notices_2_15_0() {
-		$content  = '<div class="updated fade"><p>';
-		$content .= sprintf( __( 'If your Testimonials Widget display has gone to funky town, please <a href="%s">read the FAQ</a> about possible fixes.', 'testimonials-widget' ), esc_url( 'https://aihrus.zendesk.com/entries/28402246-Major-Change-for-2-15-0' ) );
-		$content .= '</p></div>';
+	public static function notice_2_15_0() {
+		$text = sprintf( __( 'If your Testimonials display has gone to funky town, please <a href="%s">read the FAQ</a> about possible fixes.', 'testimonials-widget' ), esc_url( 'https://aihrus.zendesk.com/entries/28402246-Major-Change-for-2-15-0' ) );
 
-		echo $content;
+		self::notice_updated( $text );
+	}
+
+
+	public static function show_shortcodes() {
+		echo '<div class="wrap">';
+		echo '<div class="icon32" id="icon-options-general"></div>';
+		echo '<h2>' . esc_html__( 'Testimonials Shortcode Examples', 'testimonials-widget' ) . '</h2>';
+
+		$shortcodes = <<<EOD
+<h3>[testimonialswidget_list]</h3>
+
+<ul>
+<li><code>[testimonialswidget_list category="category-name"]</code> - Testimonial list by category</li>
+<li><code>[testimonialswidget_list category=product hide_not_found=true]</code> - Testimonial list by category and hide "No testimonials found" message</li>
+<li><code>[testimonialswidget_list category=product tags=widget limit=5]</code> - Testimonial list by tag, showing 5 at most</li>
+<li><code>[testimonialswidget_list char_limit=0 limit=-1]</code> - Show all testimonials on one page</li>
+<li><code>[testimonialswidget_list char_limit=0 target=_new limit=3 disable_quotes=true]</code> - Show 3 full-length testimonials, with opening and closing quote marks removed</li>
+<li><code>[testimonialswidget_list hide_source=true hide_url=true]</code> - Show testimonial list with source and urls hidden</li>
+<li><code>[testimonialswidget_list ids="1,11,111" paging=false]</code> - Show only these 3 testimonials</li>
+<li><code>[testimonialswidget_list meta_key=testimonials-widget-company order=asc limit=15]</code> - Show 15 testimonials, in company order</li>
+<li><code>[testimonialswidget_list order=ASC orderby=title]</code> - List testimonials by post title</li>
+<li><code>[testimonialswidget_list tags="test,fun" random=true exclude="2,22,333"]</code> - Select testimonials tagged with either "test" or "fun", in random order, but ignore those of the excluded ids</li>
+</ul>
+
+<h3>[testimonialswidget_widget]</h3>
+
+<ul>
+<li><code>[testimonialswidget_widget category=product order=asc height=300]</code> - Show rotating testimonials, in a fixed height container, of the product category, lowest post ids first</li>
+<li><code>[testimonialswidget_widget min_height=250 max_height=500]</code> - Show rotating testimonials in a box no smaller or bigger than 250 to 500 pixels in height</li>
+<li><code>[testimonialswidget_widget tags=sometag random=true]</code> - Show rotating, random testimonials having tag "sometag"</li>
+</ul>
+EOD;
+
+		$shortcodes = apply_filters( 'testimonials_widget_shortcodes', $shortcodes );
+
+		echo $shortcodes;
+		echo '</div>';
+	}
+
+
+	public static function set_not_found( $not_found = false ) {
+		self::$not_found = $not_found;
+	}
+
+
+	public static function get_not_found() {
+		return self::$not_found;
+	}
+
+
+	public static function version_check() {
+		require_once ABSPATH . 'wp-admin/includes/plugin.php';
+
+		$good_version = true;
+		if ( ! is_plugin_active( self::PLUGIN_BASE ) )
+			$good_version = false;
+
+		return $good_version;
+	}
+
+
+	/**
+	 *
+	 *
+	 * @SuppressWarnings(PHPMD.Superglobals)
+	 */
+	public static function do_load() {
+		$do_load = false;
+		if ( ! empty( $GLOBALS['pagenow'] ) && in_array( $GLOBALS['pagenow'], array( 'options.php' ) ) ) {
+			$do_load = true;
+		} elseif ( ! empty( $_REQUEST['post_type'] ) && self::PT == $_REQUEST['post_type'] ) {
+			if ( ! empty( $GLOBALS['pagenow'] ) && in_array( $GLOBALS['pagenow'], array( 'edit.php' ) ) ) {
+				$do_load = true;
+			} elseif ( ! empty( $_REQUEST['page'] ) && Testimonials_Widget_Settings::ID == $_REQUEST['page'] ) {
+				$do_load = true;
+			}
+		}
+
+		return $do_load;
 	}
 
 
@@ -2135,10 +2133,9 @@ add_action( 'plugins_loaded', 'testimonialswidget_init', 99 );
  * @SuppressWarnings(PHPMD.UnusedLocalVariable)
  */
 function testimonialswidget_init() {
-	require_once ABSPATH . 'wp-admin/includes/plugin.php';
+	if ( Testimonials_Widget::version_check() ) {
+		require_once TW_PLUGIN_DIR_LIB . '/class-testimonials-widget-settings.php';
 
-	if ( is_plugin_active( Testimonials_Widget::PLUGIN_FILE ) ) {
-		require_once 'lib/class-testimonials-widget-settings.php';
 		global $Testimonials_Widget_Settings;
 		if ( is_null( $Testimonials_Widget_Settings ) )
 			$Testimonials_Widget_Settings = new Testimonials_Widget_Settings();
