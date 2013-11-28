@@ -5,7 +5,7 @@ Donate link: http://aihr.us/about-aihrus/donate/
 Tags: client, customer, portfolio, quotations, quote, quotes, random, recommendation, reference, review, reviews, testimonial, testimonials, testimony, wpml
 Requires at least: 3.6
 Tested up to: 3.8.0
-Stable tag: 2.16.1
+Stable tag: 2.16.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -41,6 +41,8 @@ Widgets display content sans `wpautop` formatting. This means no forced paragrap
 Through categories and tagging, you can create organizational structures based upon products, projects and services via categories and then apply tagging for further classification. As an example, you might create a Portfolio category and then use tags to identify web, magazine, media, public, enterprise niches. You can then configure the Testimonial instance to show only Portfolio testimonials with the public and enterprise tags. In another Testimonial instance, you can also select only Portfolio testimonials, but then allow web and media tags.
 
 The single testimonial view supports image, source, title, location, email, company and URL details with optional Review schema.
+
+**Version 2.16.0 requires PHP 5.3+**
 
 = Primary Features =
 
@@ -402,6 +404,10 @@ See [Changelog](https://github.com/michael-cannon/testimonials-widget/blob/maste
 
 
 == Upgrade Notice ==
+
+= 2.16.0 =
+
+* Requires PHP 5.3+
 
 = 2.15.0 =
 
