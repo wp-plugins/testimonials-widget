@@ -5,7 +5,7 @@ Donate link: http://aihr.us/about-aihrus/donate/
 Tags: client, customer, portfolio, quotations, quote, quotes, random, recommendation, reference, review, reviews, testimonial, testimonials, testimony, wpml
 Requires at least: 3.6
 Tested up to: 3.8.0
-Stable tag: 2.16.0
+Stable tag: 2.16.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -57,7 +57,7 @@ The single testimonial view supports image, source, title, location, email, comp
 * Single testimonial view includes image, source, title, location, email, company and URL details
 * Testimonials archive view
 * Use custom taxonomy or WordPress's own for categories and tags
-* Use's [bxSlider](http://bxslider.com) for transitions
+* Uses [bxSlider](http://bxslider.com) for transitions
 
 = Testimonials Premium =
 
@@ -492,7 +492,7 @@ I need beta testers to help with ensuring pending releases of Testimonials and T
 
 [Please contact me directly](http://aihr.us/contact-aihrus/).
 
-Beta testers benefit directly with latest versions, a free 1-site license for Testimonials Premium, and personalized support assistance.
+Beta testers benefit directly with latest versions, a free unlimited sites license for Testimonials Premium, and personalized support assistance.
 
 == TODO ==
 

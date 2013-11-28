@@ -2,6 +2,9 @@
 
 ## master
 
+## 2.16.1
+* $this to __CLASS__
+
 ## 2.16.0
 * Add Expand/Collapse All Options helper for widget options - Thank you Scott Hendison
 * Add Shortcodes helper page - Thank you Scott Hendison
