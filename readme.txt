@@ -5,7 +5,7 @@ Donate link: http://aihr.us/about-aihrus/donate/
 Tags: client, customer, portfolio, quotations, quote, quotes, random, recommendation, reference, review, reviews, testimonial, testimonials, testimony, wpml
 Requires at least: 3.6
 Tested up to: 3.8.0
-Stable tag: 2.16.2
+Stable tag: 2.16.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +86,10 @@ Testimonials Premium adds onto the best WordPress testimonials plugin there is, 
 * Testimonials entry form `[[testimonialswidgetpremium_form]]`
 
 [Buy Testimonials Premium](http://aihr.us/downloads/testimonials-widget-premium-wordpress-plugin/) plugin for WordPress.
+
+= Migration Helpers =
+* Testimonials Widget pre 2.0.0 - Upgrading is automatic
+* [GC Testimonials](http://wordpress.org/plugins/gc-testimonials-to-testimonials/)
 
 = Additional Features =
 
