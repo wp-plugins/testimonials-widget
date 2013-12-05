@@ -3,7 +3,7 @@
  * Plugin Name: Testimonials
  * Plugin URI: http://wordpress.org/plugins/testimonials-widget/
  * Description: Testimonials lets you randomly slide or list selected portfolios, quotes, reviews, or text with images or videos on your WordPress site.
- * Version: 2.16.2
+ * Version: 2.16.3
  * Author: Michael Cannon
  * Author URI: http://aihr.us/resume/
  * License: GPLv2 or later
@@ -23,6 +23,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
+
 if ( ! defined( 'TW_PLUGIN_DIR' ) )
 	define( 'TW_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 
@@ -31,14 +32,20 @@ if ( ! defined( 'TW_PLUGIN_DIR_LIB' ) )
 
 require_once TW_PLUGIN_DIR_LIB . '/aihrus/class-aihrus-common.php';
 
+if ( af_php_version_check( __FILE__ ) )
+	add_action( 'plugins_loaded', 'testimonialswidget_init', 99 );
+else
+	return;
+
 
 class Testimonials_Widget extends Aihrus_Common {
 	const ID          = 'testimonials-widget-testimonials';
 	const ITEM_NAME   = 'Testimonials';
+	const OLD_NAME    = 'testimonialswidget';
 	const PLUGIN_BASE = 'testimonials-widget/testimonials-widget.php';
 	const PT          = 'testimonials-widget';
 	const SLUG        = 'tw_';
-	const VERSION     = '2.16.2';
+	const VERSION     = '2.16.3';
 
 	private static $found_posts   = 0;
 	private static $max_num_pages = 0;
@@ -268,6 +275,7 @@ class Testimonials_Widget extends Aihrus_Common {
 		require_once TW_PLUGIN_DIR_LIB . '/class-testimonials-widget-settings.php';
 		$delete_data = tw_get_option( 'delete_data', false );
 		if ( $delete_data ) {
+			delete_option( self::OLD_NAME );
 			delete_option( Testimonials_Widget_Settings::ID );
 			$wpdb->query( 'OPTIMIZE TABLE `' . $wpdb->options . '`' );
 
@@ -364,6 +372,100 @@ class Testimonials_Widget extends Aihrus_Common {
 			self::set_notice( 'notice_donate' );
 			tw_set_option( 'donate_version', self::VERSION );
 		}
+
+		$options = get_option( self::OLD_NAME );
+		if ( true !== $options['migrated'] )
+			self::migrate();
+	}
+
+
+	public static function migrate() {
+		global $wpdb;
+
+		$table_name       = $wpdb->prefix . self::OLD_NAME;
+		$meta_key         = '_' . self::PT . ':testimonial_id';
+		$has_table_query  = "SELECT table_name FROM information_schema.tables WHERE table_schema='{$wpdb->dbname}' AND table_name='{$table_name}'";
+		$has_table_result = $wpdb->get_col( $has_table_query );
+
+		if ( ! empty( $has_table_result ) ) {
+			// check that db table exists and has entries
+			$query = 'SELECT `testimonial_id`, `testimonial`, `author`, `source`, `tags`, `public`, `time_added`, `time_updated` FROM `' . $table_name . '`';
+
+			// ignore already imported
+			$done_import_query = 'SELECT meta_value FROM ' . $wpdb->postmeta . ' WHERE meta_key = "' . $meta_key . '"';
+			$done_import       = $wpdb->get_col( $done_import_query );
+
+			if ( ! empty( $done_import ) ) {
+				$done_import = array_unique( $done_import );
+				$query      .= ' WHERE testimonial_id NOT IN ( ' . implode( ',', $done_import ) . ' )';
+			}
+
+			$results = $wpdb->get_results( $query );
+			if ( ! empty( $results ) ) {
+				foreach ( $results as $result ) {
+					// author can contain title and company details
+					$author  = $result->author;
+					$company = false;
+
+					// ex: First Last of Company!
+					$author = str_replace( ' of ', ', ', $author );
+					// now ex: First Last, Company!
+
+					// ex: First Last, Company
+					// ex: First Last, Web Development Manager, Topcon Positioning Systems, Inc.
+					// ex: First Last, Owner, Company, LLC
+					$author     = str_replace( ' of ', ', ', $author );
+					$temp_comma = '^^^';
+					$author     = str_replace( ', LLC', $temp_comma . ' LLC', $author );
+
+					// now ex: First Last, Owner, Company^^^ LLC
+					$author = str_replace( ', Inc', $temp_comma . ' Inc', $author );
+
+					// ex: First Last, Web Development Manager, Company^^^ Inc.
+					// it's possible to have "Michael Cannon, Senior Developer" and "Senior Developer" become the company. Okay for now
+					$author = explode( ', ', $author );
+
+					if ( 1 < count( $author ) ) {
+						$company = array_pop( $author );
+						$company = str_replace( $temp_comma, ',', $company );
+					}
+
+					$author = implode( ', ', $author );
+					$author = str_replace( $temp_comma, ',', $author );
+
+					$post_data = array(
+						'post_type' => self::PT,
+						'post_status' => ( 'yes' == $result->public ) ? 'publish' : 'private',
+						'post_date' => $result->time_added,
+						'post_modified' => $result->time_updated,
+						'post_title' => $author,
+						'post_content' => $result->testimonial,
+						'tags_input' => $result->tags,
+					);
+
+					$post_id = wp_insert_post( $post_data, true );
+
+					// track/link testimonial import to new post
+					add_post_meta( $post_id, $meta_key, $result->testimonial_id );
+
+					if ( ! empty( $company ) )
+						add_post_meta( $post_id, 'testimonials-widget-company', $company );
+
+					$source = $result->source;
+					if ( ! empty( $source ) ) {
+						if ( is_email( $source ) ) {
+							add_post_meta( $post_id, 'testimonials-widget-email', $source );
+						} else {
+							add_post_meta( $post_id, 'testimonials-widget-url', $source );
+						}
+					}
+				}
+			}
+		}
+
+		$options['migrated'] = true;
+		delete_option( self::OLD_NAME );
+		add_option( self::OLD_NAME, $options, '', 'no' );
 	}
 
 
@@ -382,59 +484,58 @@ class Testimonials_Widget extends Aihrus_Common {
 		$result = false;
 
 		switch ( $column ) {
-		case 'id':
-			$result = $post_id;
-			break;
+			case 'id':
+				$result = $post_id;
+				break;
 
-		case 'shortcode':
-			$result  = '[testimonialswidget_list ids="';
-			$result .= $post_id;
-			$result .= '"]';
-			$result .= '<br />';
-			$result .= '[testimonialswidget_widget ids="';
-			$result .= $post_id;
-			$result .= '"]';
-			break;
+			case 'shortcode':
+				$result  = '[testimonialswidget_list ids="';
+				$result .= $post_id;
+				$result .= '"]';
+				$result .= '<br />';
+				$result .= '[testimonialswidget_widget ids="';
+				$result .= $post_id;
+				$result .= '"]';
+				break;
 
-		case 'testimonials-widget-company':
-		case 'testimonials-widget-location':
-		case 'testimonials-widget-title':
-			$result = get_post_meta( $post_id, $column, true );
-			break;
+			case 'testimonials-widget-company':
+			case 'testimonials-widget-location':
+			case 'testimonials-widget-title':
+				$result = get_post_meta( $post_id, $column, true );
+				break;
 
-		case 'testimonials-widget-email':
-		case 'testimonials-widget-url':
-			$url = get_post_meta( $post_id, $column, true );
-			if ( ! empty( $url ) && ! is_email( $url ) && 0 === preg_match( '#https?://#', $url ) )
-				$url = 'http://' . $url;
+			case 'testimonials-widget-email':
+			case 'testimonials-widget-url':
+				$url = get_post_meta( $post_id, $column, true );
+				if ( ! empty( $url ) && ! is_email( $url ) && 0 === preg_match( '#https?://#', $url ) )
+					$url = 'http://' . $url;
 
-			$result = make_clickable( $url );
-			break;
+				$result = make_clickable( $url );
+				break;
 
-		case 'thumbnail':
-			$email = get_post_meta( $post_id, 'testimonials-widget-email', true );
+			case 'thumbnail':
+				$email = get_post_meta( $post_id, 'testimonials-widget-email', true );
 
-			if ( has_post_thumbnail( $post_id ) ) {
-				$result = get_the_post_thumbnail( $post_id, 'thumbnail' );
-			} elseif ( is_email( $email ) ) {
-				$result = get_avatar( $email );
-			} else {
-				$result = false;
-			}
-			break;
+				if ( has_post_thumbnail( $post_id ) )
+					$result = get_the_post_thumbnail( $post_id, 'thumbnail' );
+				elseif ( is_email( $email ) )
+					$result = get_avatar( $email );
+				else
+					$result = false;
+				break;
 
-		case self::$cpt_category:
-		case self::$cpt_tags:
-			$terms  = get_the_terms( $post_id, $column );
-			$result = '';
-			if ( ! empty( $terms ) ) {
-				$out = array();
-				foreach ( $terms as $term )
-					$out[] = '<a href="' . admin_url( 'edit-tags.php?action=edit&taxonomy=' . $column . '&tag_ID=' . $term->term_id . '&post_type=' . self::PT ) . '">' . $term->name . '</a>';
+			case self::$cpt_category:
+			case self::$cpt_tags:
+				$terms  = get_the_terms( $post_id, $column );
+				$result = '';
+				if ( ! empty( $terms ) ) {
+					$out = array();
+					foreach ( $terms as $term )
+						$out[] = '<a href="' . admin_url( 'edit-tags.php?action=edit&taxonomy=' . $column . '&tag_ID=' . $term->term_id . '&post_type=' . self::PT ) . '">' . $term->name . '</a>';
 
-				$result = join( ', ', $out );
-			}
-			break;
+					$result = join( ', ', $out );
+				}
+				break;
 		}
 
 		$result = apply_filters( 'testimonials_widget_posts_custom_column', $result, $column, $post_id );
@@ -694,39 +795,39 @@ class Testimonials_Widget extends Aihrus_Common {
 		$id_base = self::ID . $widget_number;
 
 		switch ( $atts['type'] ) {
-		case 'testimonialswidget_widget':
-			$use_bxslider = $atts['use_bxslider'];
-			if ( ! $use_bxslider ) {
-				$height     = $atts['height'];
-				$max_height = $atts['max_height'];
-				$min_height = $atts['min_height'];
+			case 'testimonialswidget_widget':
+				$use_bxslider = $atts['use_bxslider'];
+				if ( ! $use_bxslider ) {
+					$height     = $atts['height'];
+					$max_height = $atts['max_height'];
+					$min_height = $atts['min_height'];
 
-				if ( $height ) {
-					$max_height = $height;
-					$min_height = $height;
-				}
+					if ( $height ) {
+						$max_height = $height;
+						$min_height = $height;
+					}
 
-				if ( $min_height ) {
-					$css[] = <<<EOF
+					if ( $min_height ) {
+						$css[] = <<<EOF
 <style>
 .$id_base {
 min-height: {$min_height}px;
 }
 </style>
 EOF;
-				}
+					}
 
-				if ( $max_height ) {
-					$css[] = <<<EOF
+					if ( $max_height ) {
+						$css[] = <<<EOF
 <style>
 .$id_base {
 	max-height: {$max_height}px;
 }
 </style>
 EOF;
+					}
 				}
-			}
-			break;
+				break;
 		}
 
 		$css = apply_filters( 'testimonials_widget_testimonials_css', $css, $atts, $widget_number );
@@ -747,28 +848,28 @@ EOF;
 		$id_base = $id . $widget_number;
 
 		switch ( $atts['type'] ) {
-		case 'testimonialswidget_widget':
-			$javascript = '';
-			if ( 1 < count( $testimonials ) ) {
-				$refresh_interval = $atts['refresh_interval'];
+			case 'testimonialswidget_widget':
+				$javascript = '';
+				if ( 1 < count( $testimonials ) ) {
+					$refresh_interval = $atts['refresh_interval'];
 
-				$javascript .= '<script type="text/javascript">' . "\n";
+					$javascript .= '<script type="text/javascript">' . "\n";
 
-				$use_bxslider = $atts['use_bxslider'];
-				if ( $use_bxslider ) {
-					$enable_video    = $atts['enable_video'];
-					$show_start_stop = $atts['show_start_stop'];
-					$transition_mode = $atts['transition_mode'];
+					$use_bxslider = $atts['use_bxslider'];
+					if ( $use_bxslider ) {
+						$enable_video    = $atts['enable_video'];
+						$show_start_stop = $atts['show_start_stop'];
+						$transition_mode = $atts['transition_mode'];
 
-					$auto  = $refresh_interval ? 'true' : 'false';
-					$pager = ! $refresh_interval ? 'pager: true' : 'pager: false';
-					$pause = $refresh_interval * 1000;
-					$video = $enable_video ? "video: true,\nuseCSS: false" : 'video: false';
+						$auto  = $refresh_interval ? 'true' : 'false';
+						$pager = ! $refresh_interval ? 'pager: true' : 'pager: false';
+						$pause = $refresh_interval * 1000;
+						$video = $enable_video ? "video: true,\nuseCSS: false" : 'video: false';
 
-					$autoControls = $show_start_stop ? 'autoControls: true,' : '';
+						$autoControls = $show_start_stop ? 'autoControls: true,' : '';
 
-					$slider_var  = self::SLUG . $widget_number;
-					$javascript .= <<<EOF
+						$slider_var  = self::SLUG . $widget_number;
+						$javascript .= <<<EOF
 var {$slider_var} = null;
 
 jQuery(document).ready(function() {
@@ -786,23 +887,23 @@ jQuery(document).ready(function() {
 });
 
 EOF;
-				} else {
-					$tw_padding = 'tw_padding' . $widget_number;
-					$tw_wrapper = 'tw_wrapper' . $widget_number;
+					} else {
+						$tw_padding = 'tw_padding' . $widget_number;
+						$tw_wrapper = 'tw_wrapper' . $widget_number;
 
-					$disable_animation = $atts['disable_animation'];
-					$fade_in_speed     = $atts['fade_in_speed'];
-					$fade_out_speed    = $atts['fade_out_speed'];
-					$height            = $atts['height'];
-					$max_height        = $atts['max_height'];
-					$min_height        = $atts['min_height'];
+						$disable_animation = $atts['disable_animation'];
+						$fade_in_speed     = $atts['fade_in_speed'];
+						$fade_out_speed    = $atts['fade_out_speed'];
+						$height            = $atts['height'];
+						$max_height        = $atts['max_height'];
+						$min_height        = $atts['min_height'];
 
-					$enable_animation = 1;
-					if ( $disable_animation || $height || $max_height || $min_height )
-						$enable_animation = 0;
+						$enable_animation = 1;
+						if ( $disable_animation || $height || $max_height || $min_height )
+							$enable_animation = 0;
 
-					if ( $refresh_interval ) {
-						$javascript .= <<<EOF
+						if ( $refresh_interval ) {
+							$javascript .= <<<EOF
 function nextTestimonial{$widget_number}() {
 	if ( ! jQuery('.{$id_base}').first().hasClass('hovered') ) {
 		var active = jQuery('.{$id_base} .active');
@@ -834,9 +935,9 @@ jQuery(document).ready(function() {
 });
 
 EOF;
-					}
+						}
 
-					$javascript .= <<<EOF
+						$javascript .= <<<EOF
 if ( {$enable_animation} ) {
 	var {$tw_wrapper} = jQuery('.{$id_base}');
 	var {$tw_padding} = 0;
@@ -850,12 +951,12 @@ if ( {$enable_animation} ) {
 	});
 }
 EOF;
-				}
+					}
 
-				$javascript         .= "\n" . '</script>';
-				$scripts[ $id_base ] = $javascript;
-			}
-			break;
+					$javascript         .= "\n" . '</script>';
+					$scripts[ $id_base ] = $javascript;
+				}
+				break;
 		}
 
 		$scripts          = apply_filters( 'testimonials_widget_testimonials_js', $scripts, $testimonials, $atts, $widget_number );
@@ -1184,124 +1285,6 @@ EOF;
 			return self::truncate( $string, $char_limit, $pad, $force_pad );
 
 		return $string . $pad;
-	}
-
-
-	/**
-	 * Truncate HTML, close opened tags. UTF-8 aware, and aware of unpaired tags
-	 * (which don't need a matching closing tag)
-	 *
-	 * @param string  $html
-	 * @param int     $max_length      Maximum length of the characters of the string
-	 * @param string  $indicator       Suffix to use if string was truncated.
-	 * @param boolean $force_indicator Suffix to use if string was truncated.
-	 * @return string
-	 *
-	 * @ref http://pastie.org/3084080
-	 */
-	public static function truncate( $html, $max_length, $indicator = '&hellip;', $force_indicator = false ) {
-		$output_length = 0; // number of counted characters stored so far in $output
-		$position      = 0;      // character offset within input string after last tag/entity
-		$tag_stack     = array(); // stack of tags we've encountered but not closed
-		$output        = '';
-		$truncated     = false;
-
-		/**
-		 * these tags don't have matching closing elements, in HTML (in XHTML they
-		 * theoretically need a closing /> )
-		 *
-		 * @see http://www.netstrider.com/tutorials/HTMLRef/a_d.html
-		 * @see http://www.w3schools.com/tags/default.asp
-		 * @see http://stackoverflow.com/questions/3741896/what-do-you-call-tags-that-need-no-ending-tag
-		 */
-		$unpaired_tags = array(
-			'doctype',
-			'!doctype',
-			'area',
-			'base',
-			'basefont',
-			'bgsound',
-			'br',
-			'col',
-			'embed',
-			'frame',
-			'hr',
-			'img',
-			'input',
-			'link',
-			'meta',
-			'param',
-			'sound',
-			'spacer',
-			'wbr',
-		);
-
-		$func_strcut = function_exists( 'mb_strcut' ) ? 'mb_strcut' : 'substr';
-		$func_strlen = function_exists( 'mb_strlen' ) ? 'mb_strlen' : 'strlen';
-
-		// loop through, splitting at HTML entities or tags
-		while ( $output_length < $max_length && preg_match( '{</?([a-z]+)[^>]*>|&#?[a-zA-Z0-9]+;}', $html, $match, PREG_OFFSET_CAPTURE, $position ) ) {
-			list( $tag, $tag_position ) = $match[0];
-
-			// get text leading up to the tag, and store it – up to max_length
-			$text = $func_strcut( $html, $position, $tag_position - $position );
-			if ( $output_length + $func_strlen( $text ) > $max_length ) {
-				$output       .= $func_strcut( $text, 0, $max_length - $output_length );
-				$truncated     = true;
-				$output_length = $max_length;
-				break;
-			}
-
-			// store everything, it wasn't too long
-			$output        .= $text;
-			$output_length += $func_strlen( $text );
-
-			if ( $tag[0] == '&' ) {
-				// Handle HTML entity by copying straight through
-				$output .= $tag;
-				$output_length++; // only counted as one character
-			} else {
-				// Handle HTML tag
-				$tag_inner = $match[1][0];
-				if ( $tag[1] == '/' ) {
-					// This is a closing tag.
-					$output .= $tag;
-					// If input tags aren't balanced, we leave the popped tag
-					// on the stack so hopefully we're not introducing more
-					// problems.
-
-					if ( end( $tag_stack ) == $tag_inner )
-						array_pop( $tag_stack );
-				} elseif ( $tag[$func_strlen( $tag ) - 2] == '/' || in_array( strtolower( $tag_inner ), $unpaired_tags ) ) {
-					// Self-closing or unpaired tag
-					$output .= $tag;
-				} else {
-					// Opening tag.
-					$output     .= $tag;
-					$tag_stack[] = $tag_inner; // push tag onto the stack
-				}
-			}
-
-			// Continue after the tag we just found
-			$position = $tag_position + $func_strlen( $tag );
-		}
-
-		// Print any remaining text after the last tag, if there's room
-
-		if ( $output_length < $max_length && $position < $func_strlen( $html ) )
-			$output .= $func_strcut( $html, $position, $max_length - $output_length );
-
-		$truncated = $func_strlen( $html ) - $position > $max_length - $output_length;
-
-		// add terminator if it was truncated in loop or just above here
-		if ( $truncated || $force_indicator )
-			$output .= $indicator;
-
-		// Close any open tags
-		while ( ! empty( $tag_stack ) )
-			$output .= '</'.array_pop( $tag_stack ).'>';
-
-		return $output;
 	}
 
 
@@ -1696,9 +1679,9 @@ EOF;
 
 		if ( is_object( $post ) && self::PT == $post->post_type ) {
 			switch ( $translation ) {
-			case esc_html__( 'Enter title here', 'testimonials-widget' ):
-				return esc_html__( 'Enter testimonial source here', 'testimonials-widget' );
-				break;
+				case esc_html__( 'Enter title here', 'testimonials-widget' ):
+					return esc_html__( 'Enter testimonial source here', 'testimonials-widget' );
+					break;
 			}
 		}
 
@@ -1758,14 +1741,6 @@ EOF;
 			$result = sprintf( $content, Testimonials_Widget::PT, $count_f, $name, '', '' );
 
 		echo $result;
-	}
-
-
-	public static function clean_string( $string ) {
-		if ( ! is_string( $string ) )
-			return $string;
-
-		return trim( strip_shortcodes( strip_tags( $string ) ) );
 	}
 
 
@@ -1981,56 +1956,7 @@ EOF;
 		$src   = self::get_image_src( $image );
 		$file  = sanitize_title( $email ) . '.jpeg';
 
-		$file_move = wp_upload_bits( $file, null, self::file_get_contents_curl( $src ) );
-		$filename  = $file_move['file'];
-
-		$wp_filetype = wp_check_filetype( $file, null );
-		$attachment  = array(
-			'post_mime_type' => $wp_filetype['type'],
-			'post_status' => 'inherit',
-			'post_title' => $file,
-		);
-
-		require_once ABSPATH . 'wp-admin/includes/image.php';
-
-		$image_id = wp_insert_attachment( $attachment, $filename, $post_id );
-		$metadata = wp_generate_attachment_metadata( $image_id, $filename );
-
-		wp_update_attachment_metadata( $image_id, $metadata );
-		update_post_meta( $post_id, '_thumbnail_id', $image_id );
-	}
-
-
-	public static function get_image_src( $image ) {
-		$doc = new DOMDocument();
-		$doc->loadHTML( $image );
-		$xpath = new DOMXPath( $doc );
-		$src   = $xpath->evaluate( 'string(//img/@src)' );
-
-		return $src;
-	}
-
-
-	/**
-	 * Thank you Tobylewis
-	 *
-	 * file_get_contents support on some shared systems is turned off
-	 *
-	 * @ref http://wordpress.org/support/topic/plugin-flickr-shortcode-importer-file_get_contents-with-url-isp-does-not-support?replies=2#post-2878241
-	 */
-	public static function file_get_contents_curl( $url ) {
-		$ch = curl_init();
-
-		curl_setopt( $ch, CURLOPT_AUTOREFERER, true );
-		curl_setopt( $ch, CURLOPT_HEADER, 0 );
-		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-		curl_setopt( $ch, CURLOPT_URL, $url );
-		curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
-
-		$data = curl_exec( $ch );
-		curl_close( $ch );
-
-		return $data;
+		self::add_media( $post_id, $src, $file );
 	}
 
 
@@ -2121,9 +2047,6 @@ EOD;
 
 
 }
-
-
-add_action( 'plugins_loaded', 'testimonialswidget_init', 99 );
 
 
 /**
