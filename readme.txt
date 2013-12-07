@@ -168,6 +168,15 @@ Testimonials Premium adds onto the best WordPress testimonials plugin there is, 
 * `[[testimonialswidget_widget min_height=250 max_height=500]]` - Show rotating testimonials in a box no smaller or bigger than 250 to 500 pixels in height
 * `[[testimonialswidget_widget tags=sometag random=true]]` - Show rotating, random testimonials having tag "sometag"
 
+= Localization =
+
+* Dutch by Bjorn Robijns
+* [Hebrew by Ahrale](http://atar4u.com/)
+
+You can translate this plugin into your own language if it's not done so already. The localization file `testimonials-widget.pot` can be found in the `languages` folder of this plugin. After translation, please [send the localized file](http://aihr.us/contact-aihrus/) for plugin inclusion.
+
+**[How do I localize?](https://aihrus.zendesk.com/entries/23691557-How-do-I-change-Testimonials-Widget-text-labels-)**
+
 = Shortcode and Widget Options =
 
 Please keep in mind that inheritance affects options. This means that changes made to Testimonials > Settings will not affect current widget instance options. You must change the widget instance manually. However, if you create a new widget instance, then the global settings will apply.
@@ -303,25 +312,19 @@ Further, global settings are the baseline for shortcodes. If you want to alter t
 * Remove `.hentry` CSS? – Some themes use class `.hentry` in a manner that breaks Testimonials' CSS
 	* `remove_hentry` - default none; remove_hentry=true
 
-= API =
-
-* Read the [Testimonials API](https://github.com/michael-cannon/testimonials-widget/blob/master/API.md).
-
-= Localization =
-
-* Dutch by Bjorn Robijns
-* [Hebrew by Ahrale](http://atar4u.com/)
-
-You can translate this plugin into your own language if it's not done so already. The localization file `testimonials-widget.pot` can be found in the `languages` folder of this plugin. After translation, please [send the localized file](http://aihr.us/contact-aihrus/) for plugin inclusion.
-
-**[How do I localize?](https://aihrus.zendesk.com/entries/23691557-How-do-I-change-Testimonials-Widget-text-labels-)**
-
 
 == Installation ==
 
+= Install Methods =
+
 * Via WordPress Admin > Plugins > Add New, Search for `testimonials widget`
-* Via WordPress Admin > Plugins > Add New, Upload the `testimonials-widget.zip` file
+	* Find Testimonials, make sure it's by Michael Cannon per the Description
+	* Click 'Install Now' of Testimonials
+* Download `testimonials-widget.zip` locally and then via WordPress Admin > Plugins > Add New, Upload the `testimonials-widget.zip` file
 * Download and unzip `testimonials-widget.zip` locally and then via FTP, upload directory `testimonials-widget` to your website's `/wp-content/plugins/` directory
+
+= Activatation Options =
+
 * Activate the 'Testimonials' plugin after uploading
 * Activate the 'Testimonials' plugin through WordPress Admin > Plugins
 
@@ -348,21 +351,21 @@ You can translate this plugin into your own language if it's not done so already
 
 = Most Common Issues =
 
-1. Got `Parse error: syntax error, unexpected T_STATIC, expecting ')'`? Read [Most Aihrus Plugins Require PHP 5.3+](https://aihrus.zendesk.com/entries/30678006-Most-Aihrus-Plugins-Require-PHP-5-3-) for the fixes.
-1. [Debug common theme and plugin conflicts](https://aihrus.zendesk.com/entries/25119302-How-do-you-debug-common-issues-)
-1. [Change or debug CSS](https://aihrus.zendesk.com/entries/24910733-How-to-Correct-Testimonials-Widget-CSS-Issues) AKA "What's up with these quotes?"
-1. [Customize bxSlider](http://bxslider.com/examples)
-1. [How do I change my widget's rotation speed or other options?](https://aihrus.zendesk.com/entries/27714083-How-do-I-change-my-widget-s-rotation-speed-or-other-options-)
-1. [Pagination is broken](https://aihrus.zendesk.com/entries/23693513-My-testimonials-list-paging-doesn-t-work)
-1. [Test Review schema output](http://www.google.com/webmasters/tools/richsnippets)
+* Got `Parse error: syntax error, unexpected T_STATIC, expecting ')'`? Read [Most Aihrus Plugins Require PHP 5.3+](https://aihrus.zendesk.com/entries/30678006-Most-Aihrus-Plugins-Require-PHP-5-3-) for the fixes.
+* [Debug common theme and plugin conflicts](https://aihrus.zendesk.com/entries/25119302-How-do-you-debug-common-issues-)
+* [Change or debug CSS](https://aihrus.zendesk.com/entries/24910733-How-to-Correct-Testimonials-Widget-CSS-Issues) AKA "What's up with these quotes?"
+* [Customize bxSlider](http://bxslider.com/examples)
+* [How do I change my widget's rotation speed or other options?](https://aihrus.zendesk.com/entries/27714083-How-do-I-change-my-widget-s-rotation-speed-or-other-options-)
+* [Pagination is broken](https://aihrus.zendesk.com/entries/23693513-My-testimonials-list-paging-doesn-t-work)
+* [Test Review schema output](http://www.google.com/webmasters/tools/richsnippets)
 
 = Still Stuck or Want Something Done? Get Support! =
 
-* [Open Testimonials Issues](https://github.com/michael-cannon/testimonials-widget/issues) - bug reports and enhancement requests
-* [Testimonials Knowledge Base](https://aihrus.zendesk.com/categories/20104507-Testimonials-Widget) - read and comment upon 125+ frequently asked questions
-* [Testimonials Support on WordPress](http://wordpress.org/support/plugin/testimonials-widget) - ask questions
-* [Contribute Code to Testimonials](https://github.com/michael-cannon/testimonials-widget/blob/master/CONTRIBUTING.md)
-* [Beta Testers Needed](http://aihr.us/become-beta-tester/)
+1. [Testimonials Knowledge Base](https://aihrus.zendesk.com/categories/20104507-Testimonials-Widget) - read and comment upon 125+ frequently asked questions
+1. [Open Testimonials Issues](https://github.com/michael-cannon/testimonials-widget/issues) - review and submit bug reports and enhancement requests
+1. [Testimonials Support on WordPress](http://wordpress.org/support/plugin/testimonials-widget) - ask questions and review responses
+1. [Contribute Code to Testimonials](https://github.com/michael-cannon/testimonials-widget/blob/master/CONTRIBUTING.md)
+1. [Beta Testers Needed](http://aihr.us/become-beta-tester/) - get the latest Testimonials version
 
 
 == Screenshots ==
@@ -490,6 +493,11 @@ See [Changelog](https://github.com/michael-cannon/testimonials-widget/blob/maste
 * If migration from from pre-2.0.0 custom table to new custom post type is needed, then install Testimonials Widget 2.15.1 for that capability before updating to the latest Testimonials Widget plugin.
 * Review schema [structured data testing tool](http://www.google.com/webmasters/tools/richsnippets)
 * When plugin is uninstalled, all data and settings are deleted if "Remove Plugin Data on Deletion" is checked in Testimonial Settings
+
+
+== API ==
+
+* Read the [Testimonials API](https://github.com/michael-cannon/testimonials-widget/blob/master/API.md).
 
 
 == Background & Thanks ==
