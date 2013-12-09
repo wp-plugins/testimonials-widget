@@ -21,8 +21,6 @@ Testimonials [by Aihrus](http://aihr.us/about-aihrus/) lets you randomly slide o
 
 **View a [Live Testimonials Demo](http://aihr.us/good-work-deserves-good-words-testimonials-examples/)**
 
-**Version 2.16.0+ requires PHP 5.3+** [notice](https://aihrus.zendesk.com/entries/30678006)
-
 = Testimonials Is Way Beyond Being Just a Testimonials Slider! =
 
 * Slide Images - responsive image slideshow
@@ -61,6 +59,16 @@ The single testimonial view supports image, source, title, location, email, comp
 * Use custom taxonomy or WordPress's own for categories and tags
 * Uses [bxSlider](http://bxslider.com) for transitions
 
+= Shortcodes =
+
+* `[[testimonialswidget_list]]` - Listings with paging 
+* `[[testimonialswidget_widget]]` - Rotating
+
+= Theme Functions =
+
+* `testimonialswidget_list()` - Testimonials listing with paging 
+* `testimonialswidget_widget()` - Rotating testimonials
+
 = Testimonials Migration Helpers =
 * Testimonials Widget pre 2.0.0 - Upgrading is automatic
 * [GC Testimonials](http://wordpress.org/plugins/gc-testimonials-to-testimonials/)
@@ -98,16 +106,6 @@ Testimonials Premium adds onto the best WordPress testimonials plugin there is, 
 * `<?php echo testimonialswidgetpremium_link_list( $args ); ?>`
 
 [Buy Testimonials Premium](http://aihr.us/products/testimonials-premium-wordpress-plugin/) plugin for WordPress.
-
-= Shortcodes =
-
-* `[[testimonialswidget_list]]` - Listings with paging 
-* `[[testimonialswidget_widget]]` - Rotating
-
-= Theme Functions =
-
-* `testimonialswidget_list()` - Testimonials listing with paging 
-* `testimonialswidget_widget()` - Rotating testimonials
 
 = Additional Features =
 
@@ -311,6 +309,8 @@ Further, global settings are the baseline for shortcodes. If you want to alter t
 
 
 == Installation ==
+
+**Version 2.16.0+ requires PHP 5.3+** [notice](https://aihrus.zendesk.com/entries/30678006)
 
 = Install Methods =
 
