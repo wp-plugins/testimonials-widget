@@ -310,7 +310,9 @@ Further, global settings are the baseline for shortcodes. If you want to alter t
 
 == Installation ==
 
-**Version 2.16.0+ requires PHP 5.3+** [notice](https://aihrus.zendesk.com/entries/30678006)
+= Requirements =
+
+* PHP 5.3+ [Read notice](https://aihrus.zendesk.com/entries/30678006) – Since 2.16.0
 
 = Install Methods =
 
@@ -325,7 +327,7 @@ Further, global settings are the baseline for shortcodes. If you want to alter t
 * Download and unzip [`testimonials-widget.zip`](http://downloads.wordpress.org/plugin/testimonials-widget.zip) locally
 	* Using FTP, upload directory `testimonials-widget` to your website's `/wp-content/plugins/` directory
 
-= Activatation Options =
+= Activation Options =
 
 * Activate the "Testimonials" plugin after uploading
 * Activate the "Testimonials" plugin through WordPress Admin > Plugins
