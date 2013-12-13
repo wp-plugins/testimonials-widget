@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/michael-cannon/testimonials-widget.png?branch=master)](https://travis-ci.org/michael-cannon/testimonials-widget)
 [![ProjectStatus](http://stillmaintained.com/michael-cannon/testimonials-widget.png)](http://stillmaintained.com/michael-cannon/testimonials-widget)
+[Codeship status](https://www.codeship.io/projects/b5524630-43f6-0131-3b4d-76a8e32a74d4/status)
 
 ## Welcome to the Testimonials Github repository
 
@@ -33,7 +34,7 @@ Anyone is welcome to contribute to Testimonials. Please [read the guidelines](ht
 There are various ways you can contribute:
 
 * [Raise an issue](https://github.com/michael-cannon/testimonials-widget/issues) on GitHub.
-* Send us a Pull Request with your bug fixes and/or new features.
+* Fork Testimonials and send us a Pull Request with your bug fixes and/or new features.
 * [Translate Testimonials by Michael Cannon into different languages](https://aihrus.zendesk.com/entries/23691557-How-do-I-change-Testimonials-Widget-text-labels-).
 * Provide feedback and [suggestions on enhancements](https://github.com/michael-cannon/testimonials-widget/issues?direction=desc&labels=Enhancement&page=1&sort=created&state=open).
 

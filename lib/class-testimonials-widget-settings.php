@@ -22,13 +22,15 @@
  * Based upon http://alisothegeek.com/2011/01/wordpress-settings-api-tutorial-1/
  */
 
+if ( class_exists( 'Testimonials_Widget_Settings' ) )
+	return;
 
-require_once TW_PLUGIN_DIR_LIB . '/aihrus/class-aihrus-settings.php';
+require_once TW_DIR_LIB . '/aihrus/class-aihrus-settings.php';
 
 
 class Testimonials_Widget_Settings extends Aihrus_Settings {
-	const ID        = 'testimonialswidget_settings';
-	const ITEM_NAME = 'Testimonials Settings';
+	const ID   = 'testimonialswidget_settings';
+	const NAME = 'Testimonials Settings';
 
 	public static $admin_page  = '';
 	public static $class       = __CLASS__;
