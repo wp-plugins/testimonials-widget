@@ -3,7 +3,7 @@
  * Plugin Name: Testimonials by Aihrus
  * Plugin URI: http://wordpress.org/plugins/testimonials-widget/
  * Description: Testimonials by Aihrus lets you randomly slide or list selected portfolios, quotes, reviews, or text with images or videos on your WordPress site.
- * Version: 2.17.0
+ * Version: 2.17.1
  * Author: Michael Cannon
  * Author URI: http://aihr.us/resume/
  * License: GPLv2 or later
@@ -24,11 +24,13 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+define( 'TW_AIHR_VERSION', '1.0.1' );
 define( 'TW_BASE', plugin_basename( __FILE__ ) );
 define( 'TW_DIR', plugin_dir_path( __FILE__ ) );
 define( 'TW_DIR_LIB', TW_DIR . '/lib' );
 define( 'TW_NAME', 'Testimonials by Aihrus' );
-define( 'TW_VERSION', '2.17.0' );
+define( 'TW_PREMIUM_LINK', '<a href="http://aihr.us/downloads/testimonials-widget-premium-wordpress-plugin/">Purchase Testimonials Premium</a>' );
+define( 'TW_VERSION', '2.17.1' );
 
 require_once TW_DIR_LIB . '/requirements.php';
 
@@ -331,8 +333,11 @@ class Testimonials_Widget extends Aihrus_Common {
 
 		$links = array(
 			self::$donate_link,
-			'<a href="http://aihr.us/downloads/testimonials-widget-premium-wordpress-plugin/">Purchase Testimonials Premium</a>',
 		);
+
+		global $TW_Premium;
+		if ( ! isset( $TW_Premium ) )
+			$links[] = TW_PREMIUM_LINK;
 
 		$input = array_merge( $input, $links );
 
@@ -1549,14 +1554,17 @@ EOF;
 			$post_id = $row->ID;
 			$email   = get_post_meta( $post_id, 'testimonials-widget-email', true );
 
-			if ( has_post_thumbnail( $post_id ) )
+			if ( has_post_thumbnail( $post_id ) ) {
 				$image = get_the_post_thumbnail( $post_id, $image_size );
-			elseif ( ! $hide_gravatar && is_email( $email ) ) {
+			} elseif ( ! $hide_gravatar && is_email( $email ) ) {
 				$image = get_avatar( $email, $gravatar_size );
 
 				self::make_gravatar_featured( $post_id, $email );
-			} else
+			} else {
 				$image = false;
+			}
+
+			$image = self::strip_protocol( $image );
 
 			$url = get_post_meta( $post_id, 'testimonials-widget-url', true );
 			if ( ! empty( $url ) && 0 === preg_match( '#https?://#', $url ) )
@@ -2039,8 +2047,6 @@ EOD;
 
 		return $do_load;
 	}
-
-
 }
 
 
