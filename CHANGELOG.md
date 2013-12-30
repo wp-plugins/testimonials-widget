@@ -1,6 +1,13 @@
-# CHANGELOG Testimonials
+# CHANGELOG Testimonials by Aihrus
 
 ## master
+
+## 2.17.1
+* No show premium link when it's installed
+* RESOLVE #34 Non-SSL protocol used for image inclusion
+* Use Aihrus Framework 1.0.1
+* Use aihr_check_aihrus_framework
+* Use strip_protocol
 
 ## 2.17.0
 * BUGFIX No notices on deactivation

@@ -5,7 +5,7 @@ Donate link: http://aihr.us/about-aihrus/donate/
 Tags: client, customer, portfolio, quotations, quote, quotes, random, recommendation, reference, review, reviews, testimonial, testimonials, testimony, wpml
 Requires at least: 3.6
 Tested up to: 3.9.0
-Stable tag: 2.17.0
+Stable tag: 2.17.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -348,7 +348,7 @@ Further, global settings are the baseline for shortcodes. If you want to alter t
 	* Select plugins for update, click "Update Plugins"
 * Using FTP
 	* Download and unzip [`testimonials-widget.zip`](http://downloads.wordpress.org/plugin/testimonials-widget.zip) locally
-	* FTP, upload directory `testimonials-widget` to your website's `/wp-content/plugins/` directory
+	* Upload directory `testimonials-widget` to your website's `/wp-content/plugins/` directory
 	* Be sure to overwrite your existing `testimonials-widget` folder contents
 
 
