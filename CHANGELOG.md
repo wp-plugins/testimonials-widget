@@ -2,6 +2,10 @@
 
 ## master
 
+## 2.17.2
+* RESOLVE Testimonials Premium load issue
+* RESOLVE [Testimonial box displays as all white in widget on IE9](http://wordpress.org/support/topic/testimonial-box-displays-as-all-white-in-widget-on-ie9). Thank you [jbmoore](http://wordpress.org/support/profile/jbmoore)
+
 ## 2.17.1
 * No show premium link when it's installed
 * RESOLVE #34 Non-SSL protocol used for image inclusion
