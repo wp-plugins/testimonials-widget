@@ -2,6 +2,30 @@
 
 ## master
 
+## 2.18.0
+* Add Codeship.io status
+* Check for init and theme functions to exist
+* CLOSE #11 Conflicts with "Re-order posts within Categories"
+* Link to Testimonials by WooThemes migrator
+* Move ci to tests
+* Move CSS to assets
+* Move files to assets
+* Move lib to includes/libraries
+* Move main class to own class file
+* Remove Travis CI status
+* RESOLVE #43 hatom feed errors
+* RESOLVE #45 Plugin Disables Itself
+* RESOLVE #7 Support subdirectory testimonial landing page
+* RESOLVE Non-SSL protocol used for scripts and styles
+* Revise required file paths
+* Specify a “Text Domain” and “Domain Path”
+* Update shortcode examples
+* Update verbiage
+* Use $plugin_assets than $plugin_path
+
+## 2.17.3-alpha
+* RESOLVE #44 Blank testimonial between each rotating testimonial
+
 ## 2.17.2
 * RESOLVE Testimonials Premium load issue
 * RESOLVE [Testimonial box displays as all white in widget on IE9](http://wordpress.org/support/topic/testimonial-box-displays-as-all-white-in-widget-on-ie9). Thank you [jbmoore](http://wordpress.org/support/profile/jbmoore)
