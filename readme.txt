@@ -5,7 +5,7 @@ Donate link: http://aihr.us/about-aihrus/donate/
 Tags: client, customer, portfolio, quotations, quote, quotes, random, recommendation, reference, review, reviews, testimonial, testimonials, testimony, wpml
 Requires at least: 3.6
 Tested up to: 3.9.0
-Stable tag: 2.17.2
+Stable tag: 2.18.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -72,6 +72,7 @@ The single testimonial view supports image, source, title, location, email, comp
 = Testimonials Migration Helpers =
 * Testimonials Widget pre 2.0.0 - Upgrading is automatic
 * [GC Testimonials](http://wordpress.org/plugins/gc-testimonials-to-testimonials/)
+* [Testimonials by WooThemes](http://wordpress.org/plugins/wootheme-testimonials-to-testimonials/)
 
 = Testimonials Premium =
 
@@ -168,8 +169,7 @@ Testimonials Premium adds onto the best WordPress testimonials plugin there is, 
 
 **[[testimonialswidget_widget]]**
 
-* `[[testimonialswidget_widget category=product order=asc height=300]]` - Show rotating testimonials, in a fixed height container, of the product category, lowest post ids first
-* `[[testimonialswidget_widget min_height=250 max_height=500]]` - Show rotating testimonials in a box no smaller or bigger than 250 to 500 pixels in height
+* `[[testimonialswidget_widget category=product order=asc]]` - Show rotating testimonials, of the product category, lowest post ids first
 * `[[testimonialswidget_widget tags=sometag random=true]]` - Show rotating, random testimonials having tag "sometag"
 
 = Shortcode and Widget Options =
@@ -182,9 +182,9 @@ Further, global settings are the baseline for shortcodes. If you want to alter t
 
 * Enable Review Schema? – Adds HTML tag markup per the [Review schema](http://schema.org/Review) to testimonials. Search engines including Bing, Google, Yahoo! and Yandex rely on this markup to improve the display of search results.
 	* `enable_schema` - default true; enable_schema=false
-* Reviewed Item? - Name of thing being referenced in testimonials
+* Default Reviewed Item? - Name of thing being referenced in testimonials
 	* `item_reviewed` - default "Site Title"
-* Reviewed Item URL? - URL of thing being referenced in testimonials
+* Default Reviewed Item URL? - URL of thing being referenced in testimonials
 	* `item_reviewed_url` - default `network_site_url();`
 * Hide built-in quotes? - Remove open and close quote span tags surrounding testimonial content
 	* `disable_quotes` - default false; disable_quotes=true
@@ -304,8 +304,8 @@ Further, global settings are the baseline for shortcodes. If you want to alter t
 * Include IE7 CSS? - IE7 specific CSS moved to separate CSS file in version 2.13.6.
 * Use `<q>` tag? – Pre 2.11.0. Not HTML5 compliant
 	* `use_quote_tag` - default none; use_quote_tag=true
-* Remove `.hentry` CSS? – Some themes use class `.hentry` in a manner that breaks Testimonials' CSS
-	* `remove_hentry` - default none; remove_hentry=true
+* Remove `.hentry` CSS? – Some themes use class `.hentry` in a manner that breaks Testimonials' CSS and corrupts microdata parsing
+	* `remove_hentry` - default true; remove_hentry=false
 
 
 == Installation ==
@@ -405,6 +405,10 @@ See [Changelog](https://github.com/michael-cannon/testimonials-widget/blob/maste
 
 
 == Upgrade Notice ==
+
+= 2.18.0 =
+
+* `remove_hentry` is now true by default
 
 = 2.16.0 =
 
@@ -510,6 +514,11 @@ See [Changelog](https://github.com/michael-cannon/testimonials-widget/blob/maste
 Version 2.0.0 of Testimonials is a complete rewrite based upon a composite of ideas from user feedback and grokking the plugins [Imperfect Quotes](http://www.swarmstrategies.com/imperfect-quotes/), [IvyCat Ajax Testimonials](http://wordpress.org/extend/plugins/ivycat-ajax-testimonials/), [Quotes Collection](http://srinig.com/wordpress/plugins/quotes-collection/), and [TB Testimonials](http://travisballard.com/wordpress/tb-testimonials/). Thank you to these plugin developers for their efforts that have helped inspire this rewrite.
 
 Prior to version 2.0.0, this plugin was a fork of [Quotes Collection](http://srinig.com/wordpress/plugins/quotes-collection/) by [Srini G](http://wordpress.org/support/profile/SriniG) with additional contributions from [j0hnsmith](http://wordpress.org/support/profile/j0hnsmith), [ChrisCree](http://wordpress.org/support/profile/ChrisCree) and [comprock](http://wordpress.org/support/profile/comprock).
+
+
+== Conflicts ==
+
+* [ReOrder Post Within Categories](http://wordpress.org/plugins/reorder-post-within-categories/) – Uses custom ordering table
 
 
 == Localization ==
