@@ -1,12 +1,21 @@
 # CHANGELOG Aihrus Framework
 
 ## master
-* Add `slash_sanitize_title` verification helper
+
+## 1.0.3RC2
+* RESOLVE Fatal error: Call to undefined function add_settings_error() in class-aihrus-settings.php on line 559
+* RESOLVE Featured image via Gravatar not saving correctly
+* Revise data deletion description - Thank you Mark
+
+## 1.0.2
 * Add phpunit.xml
+* Add `slash_sanitize_title` verification helper
 * Coding standards
+* Display "Settings saved."
 * Move ci to tests
 * Remove Travis configuration
 * RESOLVE michael-cannon/testimonials-widget#48 Activation on WP 3.6 not working
+* RESOLVE michael-cannon/wootheme-testimonials-to-testimonials#2 No settings saved notice upon saving settings
 * Update usage instructions
 * Use $plugin_assets than $plugin_path
 

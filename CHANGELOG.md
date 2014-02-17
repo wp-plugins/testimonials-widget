@@ -2,6 +2,27 @@
 
 ## master
 
+## 2.18.1
+* Add FAQ How do I create a testimonial record?
+* Add screenshot 21. Shortcode helpers on category and tag admin screens
+* Correct Codeship image include
+* jQuery 1.10+ note
+* Remove "Use bxSlider?" and "Include IE7 CSS" from widget options
+* Remove option "Always Load CSS?" `force_css_loading`
+* Remove Travis CI configuration. Using Codeship.io instead
+* Require Aihrus Framework 1.0.3
+* RESOLVE #2 Add shortcode column to categories page
+* RESOLVE #3 Add shortcode column to tags page
+* RESOLVE #54 Notice: Constant TW_AIHR_VERSION already defined
+* RESOLVE #8 Validate HTML
+* RESOLVE Featured image via Gravatar not saving correctly
+* RESOLVE Not passing requirements failure to premium plugin
+* RESOLVE Schema output cluttered up single view
+* RESOLVE Scripts not loading in footer
+* Support JetPack's Publicize module
+* Verbiage updates
+* Widgets don't rotate notice
+
 ## 2.18.0
 * Add Codeship.io status
 * Check for init and theme functions to exist
@@ -23,7 +44,7 @@
 * Update verbiage
 * Use $plugin_assets than $plugin_path
 
-## 2.17.3-alpha
+## 2.17.3
 * RESOLVE #44 Blank testimonial between each rotating testimonial
 
 ## 2.17.2

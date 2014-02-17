@@ -3,7 +3,7 @@
  * Plugin Name: Testimonials by Aihrus
  * Plugin URI: http://wordpress.org/plugins/testimonials-widget/
  * Description: Testimonials by Aihrus lets you randomly slide or list selected portfolios, quotes, reviews, or text with images or videos on your WordPress site.
- * Version: 2.18.0
+ * Version: 2.18.1
  * Author: Michael Cannon
  * Author URI: http://aihr.us/resume/
  * License: GPLv2 or later
@@ -26,18 +26,38 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-define( 'TW_AIHR_VERSION', '1.0.1' );
-define( 'TW_BASE', plugin_basename( __FILE__ ) );
-define( 'TW_DIR', plugin_dir_path( __FILE__ ) );
-define( 'TW_DIR_INC', TW_DIR . 'includes/' );
-define( 'TW_DIR_LIB', TW_DIR_INC . 'libraries/' );
-define( 'TW_NAME', 'Testimonials by Aihrus' );
-define( 'TW_PREMIUM_LINK', '<a href="http://aihr.us/downloads/testimonials-widget-premium-wordpress-plugin/">Purchase Testimonials Premium</a>' );
-define( 'TW_VERSION', '2.18.0' );
+if ( ! defined( 'TW_AIHR_VERSION' ) )
+	define( 'TW_AIHR_VERSION', '1.0.3' );
+
+if ( ! defined( 'TW_BASE' ) )
+	define( 'TW_BASE', plugin_basename( __FILE__ ) );
+
+if ( ! defined( 'TW_DIR' ) )
+	define( 'TW_DIR', plugin_dir_path( __FILE__ ) );
+
+if ( ! defined( 'TW_DIR_INC' ) )
+	define( 'TW_DIR_INC', TW_DIR . 'includes/' );
+
+if ( ! defined( 'TW_DIR_LIB' ) )
+	define( 'TW_DIR_LIB', TW_DIR_INC . 'libraries/' );
+
+if ( ! defined( 'TW_NAME' ) )
+	define( 'TW_NAME', 'Testimonials by Aihrus' );
+
+if ( ! defined( 'TW_PREMIUM_LINK' ) )
+	define( 'TW_PREMIUM_LINK', '<a href="http://aihr.us/downloads/testimonials-widget-premium-wordpress-plugin/">Buy Premium</a>' );
+
+if ( ! defined( 'TW_VERSION' ) )
+	define( 'TW_VERSION', '2.18.1' );
 
 require_once TW_DIR_INC . 'requirements.php';
 
+global $tw_activated;
+
+$tw_activated = true;
 if ( ! tw_requirements_check() ) {
+	$tw_activated = false;
+
 	return false;
 }
 

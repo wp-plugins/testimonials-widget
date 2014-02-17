@@ -22,6 +22,7 @@
  * Based upon http://alisothegeek.com/2011/01/wordpress-settings-api-tutorial-1/
  */
 
+require_once ABSPATH . 'wp-admin/includes/template.php';
 
 if ( class_exists( 'Aihrus_Settings' ) )
 	return;
@@ -93,7 +94,7 @@ abstract class Aihrus_Settings {
 			'widget' => 0,
 		);
 
-		$desc = esc_html__( 'Delete all %s data and options from database on plugin deletion' );
+		$desc = esc_html__( 'Delete all %s data and options from database on plugin deletion. Even if this option isn\'t checked, WordPress will still give a data deletion warning.' );
 
 		static::$settings['delete_data'] = array(
 			'section' => 'reset',
@@ -262,6 +263,7 @@ abstract class Aihrus_Settings {
 
 		echo '<form action="options.php" method="post">';
 
+		settings_errors( static::ID );
 		settings_fields( static::ID );
 
 		echo '<div id="' . static::ID . '">
@@ -478,7 +480,10 @@ abstract class Aihrus_Settings {
 	public static function validate_settings( $input, $options = null, $do_errors = false ) {
 		$errors = array();
 
+		$null_options = false;
 		if ( is_null( $options ) ) {
+			$null_options = true;
+
 			$options  = self::get_settings();
 			$defaults = static::get_defaults();
 
@@ -545,6 +550,16 @@ abstract class Aihrus_Settings {
 
 		unset( $input['export'] );
 		unset( $input['import'] );
+
+		$hide_update_notice = false;
+		if ( isset( static::$hide_update_notice ) && ! empty( static::$hide_update_notice ) ) {
+			$hide_update_notice = true;
+		}
+
+		if ( $null_options && empty( $errors ) && ! $hide_update_notice ) {
+			add_settings_error( static::ID, 'settings_updated', esc_html__( 'Settings saved.' ), 'updated' );
+		    set_transient( 'settings_errors', get_settings_errors(), 30 );
+		}
 
 		if ( empty( $do_errors ) ) {
 			$validated = $input;
