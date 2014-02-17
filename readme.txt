@@ -5,7 +5,7 @@ Donate link: http://aihr.us/about-aihrus/donate/
 Tags: client, customer, portfolio, quotations, quote, quotes, random, recommendation, reference, review, reviews, testimonial, testimonials, testimony, wpml
 Requires at least: 3.6
 Tested up to: 3.9.0
-Stable tag: 2.18.0
+Stable tag: 2.18.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -141,15 +141,16 @@ Testimonials Premium adds onto the best WordPress testimonials plugin there is, 
 * Respects meta capabilities
 * Rotation JavaScript in footer than body
 * Settings page contextual help
+* Shortcode helpers on category and tag admin screens
 * Shortcodes allowed inside of testimonials content
 * Supports [WP-PageNavi](http://wordpress.org/extend/plugins/wp-pagenavi/)
 * Testimonial content supports HTML
 * Testimonial, email, and URL fields are clickable – URL requires `http://` or `https://` prefix
-* Testimonials widget displays static and rotating testimonials 
 * Testimonials output is completely customizable via filters
 * Testimonials support styling based upon CSS classes for category, tags and post id
-* URLs can be opened in new windows
+* Testimonials widget displays static and rotating testimonials 
 * Unique CSS class per widget
+* URLs can be opened in new windows
 * WordPress Multilingual enabled [WPML](http://wpml.org/)
 
 = Shortcode Examples =
@@ -212,13 +213,13 @@ Further, global settings are the baseline for shortcodes. If you want to alter t
 	* `hide_url` - default show; hide_url=true
 * URL Target - Add target to all URLs; leave blank if none
 	* `target` - default none; target=_new
-* Enable Paging - for [[testimonialswidget_list]]
+* Enable Paging? - for [[testimonialswidget_list]]
 	* `paging` - default true [true|before|after|false]; paging=false
 		* `true` – display paging before and after testimonial entries
 		* `before` – display paging only before testimonial entries
 		* `after` – display paging only after testimonial entries
 	* Widget - Not functional
-* Do [shortcodes] - If unchecked, shortcodes are stripped.
+* Enable [shortcodes]? - If unchecked, shortcodes are stripped.
 	* `do_shortcode` - default false; do_shortcode=true
 
 **Selection**
@@ -300,7 +301,6 @@ Further, global settings are the baseline for shortcodes. If you want to alter t
 	* `min_height` - default none; min_height=100
 * Maximum Height - Set for maximum display height, in pixels
 	* `max_height` - default none; max_height=250
-* Always Load CSS? - Pre 2.14.0. Testimonials' CSS was always loaded, whether needed or not
 * Include IE7 CSS? - IE7 specific CSS moved to separate CSS file in version 2.13.6.
 * Use `<q>` tag? – Pre 2.11.0. Not HTML5 compliant
 	* `use_quote_tag` - default none; use_quote_tag=true
@@ -312,6 +312,7 @@ Further, global settings are the baseline for shortcodes. If you want to alter t
 
 = Requirements =
 
+* [jQuery 1.10+](https://aihrus.zendesk.com/entries/23693363)
 * PHP 5.3+ [Read notice](https://aihrus.zendesk.com/entries/30678006) – Since 2.16.0
 
 = Install Methods =
@@ -357,12 +358,15 @@ Further, global settings are the baseline for shortcodes. If you want to alter t
 = Most Common Issues =
 
 * Got `Parse error: syntax error, unexpected T_STATIC, expecting ')'`? Read [Most Aihrus Plugins Require PHP 5.3+](https://aihrus.zendesk.com/entries/30678006) for the fixes.
-* [Debug common theme and plugin conflicts](https://aihrus.zendesk.com/entries/25119302)
 * [Change or debug CSS](https://aihrus.zendesk.com/entries/24910733) AKA "What's up with these quotes?"
 * [Customize bxSlider](http://bxslider.com/examples)
+* [Debug common theme and plugin conflicts](https://aihrus.zendesk.com/entries/25119302)
 * [How do I change my widget's rotation speed or other options?](https://aihrus.zendesk.com/entries/27714083)
+* [How do I create a testimonial record?](https://aihrus.zendesk.com/entries/30602506)
+* [My options don't work, no matter what I do.](https://aihrus.zendesk.com/entries/30746533)
 * [Pagination is broken](https://aihrus.zendesk.com/entries/23693513)
 * [Test Review schema output](http://www.google.com/webmasters/tools/richsnippets)
+* [Widgets don't rotate](https://aihrus.zendesk.com/entries/23693363)
 
 = Still Stuck or Want Something Done? Get Support! =
 
@@ -395,6 +399,7 @@ Further, global settings are the baseline for shortcodes. If you want to alter t
 18. Dashboard > Right Now "Testimonials" count
 19. Using Review and AggregateRating schema data structures
 20. Testimonials Shortcode Examples page
+21. Shortcode helpers on category and tag admin screens
 
 [gallery]
 
@@ -405,6 +410,11 @@ See [Changelog](https://github.com/michael-cannon/testimonials-widget/blob/maste
 
 
 == Upgrade Notice ==
+
+= 2.18.1 =
+
+* CSS is back to being always loaded in the header
+* Removed "Use bxSlider?" and "Include IE7 CSS" from widget options
 
 = 2.18.0 =
 

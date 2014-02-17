@@ -342,7 +342,7 @@ class Testimonials_Widget_Settings extends Aihrus_Settings {
 		);
 
 		self::$settings['do_shortcode'] = array(
-			'title' => esc_html__( 'Do [shortcodes]?', 'testimonials-widget' ),
+			'title' => esc_html__( 'Enable [shortcodes]?', 'testimonials-widget' ),
 			'desc' => esc_html__( 'If unchecked, shortcodes are stripped.', 'testimonials-widget' ),
 			'type' => 'checkbox',
 			'validate' => 'is_true',
@@ -545,6 +545,7 @@ class Testimonials_Widget_Settings extends Aihrus_Settings {
 				'std' => 0,
 			),
 			'std' => 1,
+			'widget' => 0,
 		);
 
 		self::$settings['disable_animation'] = array(
@@ -593,18 +594,6 @@ class Testimonials_Widget_Settings extends Aihrus_Settings {
 			'validate' => 'min1',
 		);
 
-		self::$settings['force_css_loading'] = array(
-			'section' => 'reset',
-			'title' => esc_html__( 'Always Load CSS?', 'testimonials-widget' ),
-			'desc' => esc_html__( 'Pre 2.14.0, Testimonials\' CSS was always loaded, whether needed or not', 'testimonials-widget' ),
-			'type' => 'checkbox',
-			'validate' => 'is_true',
-			'backwards' => array(
-				'version' => '2.14.0',
-				'std' => 1,
-			),
-		);
-
 		self::$settings['include_ie7_css'] = array(
 			'section' => 'reset',
 			'title' => esc_html__( 'Include IE7 CSS?', 'testimonials-widget' ),
@@ -615,7 +604,7 @@ class Testimonials_Widget_Settings extends Aihrus_Settings {
 				'version' => '2.13.6',
 				'std' => 1,
 			),
-			'widget' => 1,
+			'widget' => 0,
 		);
 
 		self::$settings['use_quote_tag'] = array(
