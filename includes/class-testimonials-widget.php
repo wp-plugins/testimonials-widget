@@ -904,7 +904,7 @@ function nextTestimonial{$widget_number}() {
 		active.fadeOut({$fade_out_speed}, function() {
 			active.removeClass('active');
 			next.fadeIn({$fade_in_speed});
-			next.removeClass('display-none');
+			next.removeClass('hide');
 			next.addClass('active');
 
 			{INTERNAL_SCRIPTS}
@@ -1034,18 +1034,17 @@ EOF;
 		$do_schema       = $atts['enable_schema'];
 		$keep_whitespace = $atts['keep_whitespace'];
 		$remove_hentry   = $atts['remove_hentry'];
-		$use_bxslider    = $atts['use_bxslider'];
 
 		$class = 'testimonials-widget-testimonial';
 		if ( is_single() && empty( $widget_number ) )
 			$class .= ' single';
 		elseif ( $is_list )
 			$class .= ' list';
-		elseif ( ! $use_bxslider ) {
+		else {
 			if ( $is_first )
 				$class .= ' active';
 			elseif ( ! $is_first )
-				$class .= ' display-none';
+				$class .= ' hide';
 		}
 
 		if ( $keep_whitespace )
@@ -1856,8 +1855,8 @@ EOF;
 		$schema   .= $item;
 		$schema   .= "\n";
 
-		$schema   .= '</div>';
-		$schema   .= "\n";
+		$schema .= '</div>';
+		$schema .= "\n";
 
 		$schema = apply_filters( 'testimonials_widget_schema', $schema, $testimonial, $atts );
 
