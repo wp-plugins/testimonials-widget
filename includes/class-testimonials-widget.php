@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2013 Michael Cannon (email: mc@aihr.us)
+ * Copyright 2014 Michael Cannon (email: mc@aihr.us)
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License, version 2, as
  * published by the Free Software Foundation.
@@ -762,8 +762,11 @@ class Testimonials_Widget extends Aihrus_Common {
 
 		$use_bxslider = tw_get_option( 'use_bxslider' );
 		if ( $use_bxslider ) {
-			wp_register_style( 'jquery.bxslider', self::$plugin_assets . 'css/jquery.bxslider.css' );
-			wp_enqueue_style( 'jquery.bxslider' );
+			$exclude_bxslider_css = tw_get_option( 'exclude_bxslider_css' );
+			if ( empty( $exclude_bxslider_css ) ) {
+				wp_register_style( 'jquery.bxslider', self::$plugin_assets . 'css/jquery.bxslider.css' );
+				wp_enqueue_style( 'jquery.bxslider' );
+			}
 
 			wp_register_style( __CLASS__, self::$plugin_assets . 'css/testimonials-widget.css' );
 		} else {
@@ -904,7 +907,7 @@ function nextTestimonial{$widget_number}() {
 		active.fadeOut({$fade_out_speed}, function() {
 			active.removeClass('active');
 			next.fadeIn({$fade_in_speed});
-			next.removeClass('hide');
+			next.removeClass('display-none');
 			next.addClass('active');
 
 			{INTERNAL_SCRIPTS}
@@ -1034,17 +1037,27 @@ EOF;
 		$do_schema       = $atts['enable_schema'];
 		$keep_whitespace = $atts['keep_whitespace'];
 		$remove_hentry   = $atts['remove_hentry'];
+		$transition_mode = $atts['transition_mode'];
+		$use_bxslider    = $atts['use_bxslider'];
 
 		$class = 'testimonials-widget-testimonial';
-		if ( is_single() && empty( $widget_number ) )
+		if ( is_single() && empty( $widget_number ) ) {
 			$class .= ' single';
-		elseif ( $is_list )
+		} elseif ( $is_list ) {
 			$class .= ' list';
-		else {
-			if ( $is_first )
-				$class .= ' active';
-			elseif ( ! $is_first )
-				$class .= ' hide';
+		} else {
+			// widget display
+			if ( $use_bxslider ) {
+				if ( ! in_array( $transition_mode, array( 'horizontal', 'vertical' ) ) ) {
+					$class .= ' display-none';
+				}
+			} else {
+				if ( $is_first ) {
+					$class .= ' active';
+				} else {
+					$class .= ' display-none';
+				}
+			}
 		}
 
 		if ( $keep_whitespace )

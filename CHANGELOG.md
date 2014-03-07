@@ -2,6 +2,15 @@
 
 ## master
 
+## 2.18.3
+* Add option "Exclude bxSlider CSS?"
+* Exit if accessed directly
+* Initially no show bxSlider widget testimonials entries
+* RESOLVE #61 Horizontal transitions not working in widget
+* RESOLVE #62 Bootstrap class name hide conflict
+* RESOLVE #65 Widget blank options aren't saving correctly
+* Update copyright year
+
 ## 2.18.2
 * RESOLVE #57 Testimonials Stacking on first load
 
