@@ -5,7 +5,7 @@ Donate link: http://aihr.us/about-aihrus/donate/
 Tags: client, customer, portfolio, quotations, quote, quotes, random, recommendation, reference, review, reviews, testimonial, testimonials, testimony, wpml
 Requires at least: 3.6
 Tested up to: 3.9.0
-Stable tag: 2.18.2
+Stable tag: 2.18.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -212,6 +212,8 @@ Further, global settings are the baseline for shortcodes. If you want to alter t
 	* `hide_company` - default show; hide_company=true
 * Hide URL?
 	* `hide_url` - default show; hide_url=true
+* Exclude bxSlider CSS? - For a bare-bones, unthemed slider.
+	* `exclude_bxslider_css` - default show; exclude_bxslider_css=true
 * URL Target - Add target to all URLs; leave blank if none
 	* `target` - default none; target=_new
 * Enable Paging? - for [[testimonialswidget_list]]
@@ -412,6 +414,11 @@ See [Changelog](https://github.com/michael-cannon/testimonials-widget/blob/maste
 
 
 == Upgrade Notice ==
+
+= 2.18.3 =
+
+* CSS class `.hide` renamed `.display-none`
+* This is the last version supporting pre-bxSlider options
 
 = 2.18.2 =
 

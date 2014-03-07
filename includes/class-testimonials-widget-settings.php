@@ -1,6 +1,6 @@
 <?php
 /*
-	Copyright 2013 Michael Cannon (email: mc@aihr.us)
+	Copyright 2014 Michael Cannon (email: mc@aihr.us)
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License, version 2, as
@@ -319,6 +319,14 @@ class Testimonials_Widget_Settings extends Aihrus_Settings {
 			'title' => esc_html__( 'Hide URL?', 'testimonials-widget' ),
 			'type' => 'checkbox',
 			'validate' => 'is_true',
+		);
+
+		self::$settings['exclude_bxslider_css'] = array(
+			'title' => esc_html__( 'Exclude bxSlider CSS?', 'testimonials-widget' ),
+			'desc' => esc_html__( 'For a bare-bones, unthemed slider.', 'testimonials-widget' ),
+			'type' => 'checkbox',
+			'validate' => 'is_true',
+			'widget' => 0,
 		);
 
 		self::$settings['target'] = array(
