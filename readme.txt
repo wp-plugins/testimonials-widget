@@ -5,7 +5,7 @@ Donate link: http://aihr.us/about-aihrus/donate/
 Tags: client, customer, portfolio, quotations, quote, quotes, random, recommendation, reference, review, reviews, testimonial, testimonials, testimony, wpml
 Requires at least: 3.6
 Tested up to: 3.9.0
-Stable tag: 2.18.3
+Stable tag: 2.18.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -361,6 +361,7 @@ Further, global settings are the baseline for shortcodes. If you want to alter t
 = Most Common Issues =
 
 * Got `Parse error: syntax error, unexpected T_STATIC, expecting ')'`? Read [Most Aihrus Plugins Require PHP 5.3+](https://aihrus.zendesk.com/entries/30678006) for the fixes.
+* [404 - Page not found](https://aihrus.zendesk.com/entries/23679301)
 * [Change or debug CSS](https://aihrus.zendesk.com/entries/24910733) AKA "What's up with these quotes?"
 * [Customize bxSlider](http://bxslider.com/examples)
 * [Debug common theme and plugin conflicts](https://aihrus.zendesk.com/entries/25119302)
