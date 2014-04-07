@@ -2,6 +2,26 @@
 
 ## master
 
+## 2.19.0
+* Add screenshot 22. Testimonials Settings > Columns tab
+* Check system requirements after update
+* CSS class `.title` is now `.job-title`. Thank you Mark
+* Only check system requirements once a week
+* Please resave your WordPress Admin > Testimonials > Settings so that missing aoptions are included again.
+* RELATE #64 Remove deprecated options and codes
+* Require Aihrus 1.1.0
+* RESOLVE #20 Simplify shortcodes
+* RESOLVE #45 Plugin Disables Itself
+* RESOLVE #56 Prevent edit page column overload
+* RESOLVE #67 Use .job-title than .title for job title span class
+* RESOLVE #76 Undefined index: hide_image_single
+* Revise Aihrus framework includes
+* Revise version_check
+* Shortcode and theme function `testimonialswidget_list` being deprecated by `testimonials`
+* Shortcode and theme function `testimonialswidget_widget` being deprecated by `testimonials_slider`
+* Update BxSlider v4.1.2
+* Use aihr_deactivate_plugin call to deactivate
+
 ## 2.18.4
 * RESOLVE #69 Disallow .display-none when only 1 testimonials or no refresh_interval
 
