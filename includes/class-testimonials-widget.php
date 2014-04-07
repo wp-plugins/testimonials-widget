@@ -13,8 +13,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-require_once TW_DIR_LIB . 'aihrus-framework/class-aihrus-common.php';
-require_once TW_DIR_LIB . 'class-redrokk-metabox-class.php';
+require_once AIHR_DIR_INC . 'class-aihrus-common.php';
+require_once AIHR_DIR_LIB . 'class-redrokk-metabox-class.php';
 require_once TW_DIR_INC . 'class-testimonials-widget-settings.php';
 require_once TW_DIR_INC . 'class-testimonials-widget-widget.php';
 
@@ -102,8 +102,10 @@ class Testimonials_Widget extends Aihrus_Common {
 		add_action( 'admin_menu', array( __CLASS__, 'admin_menu' ) );
 		add_action( 'init', array( __CLASS__, 'init' ) );
 		add_action( 'widgets_init', array( __CLASS__, 'widgets_init' ) );
+		add_shortcode( 'testimonials', array( __CLASS__, 'testimonials' ) );
 		add_shortcode( 'testimonialswidget_list', array( __CLASS__, 'testimonialswidget_list' ) );
 		add_shortcode( 'testimonialswidget_widget', array( __CLASS__, 'testimonialswidget_widget' ) );
+		add_shortcode( 'testimonials_slider', array( __CLASS__, 'testimonials_slider' ) );
 	}
 
 
@@ -351,8 +353,10 @@ class Testimonials_Widget extends Aihrus_Common {
 			if ( $prior_version < '2.15.0' )
 				self::set_notice( 'notice_2_15_0' );
 
-			if ( $prior_version < self::VERSION )
+			if ( $prior_version < self::VERSION ) {
+				tw_requirements_check( true );
 				do_action( 'testimonials_widget_update' );
+			}
 
 			tw_set_option( 'admin_notices' );
 		}
@@ -480,11 +484,11 @@ class Testimonials_Widget extends Aihrus_Common {
 				break;
 
 			case 'shortcode':
-				$result  = '[testimonialswidget_list ids="';
+				$result  = '[testimonials ids="';
 				$result .= $post_id;
 				$result .= '"]';
 				$result .= '<br />';
-				$result .= '[testimonialswidget_widget ids="';
+				$result .= '[testimonials_slider ids="';
 				$result .= $post_id;
 				$result .= '"]';
 				break;
@@ -540,15 +544,7 @@ class Testimonials_Widget extends Aihrus_Common {
 		// order of keys matches column ordering
 		$columns = array(
 			'cb' => '<input type="checkbox" />',
-			'id' => esc_html__( 'ID', 'testimonials-widget' ),
-			'thumbnail' => esc_html__( 'Image', 'testimonials-widget' ),
 			'title' => esc_html__( 'Source', 'testimonials-widget' ),
-			'shortcode' => esc_html__( 'Shortcodes', 'testimonials-widget' ),
-			'testimonials-widget-title' => esc_html__( 'Job Title', 'testimonials-widget' ),
-			'testimonials-widget-location' => esc_html__( 'Location', 'testimonials-widget' ),
-			'testimonials-widget-email' => esc_html__( 'Email', 'testimonials-widget' ),
-			'testimonials-widget-company' => esc_html__( 'Company', 'testimonials-widget' ),
-			'testimonials-widget-url' => esc_html__( 'URL', 'testimonials-widget' ),
 			'author' => esc_html__( 'Published by', 'testimonials-widget' ),
 			'date' => esc_html__( 'Date', 'testimonials-widget' ),
 		);
@@ -560,6 +556,46 @@ class Testimonials_Widget extends Aihrus_Common {
 		} else {
 			$columns[ self::$cpt_category ] = esc_html__( 'Category', 'testimonials-widget' );
 			$columns[ self::$cpt_tags ]     = esc_html__( 'Tags', 'testimonials-widget' );
+		}
+
+		$show_id = tw_get_option( 'columns_id' );
+		if ( empty( $show_id ) ) {
+			$columns[ 'id' ] = esc_html__( 'ID', 'testimonials-widget' );
+		}
+
+		$show_thumbnail = tw_get_option( 'columns_thumbnail' );
+		if ( empty( $show_thumbnail ) ) {
+			$columns[ 'thumbnail' ] = esc_html__( 'Image', 'testimonials-widget' );
+		}
+
+		$show_shortcode = tw_get_option( 'columns_shortcode' );
+		if ( empty( $show_shortcode ) ) {
+			$columns[ 'shortcode' ] = esc_html__( 'Shortcodes', 'testimonials-widget' );
+		}
+
+		$show_job_title = tw_get_option( 'columns_job_title' );
+		if ( empty( $show_job_title ) ) {
+			$columns[ 'testimonials-widget-title' ] = esc_html__( 'Job Title', 'testimonials-widget' );
+		}
+
+		$show_location = tw_get_option( 'columns_location' );
+		if ( empty( $show_location ) ) {
+			$columns[ 'testimonials-widget-location' ] = esc_html__( 'Location', 'testimonials-widget' );
+		}
+
+		$show_email = tw_get_option( 'columns_email' );
+		if ( empty( $show_email ) ) {
+			$columns[ 'testimonials-widget-email' ] = esc_html__( 'Email', 'testimonials-widget' );
+		}
+
+		$show_company = tw_get_option( 'columns_company' );
+		if ( empty( $show_company ) ) {
+			$columns[ 'testimonials-widget-company' ] = esc_html__( 'Company', 'testimonials-widget' );
+		}
+
+		$show_url = tw_get_option( 'columns_url' );
+		if ( empty( $show_url ) ) {
+			$columns[ 'testimonials-widget-url' ] = esc_html__( 'URL', 'testimonials-widget' );
 		}
 
 		$columns = apply_filters( 'testimonials_widget_columns', $columns );
@@ -668,6 +704,13 @@ class Testimonials_Widget extends Aihrus_Common {
 
 
 	public static function testimonialswidget_list( $atts ) {
+		_deprecated_function( __FUNCTION__, '2.19.0', 'testimonials()' );
+
+		return self::testimonials( $atts );
+	}
+
+
+	public static function testimonials( $atts ) {
 		$atts = wp_parse_args( $atts, self::get_defaults() );
 		$atts = Testimonials_Widget_Settings::validate_settings( $atts );
 
@@ -679,7 +722,7 @@ class Testimonials_Widget extends Aihrus_Common {
 			$atts['paged'] = 1;
 		}
 
-		$atts['type'] = 'testimonialswidget_list';
+		$atts['type'] = 'testimonials';
 
 		$instance              = self::add_instance();
 		$atts['widget_number'] = $instance;
@@ -700,6 +743,13 @@ class Testimonials_Widget extends Aihrus_Common {
 
 
 	public static function testimonialswidget_widget( $atts, $widget_number = null ) {
+		_deprecated_function( __FUNCTION__, '2.19.0', 'testimonials_slider()' );
+
+		return self::testimonials_slider( $atts, $widget_number );
+	}
+
+
+	public static function testimonials_slider( $atts, $widget_number = null ) {
 		if ( empty( $widget_number ) ) {
 			$widget_number = self::$widget_number++;
 
@@ -714,7 +764,7 @@ class Testimonials_Widget extends Aihrus_Common {
 		$atts = Testimonials_Widget_Settings::validate_settings( $atts );
 
 		$atts['paging'] = false;
-		$atts['type']   = 'testimonialswidget_widget';
+		$atts['type']   = 'testimonials_slider';
 
 		self::set_instance( $widget_number );
 		$atts['widget_number'] = $widget_number;
@@ -790,7 +840,7 @@ class Testimonials_Widget extends Aihrus_Common {
 		$id_base = self::ID . $widget_number;
 
 		switch ( $atts['type'] ) {
-			case 'testimonialswidget_widget':
+			case 'testimonials_slider':
 				$use_bxslider = $atts['use_bxslider'];
 				if ( ! $use_bxslider ) {
 					$height     = $atts['height'];
@@ -843,7 +893,7 @@ EOF;
 		$id_base = $id . $widget_number;
 
 		switch ( $atts['type'] ) {
-			case 'testimonialswidget_widget':
+			case 'testimonials_slider':
 				$javascript = '';
 				if ( 1 < count( $testimonials ) ) {
 					$refresh_interval = $atts['refresh_interval'];
@@ -1229,7 +1279,7 @@ EOF;
 			$cite .= '<span class="join-title"></span>';
 
 		if ( $do_title ) {
-			$cite .= '<span class="title">';
+			$cite .= '<span class="job-title">';
 			$cite .= $testimonial_title;
 			$cite .= '</span>';
 		}
@@ -2000,26 +2050,26 @@ EOF;
 		echo '<h2>' . esc_html__( 'Testimonials Shortcode Examples', 'testimonials-widget' ) . '</h2>';
 
 		$shortcodes = <<<EOD
-<h3>[testimonialswidget_list]</h3>
+<h3>[testimonials]</h3>
 
 <ul>
-<li><code>[testimonialswidget_list category="category-name"]</code> - Testimonial list by category</li>
-<li><code>[testimonialswidget_list category=product hide_not_found=true]</code> - Testimonial list by category and hide "No testimonials found" message</li>
-<li><code>[testimonialswidget_list category=product tags=widget limit=5]</code> - Testimonial list by tag, showing 5 at most</li>
-<li><code>[testimonialswidget_list char_limit=0 limit=-1]</code> - Show all testimonials on one page</li>
-<li><code>[testimonialswidget_list char_limit=0 target=_new limit=3 disable_quotes=true]</code> - Show 3 full-length testimonials, with opening and closing quote marks removed</li>
-<li><code>[testimonialswidget_list hide_source=true hide_url=true]</code> - Show testimonial list with source and urls hidden</li>
-<li><code>[testimonialswidget_list ids="1,11,111" paging=false]</code> - Show only these 3 testimonials</li>
-<li><code>[testimonialswidget_list meta_key=testimonials-widget-company order=asc limit=15]</code> - Show 15 testimonials, in company order</li>
-<li><code>[testimonialswidget_list order=ASC orderby=title]</code> - List testimonials by post title</li>
-<li><code>[testimonialswidget_list tags="test,fun" random=true exclude="2,22,333"]</code> - Select testimonials tagged with either "test" or "fun", in random order, but ignore those of the excluded ids</li>
+<li><code>[testimonials category="category-name"]</code> - Testimonial list by category</li>
+<li><code>[testimonials category=product hide_not_found=true]</code> - Testimonial list by category and hide "No testimonials found" message</li>
+<li><code>[testimonials category=product tags=widget limit=5]</code> - Testimonial list by tag, showing 5 at most</li>
+<li><code>[testimonials char_limit=0 limit=-1]</code> - Show all testimonials on one page</li>
+<li><code>[testimonials char_limit=0 target=_new limit=3 disable_quotes=true]</code> - Show 3 full-length testimonials, with opening and closing quote marks removed</li>
+<li><code>[testimonials hide_source=true hide_url=true]</code> - Show testimonial list with source and urls hidden</li>
+<li><code>[testimonials ids="1,11,111" paging=false]</code> - Show only these 3 testimonials</li>
+<li><code>[testimonials meta_key=testimonials-widget-company order=asc limit=15]</code> - Show 15 testimonials, in company order</li>
+<li><code>[testimonials order=ASC orderby=title]</code> - List testimonials by post title</li>
+<li><code>[testimonials tags="test,fun" random=true exclude="2,22,333"]</code> - Select testimonials tagged with either "test" or "fun", in random order, but ignore those of the excluded ids</li>
 </ul>
 
-<h3>[testimonialswidget_widget]</h3>
+<h3>[testimonials_slider]</h3>
 
 <ul>
-<li><code>[testimonialswidget_widget category=product order=asc]</code> - Show rotating testimonials, of the product category, lowest post ids first</li>
-<li><code>[testimonialswidget_widget tags=sometag random=true]</code> - Show rotating, random testimonials having tag "sometag"</li>
+<li><code>[testimonials_slider category=product order=asc]</code> - Show rotating testimonials, of the product category, lowest post ids first</li>
+<li><code>[testimonials_slider tags=sometag random=true]</code> - Show rotating, random testimonials having tag "sometag"</li>
 </ul>
 EOD;
 
@@ -2041,9 +2091,14 @@ EOD;
 
 
 	public static function version_check() {
-		$good_version = true;
+		$valid_version = true;
+		if ( ! $valid_version ) {
+			$deactivate_reason = esc_html__( 'Failed version check', 'testimonials-widget' );
+			aihr_deactivate_plugin( self::BASE, TW_NAME, $deactivate_reason );
+			self::check_notices();
+		}
 
-		return $good_version;
+		return $valid_version;
 	}
 
 
@@ -2093,9 +2148,9 @@ EOD;
 
 		switch ( $column_name ) {
 			case 'shortcode':	
-				$result  = '[testimonialswidget_list ' . $attribute . '="' .$term->slug . '"]';
+				$result  = '[testimonials ' . $attribute . '="' .$term->slug . '"]';
 				$result .= '<br />';
-				$result .= '[testimonialswidget_widget ' . $attribute . '="' .$term->slug . '"]';
+				$result .= '[testimonials_slider ' . $attribute . '="' .$term->slug . '"]';
 				break;
 		}
 

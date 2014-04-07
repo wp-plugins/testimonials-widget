@@ -16,31 +16,40 @@
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-require_once TW_DIR_LIB . 'aihrus-framework/requirements.php';
+require_once TW_DIR_LIB . 'aihrus-framework/aihrus-framework.php';
 
 
-function tw_requirements_check() {
-	$valid_requirements = true;
+function tw_requirements_check( $force_check = false ) {
+	$check_okay = get_transient( 'tw_requirements_check' );
+	if ( empty( $force_check ) && $check_okay !== false ) {
+		return $check_okay;
+	}
+
+	$deactivate_reason = false;
 	if ( ! function_exists( 'aihr_check_aihrus_framework' ) ) {
-		$valid_requirements = false;
+		$deactivate_reason = esc_html__( 'Missing Aihrus Framework', 'testimonials-widget' );
 		add_action( 'admin_notices', 'tw_notice_aihrus' );
 	} elseif ( ! aihr_check_aihrus_framework( TW_BASE, TW_NAME, TW_AIHR_VERSION ) ) {
-		$valid_requirements = false;
+		$deactivate_reason = esc_html__( 'Old Aihrus Framework version detected', 'testimonials-widget' );
 	}
 
 	if ( ! aihr_check_php( TW_BASE, TW_NAME ) ) {
-		$valid_requirements = false;
+		$deactivate_reason = esc_html__( 'Old PHP version detected', 'testimonials-widget' );
 	}
 
 	if ( ! aihr_check_wp( TW_BASE, TW_NAME ) ) {
-		$valid_requirements = false;
+		$deactivate_reason = esc_html__( 'Old WordPress version detected', 'testimonials-widget' );
 	}
 
-	if ( ! $valid_requirements ) {
-		deactivate_plugins( TW_BASE );
+	if ( ! empty( $deactivate_reason ) ) {
+		aihr_deactivate_plugin( TW_BASE, TW_NAME, $deactivate_reason );
 	}
 
-	return $valid_requirements;
+	$check_okay = empty( $deactivate_reason );
+	delete_transient( 'tw_requirements_check' );
+	set_transient( 'tw_requirements_check', $check_okay, HOUR_IN_SECONDS );
+
+	return $check_okay;
 }
 
 

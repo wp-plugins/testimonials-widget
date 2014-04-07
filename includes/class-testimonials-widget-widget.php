@@ -16,7 +16,7 @@
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-require_once TW_DIR_LIB . 'aihrus-framework/class-aihrus-widget.php';
+require_once AIHR_DIR_INC . 'class-aihrus-widget.php';
 
 if ( class_exists( 'Testimonials_Widget_Widget' ) )
 	return;
@@ -51,7 +51,7 @@ class Testimonials_Widget_Widget extends Aihrus_Widget {
 
 
 	public static function get_content( $instance, $widget_number ) {
-		return Testimonials_Widget::testimonialswidget_widget( $instance, $widget_number );
+		return Testimonials_Widget::testimonials_slider( $instance, $widget_number );
 	}
 
 
