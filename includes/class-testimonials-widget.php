@@ -696,10 +696,14 @@ class Testimonials_Widget extends Aihrus_Common {
 
 
 	public static function get_defaults( $single_view = false ) {
-		if ( empty( $single_view ) )
-			return apply_filters( 'testimonials_widget_defaults', tw_get_options() );
-		else
-			return apply_filters( 'testimonials_widget_defaults_single', tw_get_options() );
+		$options = tw_get_options();
+		if ( empty( $single_view ) ) {
+			$defaults = apply_filters( 'testimonials_widget_defaults', $options );
+		} else {
+			$defaults = apply_filters( 'testimonials_widget_defaults_single', $options );
+		}
+
+		return $defaults;
 	}
 
 
@@ -1473,12 +1477,17 @@ EOF;
 		if ( has_filter( 'posts_orderby', 'CPTOrderPosts' ) )
 			remove_filter( 'posts_orderby', 'CPTOrderPosts', 99, 2 );
 
+		if ( empty( $fields ) ) {
+			$fields = false;
+		}
+
 		if ( $random ) {
 			$orderby = 'rand';
 			$order   = false;
 		}
 
 		$args = array(
+			'fields' => $fields,
 			'orderby' => $orderby,
 			'post_status' => array(
 				'publish',
@@ -2109,12 +2118,12 @@ EOD;
 	 */
 	public static function do_load() {
 		$do_load = false;
-		if ( ! empty( $GLOBALS['pagenow'] ) && in_array( $GLOBALS['pagenow'], array( 'options.php' ) ) ) {
+		if ( ! empty( $GLOBALS['pagenow'] ) && in_array( $GLOBALS['pagenow'], array( 'options.php', 'widgets.php' ) ) ) {
 			$do_load = true;
 		} elseif ( ! empty( $_REQUEST['post_type'] ) && self::PT == $_REQUEST['post_type'] ) {
 			if ( ! empty( $GLOBALS['pagenow'] ) && in_array( $GLOBALS['pagenow'], array( 'edit.php', 'edit-tags.php' ) ) ) {
 				$do_load = true;
-			} elseif ( ! empty( $_REQUEST['page'] ) && Testimonials_Widget_Settings::ID == $_REQUEST['page'] ) {
+			} elseif ( ! empty( $_REQUEST['option_page'] ) && Testimonials_Widget_Settings::ID == $_REQUEST['option_page'] ) {
 				$do_load = true;
 			}
 		}
