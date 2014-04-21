@@ -2,6 +2,15 @@
 
 ## master
 
+## 1.1.2
+* Add licensing status notices
+* Code formatting
+* Don't remove license from settings
+* RESOLVE Undefined index
+* Restore default wp_remote_get timeout
+* Return if library class exists already
+* Update settings page detection
+
 ## 1.1.1
 * Remove unused `widget_options`
 * RESOLVE michael-cannon/testimonials-widget#65 Widget blank options aren't saving correctly
