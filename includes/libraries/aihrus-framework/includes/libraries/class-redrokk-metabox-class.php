@@ -909,7 +909,8 @@ jQuery('#edit_<?php echo $this->_category_name; ?>_<?php echo $meta_id; ?>').cli
 			}
 ?>
 			<?php switch ( $type ) { default: ?>
-			<?php if ( is_callable( $type ) && function_exists( $type ) && ! empty( $custom[ $id ] ) ) : ?>
+			<?php if ( is_callable( $type ) && function_exists( $type ) ) : ?>
+			<?php if ( ! isset( $custom[ $id ] ) ) $custom[ $id ] = null; ?>
 			<tr>
 				<th scope="row" style="width: 140px">
 					<label for="<?php echo $id; ?>"><?php echo $name; ?></label>
