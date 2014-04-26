@@ -2,6 +2,11 @@
 
 ## master
 
+## 1.1.3
+* Add check_user_role method
+* RESOLVE michael-cannon/testimonials-widget#85 New testimonial rating field is blank
+* RESOLVE Undefined index notice
+
 ## 1.1.2
 * Add licensing status notices
 * Code formatting

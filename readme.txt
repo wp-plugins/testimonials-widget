@@ -5,7 +5,7 @@ Donate link: http://aihr.us/about-aihrus/donate/
 Tags: client, customer, portfolio, quotations, quote, quotes, random, recommendation, reference, review, reviews, testimonial, testimonials, testimony, wpml
 Requires at least: 3.6
 Tested up to: 3.9.0
-Stable tag: 2.19.3
+Stable tag: 2.19.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -182,16 +182,17 @@ Further, global settings are the baseline for shortcodes. If you want to alter t
 
 **General**
 
-* Enable Review Schema? – Adds HTML tag markup per the [Review schema](http://schema.org/Review) to testimonials. Search engines including Bing, Google, Yahoo! and Yandex rely on this markup to improve the display of search results.
-	* `enable_schema` - default true; enable_schema=false
-* Default Reviewed Item? - Name of thing being referenced in testimonials
-	* `item_reviewed` - default "Site Title"
-* Default Reviewed Item URL? - URL of thing being referenced in testimonials
-	* `item_reviewed_url` - default `network_site_url();`
+* Use bxSlider? - Prior to 2.15.0, Testimonials' used custom JavaScript for transitions.
+* Exclude bxSlider CSS? - For a bare-bones, unthemed slider.
+	* `exclude_bxslider_css` - default show; exclude_bxslider_css=true
+* Include IE7 CSS?
 * Hide built-in quotes? - Remove open and close quote span tags surrounding testimonial content
 	* `disable_quotes` - default false; disable_quotes=true
-* Hide "Testimonials Not Found"?
-	* `hide_not_found` - default show; hide_not_found=true
+* Remove `.hentry` CSS? – Some themes use class `.hentry` in a manner that breaks Testimonials' CSS and corrupts microdata parsing
+	* `remove_hentry` - default true; remove_hentry=false
+* Use `<q>` tag? – Not HTML5 compliant
+	* `use_quote_tag` - default none; use_quote_tag=true
+
 * Hide Gravatar Image?
 	* `hide_gravatar` - default show; hide_gravatar=true
 * Hide Image?
@@ -212,23 +213,25 @@ Further, global settings are the baseline for shortcodes. If you want to alter t
 	* `hide_company` - default show; hide_company=true
 * Hide URL?
 	* `hide_url` - default show; hide_url=true
-* Exclude bxSlider CSS? - For a bare-bones, unthemed slider.
-	* `exclude_bxslider_css` - default show; exclude_bxslider_css=true
-* URL Target - Add target to all URLs; leave blank if none
-	* `target` - default none; target=_new
+
+* Default Reviewed Item? - Name of thing being referenced in testimonials
+	* `item_reviewed` - default "Site Title"
+* Default Reviewed Item URL? - URL of thing being referenced in testimonials
+	* `item_reviewed_url` - default `network_site_url();`
 * Enable Paging? - for [testimonials]
 	* `paging` - default true [true|before|after|false]; paging=false
 		* `true` – display paging before and after testimonial entries
 		* `before` – display paging only before testimonial entries
 		* `after` – display paging only after testimonial entries
 	* Widget - Not functional
+* Enable Review Schema? – Adds HTML tag markup per the [Review schema](http://schema.org/Review) to testimonials. Search engines including Bing, Google, Yahoo! and Yandex rely on this markup to improve the display of search results.
+	* `enable_schema` - default true; enable_schema=false
 * Enable [shortcodes]? - If unchecked, shortcodes are stripped.
 	* `do_shortcode` - default false; do_shortcode=true
-* Include IE7 CSS?
-* Use `<q>` tag? – Not HTML5 compliant
-	* `use_quote_tag` - default none; use_quote_tag=true
-* Remove `.hentry` CSS? – Some themes use class `.hentry` in a manner that breaks Testimonials' CSS and corrupts microdata parsing
-	* `remove_hentry` - default true; remove_hentry=false
+* Hide "Testimonials Not Found"?
+	* `hide_not_found` - default show; hide_not_found=true
+* URL Target - Add target to all URLs; leave blank if none
+	* `target` - default none; target=_new
 
 **Selection**
 
@@ -296,7 +299,6 @@ Further, global settings are the baseline for shortcodes. If you want to alter t
 
 **Version Based Options**
 
-* Use bxSlider? - Pre 2.15.0, Testimonials' used custom JavaScript for transitions.
 * Disable Animation? - Disable animation between testimonial transitions. Useful when stacking.
 	* `disable_animation` - default false; disable_animation=true
 * Fade Out Speed - Transition duration in milliseconds; higher values indicate slower animations, not faster ones.
@@ -380,32 +382,23 @@ Further, global settings are the baseline for shortcodes. If you want to alter t
 1. [Support on WordPress](http://wordpress.org/support/plugin/testimonials-widget) - ask questions and review responses
 1. [Contribute Code](https://github.com/michael-cannon/testimonials-widget/blob/master/CONTRIBUTING.md)
 1. [Beta Testers Needed](http://aihr.us/become-beta-tester/) - provide feedback and direction to plugin development
+1. [Old Plugin Versions](http://wordpress.org/plugins/testimonials-widget/developers/)
 
 
 == Screenshots ==
 
 1. Testimonials admin interface
 2. Collapsed Testimonials options
-3. Expanded "General Options" in Testimonials options
+3. Shortcode helpers on category and tag admin screens
 4. Testimonial widget in the sidebar 
-5. [testimonials] in post
+5. Testimonials Shortcode Examples page
 6. [testimonials] results with paging
-7. Widget whitespace kept
+7. Using Review and AggregateRating schema data structures
 8. Widget with clickable title and custom text/HTML on bottom
 9. [WP-PageNavi compatible](http://wordpress.org/extend/plugins/wp-pagenavi/) for page numbers than default arrows
 10. Poedit Catalog properties
 11. Testimonials Settings > General tab
-12. Expanded "Selection Options" in Testimonials options
-13. Expanded "Ordering Options" in Testimonials options
-14. Testimonials Settings > Selection tab
-15. Testimonials Settings > Post Type tab
-16. Testimonials Settings > Widget tab
-17. Testimonials Settings > Compatibility & Reset tab
-18. Dashboard > Right Now "Testimonials" count
-19. Using Review and AggregateRating schema data structures
-20. Testimonials Shortcode Examples page
-21. Shortcode helpers on category and tag admin screens
-22. Testimonials Settings > Columns tab
+12. Dashboard > At a Glance "Testimonials" count
 
 [gallery]
 
