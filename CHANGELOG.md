@@ -2,13 +2,19 @@
 
 ## master
 
+## 2.19.5
+* Remove Testimonials menu for authors removal code
+* Require Aihrus Framework 1.1.4
+* Revise premium introduction
+* Update premium links
+
 ## 2.19.4
 * Add Testimonials to Dashboard's At a Glance
 * Hide version based options is bxSlider is enabled
 * RELATED #78 Show revert link in deactivation admin notice
 * RESOLVE #71 Permissions for Contributor
 * RESOLVE Authors seeing more than own testimonials for editing
-* Require Aihrus 1.1.3
+* Require Aihrus Framework 1.1.3
 * Revise readme options layout
 * Revise screenshots
 
@@ -953,7 +959,7 @@
 
 ## 2.3.4
 * BUGFIX [Testimonial plugin means Set Feature Image Not Displaying](http://wordpress.org/support/topic/testimonial-plugin-means-set-feature-image-not-displaying)
-* Test with WordPress 3.5.0 RC1
+* Test with WordPress 3.5.0RC1
 * TODO remove Publish & New - just click 'New Testimonial' after Publishing
 * Update donate link
 
