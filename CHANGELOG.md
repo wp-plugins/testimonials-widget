@@ -2,6 +2,13 @@
 
 ## master
 
+## 2.19.8
+* Add Configuration examples for filter testimonials_widget_meta_box
+* Add option Exclude default CSS?
+* Disable WordPress.WhiteSpace.ControlStructureSpacing coding standard
+* RESOLVE #95 Incoming YouTube links not embedded
+* RESOLVE #99 Swap location and company data placements
+
 ## 2.19.7
 * RESOLVE Testimonials content has the_content filter applied
 
