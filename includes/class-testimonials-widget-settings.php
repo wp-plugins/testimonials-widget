@@ -134,7 +134,7 @@ class Testimonials_Widget_Settings extends Aihrus_Settings {
 		self::$settings['title_link'] = array(
 			'section' => 'widget',
 			'title' => esc_html__( 'Title Link', 'testimonials-widget' ),
-			'desc' => esc_html__( 'URL, path, or post ID to link widget title to. Ex: http://example.com/stuff, /testimonials, 123 or ', 'testimonials-widget' ),
+			'desc' => esc_html__( 'URL, path, or post ID to link widget title to. Ex: http://example.com/stuff, /testimonials, or 123', 'testimonials-widget' ),
 			'validate' => 'wp_kses_data',
 		);
 
@@ -236,6 +236,14 @@ class Testimonials_Widget_Settings extends Aihrus_Settings {
 				'widget' => 0,
 			);
 		}
+
+		self::$settings['exclude_css'] = array(
+			'title' => esc_html__( 'Exclude default CSS?', 'testimonials-widget' ),
+			'desc' => esc_html__( 'Prevent default CSS from being loaded.', 'testimonials-widget' ),
+			'type' => 'checkbox',
+			'validate' => 'is_true',
+			'widget' => 0,
+		);
 
 		self::$settings['include_ie7_css'] = array(
 			'title' => esc_html__( 'Include IE7 CSS?', 'testimonials-widget' ),
