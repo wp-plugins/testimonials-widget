@@ -5,7 +5,7 @@ Donate link: http://aihr.us/about-aihrus/donate/
 Tags: client, customer, portfolio, quotations, quote, quotes, random, recommendation, reference, review, reviews, testimonial, testimonials, testimony, wpml
 Requires at least: 3.6
 Tested up to: 4.0.0
-Stable tag: 2.19.8
+Stable tag: 2.19.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -330,8 +330,9 @@ Further, global settings are the baseline for shortcodes. If you want to alter t
 
 = Requirements =
 
-* [jQuery 1.10+](https://aihrus.zendesk.com/entries/23693363)
 * PHP 5.3+ [Read notice](https://aihrus.zendesk.com/entries/30678006) – Since 2.16.0
+* WordPress 3.6+
+* [jQuery 1.10+](https://aihrus.zendesk.com/entries/23693363)
 
 = Install Methods =
 
@@ -377,7 +378,9 @@ Further, global settings are the baseline for shortcodes. If you want to alter t
 = Most Common Issues =
 
 * Got `Parse error: syntax error, unexpected T_STATIC…`? See [Most Aihrus Plugins Require PHP 5.3+](https://aihrus.zendesk.com/entries/30678006)
+* Shortcode not working? Make sure your theme isn't using same shortcode.
 * [404 - Page not found](https://aihrus.zendesk.com/entries/23679301)
+* [Add testimonials using Gravity Forms](http://webtrainingwheels.com/how-to-collect-user-submitted-testimonials-wordpress/)
 * [Change styling or debug CSS](https://aihrus.zendesk.com/entries/24910733)
 * [Customize bxSlider](http://bxslider.com/examples)
 * [Debug theme and plugin conflicts](https://aihrus.zendesk.com/entries/25119302)
@@ -445,6 +448,10 @@ See [Changelog](https://github.com/michael-cannon/testimonials-widget/blob/maste
 
 
 == Upgrade Notice ==
+
+= 2.19.9 =
+
+* Added `margin-bottom: 2em;` to `.testimonials-widget-testimonial.list`
 
 = 2.19.8 =
 
