@@ -1,9 +1,10 @@
 <?php
 /**
- * Plugin Name: Testimonials by Aihrus
+ * Plugin Name: Testimonials Widget
  * Plugin URI: http://wordpress.org/plugins/testimonials-widget/
- * Description: Testimonials by Aihrus lets you randomly slide or list selected portfolios, quotes, reviews, or text with images or videos on your WordPress site.
- * Version: 2.19.9
+ * Description: Easily add social proofing to your website with Testimonials Widget. List or slide reviews via functions, shortcodes, or widgets.
+ * lets you socially randomly slide or list selected portfolios, quotes, reviews, or text with images or videos on your WordPress site.
+ * Version: 3.0.0
  * Author: Michael Cannon
  * Author URI: http://aihr.us/resume/
  * License: GPLv2 or later
@@ -13,46 +14,60 @@
 
 
 /**
- * Copyright 2014 Michael Cannon (email: mc@aihr.us)
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+Testimonials Widget
+Copyright (C) 2014  Michael Cannon
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
 // Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) )
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
+}
 
-if ( ! defined( 'TW_AIHR_VERSION' ) )
-	define( 'TW_AIHR_VERSION', '1.1.4' );
+if ( ! defined( 'TW_AIHR_VERSION' ) ) {
+	define( 'TW_AIHR_VERSION', '1.1.5' );
+}
 
-if ( ! defined( 'TW_BASE' ) )
+if ( ! defined( 'TW_BASE' ) ) {
 	define( 'TW_BASE', plugin_basename( __FILE__ ) );
+}
 
-if ( ! defined( 'TW_DIR' ) )
+if ( ! defined( 'TW_DIR' ) ) {
 	define( 'TW_DIR', plugin_dir_path( __FILE__ ) );
+}
 
-if ( ! defined( 'TW_DIR_INC' ) )
+if ( ! defined( 'TW_DIR_INC' ) ) {
 	define( 'TW_DIR_INC', TW_DIR . 'includes/' );
+}
 
-if ( ! defined( 'TW_DIR_LIB' ) )
+if ( ! defined( 'TW_DIR_LIB' ) ) {
 	define( 'TW_DIR_LIB', TW_DIR_INC . 'libraries/' );
+}
 
-if ( ! defined( 'TW_NAME' ) )
-	define( 'TW_NAME', 'Testimonials by Aihrus' );
+if ( ! defined( 'TW_NAME' ) ) {
+	define( 'TW_NAME', 'Testimonials Widget' );
+}
 
-if ( ! defined( 'TW_PREMIUM_LINK' ) )
+if ( ! defined( 'TW_PREMIUM_LINK' ) ) {
 	define( 'TW_PREMIUM_LINK', '<a href="http://aihr.us/downloads/testimonials-widget-premium-wordpress-plugin/">Buy Premium</a>' );
+}
 
-if ( ! defined( 'TW_VERSION' ) )
-	define( 'TW_VERSION', '2.19.9' );
+if ( ! defined( 'TW_VERSION' ) ) {
+	define( 'TW_VERSION', '3.0.0' );
+}
 
 require_once TW_DIR_INC . 'requirements.php';
 
@@ -80,12 +95,14 @@ if ( ! function_exists( 'testimonialswidget_init' ) ) {
 	function testimonialswidget_init() {
 		if ( Testimonials_Widget::version_check() ) {
 			global $Testimonials_Widget_Settings;
-			if ( is_null( $Testimonials_Widget_Settings ) )
+			if ( is_null( $Testimonials_Widget_Settings ) ) {
 				$Testimonials_Widget_Settings = new Testimonials_Widget_Settings();
+			}
 
 			global $Testimonials_Widget;
-			if ( is_null( $Testimonials_Widget ) )
+			if ( is_null( $Testimonials_Widget ) ) {
 				$Testimonials_Widget = new Testimonials_Widget();
+			}
 		}
 	}
 }
@@ -105,6 +122,33 @@ if ( ! function_exists( 'testimonials' ) ) {
 }
 
 
+if ( ! function_exists( 'testimonials_archives' ) ) {
+	function testimonials_archives( $atts = array() ) {
+		global $Testimonials_Widget;
+
+		return $Testimonials_Widget->testimonials_archives( $atts );
+	}
+}
+
+
+if ( ! function_exists( 'testimonials_categories' ) ) {
+	function testimonials_categories( $atts = array() ) {
+		global $Testimonials_Widget;
+
+		return $Testimonials_Widget->testimonials_categories( $atts );
+	}
+}
+
+
+if ( ! function_exists( 'testimonials_recent' ) ) {
+	function testimonials_recent( $atts = array() ) {
+		global $Testimonials_Widget;
+
+		return $Testimonials_Widget->testimonials_recent( $atts );
+	}
+}
+
+
 if ( ! function_exists( 'testimonials_slider' ) ) {
 	function testimonials_slider( $atts = array(), $widget_number = null ) {
 		global $Testimonials_Widget;
@@ -114,20 +158,43 @@ if ( ! function_exists( 'testimonials_slider' ) ) {
 }
 
 
+if ( ! function_exists( 'testimonials_tag_cloud' ) ) {
+	function testimonials_tag_cloud( $atts = array() ) {
+		global $Testimonials_Widget;
+
+		return $Testimonials_Widget->testimonials_tag_cloud( $atts );
+	}
+}
+
+
+if ( ! function_exists( 'testimonials_examples' ) ) {
+	function testimonials_examples( $atts = array() ) {
+		global $Testimonials_Widget;
+
+		return $Testimonials_Widget->testimonials_examples( $atts );
+	}
+}
+
+
+if ( ! function_exists( 'testimonials_options' ) ) {
+	function testimonials_options( $atts = array() ) {
+		global $Testimonials_Widget;
+
+		return $Testimonials_Widget->testimonials_options( $atts );
+	}
+}
+
+
 if ( ! function_exists( 'testimonialswidget_list' ) ) {
 	function testimonialswidget_list( $atts = array() ) {
-		_deprecated_function( __FUNCTION__, '2.19.0', 'testimonials()' );
-
 		return testimonials( $atts );
 	}
 }
 
 
 if ( ! function_exists( 'testimonialswidget_widget' ) ) {
-	function testimonialswidget_widget( $atts = array(), $widget_number = null ) {
-		_deprecated_function( __FUNCTION__, '2.19.0', 'testimonials_slider()' );
-
-		return testimonials_slider( $atts, $widget_number );
+	function testimonialswidget_widget( $atts = array() ) {
+		return testimonials_slider( $atts );
 	}
 }
 
