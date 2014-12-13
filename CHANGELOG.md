@@ -2,6 +2,18 @@
 
 ## master
 
+## 3.0.1
+* FAQ Got `The plugin does not have a valid header` error?
+* Require Aihrus Framework 1.1.6
+* RESOLVE #158 Minify JS
+* RESOLVE is_array( $args['tax_query'] ) notice
+* RESOLVE Missing slideWidth 0 
+* RESOLVE Notice: Undefined index: tag_slug__in
+* RESOLVE Slide Width stuck on 200 pixels
+* RESOLVE The plugin does not have a valid header - remove blank lines between header comments
+* Restore settings page name as Testimonials Widget Settings
+* Swap Shortcode Examples and Attributes tab positions
+
 ## 3.0.0
 * Add DEPRECATED.md, EXAMPLES.md, and UPGRADING.md documentation
 * Add filter `tw_examples_html`

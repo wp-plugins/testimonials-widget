@@ -751,7 +751,7 @@ class Testimonials_Widget extends Aihrus_Common {
 			wp_enqueue_script( 'jquery.fitvids' );
 		}
 
-		wp_register_script( 'jquery.bxslider', self::$library_assets . 'bxslider-4/jquery.bxslider.js', array( 'jquery' ), '4.1.2', true );
+		wp_register_script( 'jquery.bxslider', self::$library_assets . 'bxslider-4/jquery.bxslider.min.js', array( 'jquery' ), '4.1.2', true );
 		wp_enqueue_script( 'jquery.bxslider' );
 
 		do_action( 'tw_scripts', $atts );
@@ -811,6 +811,7 @@ class Testimonials_Widget extends Aihrus_Common {
 					$adaptive_height = $atts['adaptive_height'] ? 'true' : 'false';
 					$enable_video    = $atts['enable_video'];
 					$show_start_stop = $atts['show_start_stop'];
+					$slide_width     = empty( $slide_width ) ? 0 : $atts['slide_width'];
 					$transition_mode = $atts['transition_mode'];
 
 					$auto  = $refresh_interval ? 'true' : 'false';
@@ -835,7 +836,8 @@ jQuery(document).ready(function() {
 		{$pager},
 		pause: {$pause},
 		{$video},
-		slideMargin: 2
+		slideMargin: 2,
+		slideWidth: {$slide_width}
 	});
 });
 EOF;
@@ -996,7 +998,7 @@ EOF;
 	 * @SuppressWarnings(PHPMD.Superglobals)
 	 */
 	public static function format_content( $content, $widget_number, $atts ) {
-		if ( empty ( $content ) ) {
+		if ( empty( $content ) ) {
 			return $content;
 		}
 
@@ -1147,14 +1149,14 @@ EOF;
 				foreach ( $tags as $tag ) {
 					if ( ! preg_match( '#^\d+$#', $tag ) ) {
 						if ( $tags_all ) {
-							if ( ! is_array( $args['tag_slug__and'] ) ) {
+							if ( empty( $args['tag_slug__and'] ) || ! is_array( $args['tag_slug__and'] ) ) {
 								$args['tag_slug__and'] = array();
 							}
 
 							$args['tag_slug__and'][] = $tag;
 						}
 						else {
-							if ( ! is_array( $args['tag_slug__in'] ) ) {
+							if ( empty( $args['tag_slug__in'] ) || ! is_array( $args['tag_slug__in'] ) ) {
 								$args['tag_slug__in'] = array();
 							}
 
@@ -1162,14 +1164,14 @@ EOF;
 						}
 					} else {
 						if ( $tags_all ) {
-							if ( ! is_array( $args['tag__and'] ) ) {
+							if ( empty( $args['tag__and'] ) || ! is_array( $args['tag__and'] ) ) {
 								$args['tag__and'] = array();
 							}
 
 							$args['tag__and'][] = $tag;
 						}
 						else {
-							if ( ! is_array( $args['tag__in'] ) ) {
+							if ( empty( $args['tag__in'] ) || ! is_array( $args['tag__in'] ) ) {
 								$args['tag__in'] = array();
 							}
 
@@ -1179,7 +1181,7 @@ EOF;
 				}
 			}
 		} else {
-			if ( ! is_array( $args['tax_query'] ) ) {
+			if ( empty( $args['tax_query'] ) || ! is_array( $args['tax_query'] ) ) {
 				$args['tax_query'] = array();
 			}
 

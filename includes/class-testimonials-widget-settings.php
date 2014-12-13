@@ -33,7 +33,7 @@ if ( class_exists( 'Testimonials_Widget_Settings' ) ) {
 
 class Testimonials_Widget_Settings extends Aihrus_Settings {
 	const ID   = 'testimonialswidget_settings';
-	const NAME = 'Testimonials Settings';
+	const NAME = 'Testimonials Widget Settings';
 
 	public static $admin_page;
 	public static $class    = __CLASS__;
@@ -120,8 +120,8 @@ class Testimonials_Widget_Settings extends Aihrus_Settings {
 
 		parent::sections();
 
-		self::$sections['examples'] = esc_html__( 'Shortcode Examples', 'testimonials-widget' );
 		self::$sections['options']  = esc_html__( 'Shortcode Attributes', 'testimonials-widget' );
+		self::$sections['examples'] = esc_html__( 'Shortcode Examples', 'testimonials-widget' );
 
 		self::$sections = apply_filters( 'tw_sections', self::$sections );
 	}
@@ -195,6 +195,14 @@ class Testimonials_Widget_Settings extends Aihrus_Settings {
 			'type' => 'checkbox',
 			'validate' => 'is_true',
 			'std' => 1,
+		);
+
+		self::$settings['slide_width'] = array(
+			'section' => 'widget',
+			'title' => esc_html__( 'Slide Width?', 'testimonials-widget' ),
+			'desc' => esc_html__( 'Width of each testimonial. Increase to thumbnail width or greater for improved looks. Requried for horizontal transitions.', 'testimonials-widget' ),
+			'validate' => 'intval',
+			'std' => 0,
 		);
 
 		self::$settings['transition_mode'] = array(
