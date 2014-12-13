@@ -5,7 +5,7 @@ Donate link: http://aihr.us/about-aihrus/donate/
 Tags: aihrus, client, customer, portfolio, quote, quotes, random, recommendation, reference, review, reviews, slider, testimonial, testimonials, wpml
 Requires at least: 3.6
 Tested up to: 4.1.0
-Stable tag: 3.0.0
+Stable tag: 3.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,7 +19,7 @@ Testimonials Widget lets you randomly slide or list selected portfolios, quotes,
 = Testimonials Widget is Beyond a Simple WordPress Testimonials Slider! =
 
 * Carousel, fade, and slide transitions
-* Filter slideshow content by WordPress' categories, tags, or post-ID
+* Filter slideshow content by WordPress' categories, tags, or post ID
 * Random display
 * Shortcode compatible - slide content that is rendered using shortcodes. e.g. Worpdress Galleries and Gravity Forms
 * Simply styled for easy theme adaption
@@ -35,6 +35,29 @@ Testimonials Widget lets you randomly slide or list selected portfolios, quotes,
 
 **View a [Live Testimonials Widget Demo](http://aihr.us/testimonials-examples/)**
 
+= Testimonials Widget Premium =
+
+Testimonials Widget Premium increases all of Testimonials Widget' benefits and features to over a 100 with…
+
+* **Free, comprehensive support**
+* 5-star ratings
+* Caching
+* Excerpts
+* More selection options
+* Read more links
+* RSS feeds
+* Shortcodes and theme functions for testimonials count, form, and links summary
+* Use any post types for testimonials
+* User submitted testimonials
+
+**[Buy Testimonials Widget Premium](http://aihr.us/downloads/best-wordpress-testimonials-plugin-testimonials-premium/)** plugin for WordPress.
+
+= Testimonials Widget Premium Doesn't Work For You? =
+
+No problem, it has a 30-day, money back guarantee. Also, you can keep the software, sans support and updates.
+
+= General Information =
+
 More than one testimonials shortcode or widget instance can be displayed at a time on a page. Additionally, with shortcodes and theme functions, you can display a short or long list or rotation of testimonials anywhere you need. 
 
 Through categories and tagging, you can create organizational structures. Using categories for products, projects and services you can then apply tagging for further classification.
@@ -47,7 +70,47 @@ Widgets display content sans `wpautop` formatting. This means there's no forced 
 
 The single testimonial view supports image, author, title, location, email, company and URL details with optional Review schema.
 
-= Features =
+= Shortcodes =
+
+* `[testimonials]` - Testimonials listings with paging 
+* `[testimonials_archives]` - A monthly archive of your site's testimonials
+* `[testimonials_categories]` - A list or dropdown of testimonials' categories
+* `[testimonials_examples]` - Displays examples of commonly used testimonials' shortcodes with attributes
+* `[testimonials_options]` - Displays summary of testimonials' settings for use with shortcodes and theme functions
+* `[testimonials_recent]` - Your site's most recent testimonials
+* `[testimonials_slider]` - Displays rotating testimonials or statically
+* `[testimonials_tag_cloud]` - A cloud of your most used testimonials' tags
+
+= Theme Functions =
+
+* `<?php echo testimonials(); // Testimonials listing with paging  ?>`
+* `<?php echo testimonials_archives(); // A monthly archive of your site's testimonials ?>`
+* `<?php echo testimonials_categories(); // A list or dropdown of testimonials' categories ?>`
+* `<?php echo testimonials_examples(); // Displays examples of commonly used testimonials' shortcodes with attributes ?>`
+* `<?php echo testimonials_options(); // Displays summary of testimonials' settings for use with shortcodes and theme functions ?>`
+* `<?php echo testimonials_recent(); // Your site's most recent testimonials ?>`
+* `<?php echo testimonials_slider(); // Displays rotating testimonials or statically ?>`
+* `<?php echo testimonials_tag_cloud(); // A cloud of your most used testimonials' tags ?>`
+
+= Shortcode Examples =
+
+Read [EXAMPLES](https://github.com/michael-cannon/testimonials-widget/blob/master/EXAMPLES.md).
+
+= Shortcode and Widget Options =
+
+Please keep in mind that inheritance affects options. This means that changes made to Testimonials > Settings will not affect current widget instance options. You must change the widget instance manually. However, if you create a new widget instance, then the global settings will apply.
+
+Further, global settings are the baseline for shortcodes. If you want to alter the shortcode appearance, then alter the shortcode options directly.
+
+Details on the Shortcode Attributes tab at WordPress Admin > Testimonials > Settings.
+
+= Testimonials Widget Migration Helpers =
+
+* Testimonials Widget pre 2.0.0 - Install and activate Testimonials Widget 2.19.0 before installing the latest Testimonials Widget for automatic upgrading.
+* [GC Testimonials](http://wordpress.org/plugins/gc-testimonials-to-testimonials/)
+* [Testimonials by WooThemes](http://wordpress.org/plugins/wootheme-testimonials-to-testimonials/)
+
+= 50+ Features =
 
 * Adjustable animation speed
 * Admin interface to add, edit and manage testimonials
@@ -114,67 +177,6 @@ The single testimonial view supports image, author, title, location, email, comp
 * Uses [bxSlider](http://bxslider.com) for transitions
 * Widgets for testimonial's archives, categories, recent, slider, and tag cloud
 * WordPress Multilingual enabled [WPML](http://wpml.org/)
-
-= Shortcodes =
-
-* `[testimonials]` - Testimonials listings with paging 
-* `[testimonials_archives]` - A monthly archive of your site's testimonials
-* `[testimonials_categories]` - A list or dropdown of testimonials' categories
-* `[testimonials_examples]` - Displays examples of commonly used testimonials' shortcodes with attributes
-* `[testimonials_options]` - Displays summary of testimonials' settings for use with shortcodes and theme functions
-* `[testimonials_recent]` - Your site's most recent testimonials
-* `[testimonials_slider]` - Displays rotating testimonials or statically
-* `[testimonials_tag_cloud]` - A cloud of your most used testimonials' tags
-
-= Theme Functions =
-
-* `<?php echo testimonials(); // Testimonials listing with paging  ?>`
-* `<?php echo testimonials_archives(); // A monthly archive of your site's testimonials ?>`
-* `<?php echo testimonials_categories(); // A list or dropdown of testimonials' categories ?>`
-* `<?php echo testimonials_examples(); // Displays examples of commonly used testimonials' shortcodes with attributes ?>`
-* `<?php echo testimonials_options(); // Displays summary of testimonials' settings for use with shortcodes and theme functions ?>`
-* `<?php echo testimonials_recent(); // Your site's most recent testimonials ?>`
-* `<?php echo testimonials_slider(); // Displays rotating testimonials or statically ?>`
-* `<?php echo testimonials_tag_cloud(); // A cloud of your most used testimonials' tags ?>`
-
-= Testimonials Widget Premium =
-
-Testimonials Widget Premium includes all of Testimonials Widget' benefits and features to over a 100 with…
-
-* 5-star ratings
-* Caching
-* Excerpts
-* Free, comprehensive support
-* More selection options
-* Read more links
-* RSS feeds
-* Shortcodes and theme functions for testimonials count, form, and links summary
-* Use any post types for testimonials
-* User submitted testimonials
-
-**[Buy Testimonials Widget Premium](http://aihr.us/downloads/best-wordpress-testimonials-plugin-testimonials-premium/)** plugin for WordPress.
-
-= Testimonials Widget Premium Doesn't Work For You? =
-
-No problem, get a 100% refund and keep the software. Your license for support and updates will be revoked though.
-
-= Shortcode Examples =
-
-Read [EXAMPLES](https://github.com/michael-cannon/testimonials-widget/blob/master/EXAMPLES.md).
-
-= Shortcode and Widget Options =
-
-Please keep in mind that inheritance affects options. This means that changes made to Testimonials > Settings will not affect current widget instance options. You must change the widget instance manually. However, if you create a new widget instance, then the global settings will apply.
-
-Further, global settings are the baseline for shortcodes. If you want to alter the shortcode appearance, then alter the shortcode options directly.
-
-Details on the Shortcode Attributes tab at WordPress Admin > Testimonials > Settings.
-
-= Testimonials Widget Migration Helpers =
-
-* Testimonials Widget pre 2.0.0 - Install and activate Testimonials Widget 2.19.0 before installing the latest Testimonials Widget for automatic upgrading.
-* [GC Testimonials](http://wordpress.org/plugins/gc-testimonials-to-testimonials/)
-* [Testimonials by WooThemes](http://wordpress.org/plugins/wootheme-testimonials-to-testimonials/)
 
 
 == Installation ==
@@ -265,6 +267,7 @@ This is a major overhaul *without* backwards compliance of over 80 changes. Plea
 = Most Common Issues =
 
 * Got `Parse error: syntax error, unexpected T_STATIC…`? See [Most Aihrus Plugins Require PHP 5.3+](https://aihrus.zendesk.com/entries/30678006)
+* Got `The plugin does not have a valid header` error? See [Error: The plugin does not have a valid header](https://aihrus.zendesk.com/entries/68888915)
 * Shortcode not working? Make sure your theme isn't using same shortcode.
 * [404 - Page not found](https://aihrus.zendesk.com/entries/23679301)
 * [Add testimonials using Gravity Forms](http://webtrainingwheels.com/how-to-collect-user-submitted-testimonials-wordpress/)
@@ -272,7 +275,7 @@ This is a major overhaul *without* backwards compliance of over 80 changes. Plea
 * [Customize bxSlider](http://bxslider.com/examples)
 * [Debug theme and plugin conflicts](https://aihrus.zendesk.com/entries/25119302)
 * [How do I create a testimonial record?](https://aihrus.zendesk.com/entries/30602506)
-* [How do I reset testimonials?](https://aihrus.zendesk.com/entries/30746533)
+* [How do I reset options?](https://aihrus.zendesk.com/entries/30746533)
 * [How to change testimonials layout](https://aihrus.zendesk.com/entries/38055707)
 * [My options don't work](https://aihrus.zendesk.com/entries/30746533)
 * [Pagination is broken](https://aihrus.zendesk.com/entries/23693513)
@@ -370,3 +373,5 @@ You can translate this plugin into your own language if it's not done so already
 A big, special thank you to [Joe Weber](https://plus.google.com/100063271269277312276/posts) of [12 Star Creative](http://www.12starcreative.com/) for creating the Testimonials Widget banner. It's fantastic.
 
 A cool thanks to RedRokk Library for the [redrokk_metabox_class](https://gist.github.com/1880770). It makes configuring meta boxes for your posts, pages or custom post types a snap.
+
+Current development by [Michael Cannon](https://profiles.wordpress.org/comprock/) of [Aihrus](http://aihr.us/about-aihrus/).
