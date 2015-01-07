@@ -5,7 +5,7 @@ Donate link: http://aihr.us/about-aihrus/donate/
 Tags: aihrus, client, customer, portfolio, quote, quotes, random, recommendation, reference, review, reviews, slider, testimonial, testimonials, wpml
 Requires at least: 3.6
 Tested up to: 4.1.0
-Stable tag: 3.0.2
+Stable tag: 3.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -94,7 +94,8 @@ The single testimonial view supports image, author, title, location, email, comp
 
 = Shortcode Examples =
 
-Read [EXAMPLES](https://github.com/michael-cannon/testimonials-widget/blob/master/EXAMPLES.md).
+* Read [EXAMPLES](https://github.com/michael-cannon/testimonials-widget/blob/master/EXAMPLES.md).
+* View [Testimonials Widget demo](http://aihr.us/testimonials-examples/).
 
 = Shortcode and Widget Options =
 
@@ -281,7 +282,7 @@ This is a major overhaul *without* backwards compliance of over 80 changes. Plea
 
 * Got `Parse error: syntax error, unexpected T_STATIC…`? See [Most Aihrus Plugins Require PHP 5.3+](https://aihrus.zendesk.com/entries/30678006)
 * Got `The plugin does not have a valid header` error? See [Error: The plugin does not have a valid header](https://aihrus.zendesk.com/entries/68888915)
-* Shortcode not working? Make sure your theme isn't using same shortcode.
+* Shortcode not working? Read about [enabling shortcodes in widgets](https://aihrus.zendesk.com/entries/23677312) and make sure your theme isn't using the same shortcode.
 * [404 - Page not found](https://aihrus.zendesk.com/entries/23679301)
 * [Add testimonials using Gravity Forms](http://webtrainingwheels.com/how-to-collect-user-submitted-testimonials-wordpress/)
 * [Change styling or debug CSS](https://aihrus.zendesk.com/entries/24910733)
