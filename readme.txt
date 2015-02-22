@@ -5,7 +5,7 @@ Donate link: http://aihr.us/about-aihrus/donate/
 Tags: aihrus, client, customer, portfolio, quote, quotes, random, recommendation, reference, review, reviews, slider, testimonial, testimonials, wpml
 Requires at least: 3.6
 Tested up to: 4.1.0
-Stable tag: 3.0.3
+Stable tag: 3.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -103,7 +103,7 @@ Please keep in mind that inheritance affects options. This means that changes ma
 
 Further, global settings are the baseline for shortcodes. If you want to alter the shortcode appearance, then alter the shortcode options directly.
 
-Details on the Shortcode Attributes tab at WordPress Admin > Testimonials > Settings.
+Details on the Shortcode Attributes tab at WordPress Admin > Testimonials > Settings. Alternately, read [OPTIONS](http://aihr.us/best-wordpress-testimonials-plugin/shortcode-widget-options/).
 
 = Testimonials Widget Migration Helpers =
 
@@ -293,7 +293,7 @@ This is a major overhaul *without* backwards compliance of over 80 changes. Plea
 * [How to change testimonials layout](https://aihrus.zendesk.com/entries/38055707)
 * [My options don't work](https://aihrus.zendesk.com/entries/30746533)
 * [Pagination is broken](https://aihrus.zendesk.com/entries/23693513)
-* [Test Review schema output](http://www.google.com/webmasters/tools/richsnippets)
+* [Test Review schema output](https://developers.google.com/webmasters/structured-data/testing-tool/)
 * [Testimonials slider doesn't rotate](https://aihrus.zendesk.com/entries/23693363)
 
 = Still Stuck or Want Something Done? Get Support! =
@@ -373,7 +373,7 @@ You can translate this plugin into your own language if it's not done so already
 == Notes ==
 
 * Default and Gravatar image size is based upon Thumbnail size in Media Settings
-* Review schema [structured data testing tool](http://www.google.com/webmasters/tools/richsnippets)
+* Review schema [structured data testing tool](https://developers.google.com/webmasters/structured-data/testing-tool/)
 * When plugin is uninstalled, all data and settings are deleted if "Remove Plugin Data on Deletion" is checked in Settings
 
 
