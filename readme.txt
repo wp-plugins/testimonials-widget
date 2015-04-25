@@ -1,6 +1,6 @@
 === Testimonials Widget ===
 
-Contributors: comprock
+Contributors: comprock, saurabhd
 Donate link: http://aihr.us/about-aihrus/donate/
 Tags: aihrus, client, customer, portfolio, quote, quotes, random, recommendation, reference, review, reviews, slider, testimonial, testimonials, wpml
 Requires at least: 3.6
