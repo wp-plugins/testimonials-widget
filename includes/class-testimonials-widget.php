@@ -1,7 +1,7 @@
 <?php
 /**
 Testimonials Widget
-Copyright (C) 2015 Michael Cannon
+Copyright (C) 2015 Axelerant
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -54,9 +54,8 @@ class Testimonials_Widget extends Aihrus_Common {
 	public static $notice_key;
 	public static $not_found = false;
 	public static $plugin_assets;
-	public static $post_count     = 0;
-	public static $scripts        = array();
-	public static $scripts_called = false;
+	public static $post_count = 0;
+	public static $scripts    = array();
 	public static $settings_link;
 	public static $tag_close_quote = '<span class="close-quote"></span>';
 	public static $tag_open_quote  = '<span class="open-quote"></span>';
@@ -365,7 +364,7 @@ class Testimonials_Widget extends Aihrus_Common {
 
 
 	public static function notice_2_12_0() {
-		$text = sprintf( __( 'If your Testimonials display has gone to funky town, please <a href="%s">read the FAQ</a> about possible CSS fixes.', 'testimonials-widget' ), esc_url( 'https://aihrus.zendesk.com/entries/23722573-Major-Changes-Since-2-10-0' ) );
+		$text = sprintf( __( 'If your Testimonials display has gone to funky town, please <a href="%s">read the FAQ</a> about possible CSS fixes.', 'testimonials-widget' ), esc_url( 'https://nodedesk.zendesk.com/hc/en-us/articles/202244392-Major-Changes-Since-2-10-0' ) );
 
 		aihr_notice_updated( $text );
 	}
@@ -751,11 +750,11 @@ class Testimonials_Widget extends Aihrus_Common {
 		wp_enqueue_script( 'jquery' );
 
 		if ( ! empty( $atts['enable_video'] ) ) {
-			wp_register_script( 'jquery.fitvids', self::$library_assets . 'bxslider-4/plugins/jquery.fitvids.js', array( 'jquery' ), '1.0', true );
+			wp_register_script( 'jquery.fitvids', self::$library_assets . 'bxslider-4/dist/vendor/jquery.fitvids.js', array( 'jquery' ), '1.0', true );
 			wp_enqueue_script( 'jquery.fitvids' );
 		}
 
-		wp_register_script( 'jquery.bxslider', self::$library_assets . 'bxslider-4/jquery.bxslider.min.js', array( 'jquery' ), '4.1.2', true );
+		wp_register_script( 'jquery.bxslider', self::$library_assets . 'bxslider-4/dist/jquery.bxslider.min.js', array( 'jquery' ), '4.1.2', true );
 		wp_enqueue_script( 'jquery.bxslider' );
 
 		do_action( 'tw_scripts', $atts );
@@ -769,7 +768,7 @@ class Testimonials_Widget extends Aihrus_Common {
 
 		$exclude_bxslider_css = tw_get_option( 'exclude_bxslider_css' );
 		if ( empty( $exclude_bxslider_css ) ) {
-			wp_register_style( 'jquery.bxslider', self::$library_assets . 'bxslider-4/jquery.bxslider.css' );
+			wp_register_style( 'jquery.bxslider', self::$library_assets . 'bxslider-4/dist/jquery.bxslider.css' );
 			wp_enqueue_style( 'jquery.bxslider' );
 		}
 
@@ -1724,7 +1723,7 @@ EOF;
 
 
 	public static function notice_2_15_0() {
-		$text = sprintf( __( 'If your Testimonials display has gone to funky town, please <a href="%s">read the FAQ</a> about possible fixes.', 'testimonials-widget' ), esc_url( 'https://aihrus.zendesk.com/entries/28402246-Major-Change-for-2-15-0' ) );
+		$text = sprintf( __( 'If your Testimonials display has gone to funky town, please <a href="%s">read the FAQ</a> about possible fixes.', 'testimonials-widget' ), esc_url( 'https://nodedesk.zendesk.com/hc/en-us/articles/202331821-Major-Change-for-2-15-0' ) );
 
 		aihr_notice_updated( $text );
 	}
