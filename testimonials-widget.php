@@ -4,16 +4,16 @@
  * Plugin URI: http://wordpress.org/plugins/testimonials-widget/
  * Description: Easily add social proofing to your website with Testimonials Widget. List or slide reviews via functions, shortcodes, or widgets.
  * lets you socially randomly slide or list selected portfolios, quotes, reviews, or text with images or videos on your WordPress site.
- * Version: 3.0.4
- * Author: Michael Cannon
- * Author URI: http://aihr.us/resume/
+ * Version: 3.1.0
+ * Author: Axelerant
+ * Author URI: http://axelerant.com/
  * License: GPLv2 or later
  * Text Domain: testimonials-widget
  * Domain Path: /languages
  */
 /**
 Testimonials Widget
-Copyright (C) 2015 Michael Cannon
+Copyright (C) 2015 Axelerant
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'TW_AIHR_VERSION' ) ) {
-	define( 'TW_AIHR_VERSION', '1.1.7RC1' );
+	define( 'TW_AIHR_VERSION', '1.2.1' );
 }
 
 if ( ! defined( 'TW_BASE' ) ) {
@@ -60,11 +60,11 @@ if ( ! defined( 'TW_NAME' ) ) {
 }
 
 if ( ! defined( 'TW_PREMIUM_LINK' ) ) {
-	define( 'TW_PREMIUM_LINK', '<a href="http://aihr.us/downloads/testimonials-widget-premium-wordpress-plugin/">Buy Premium</a>' );
+	define( 'TW_PREMIUM_LINK', '<a href="http://axelerant.com/downloads/testimonials-widget-premium-wordpress-plugin/">Buy Premium</a>' );
 }
 
 if ( ! defined( 'TW_VERSION' ) ) {
-	define( 'TW_VERSION', '3.0.4' );
+	define( 'TW_VERSION', '3.1.0' );
 }
 
 require_once TW_DIR_INC . 'requirements.php';
