@@ -272,6 +272,7 @@ class Testimonials_Widget extends Aihrus_Common {
 		}
 
 		self::init();
+		tw_init_options();
 		flush_rewrite_rules();
 	}
 
@@ -393,6 +394,8 @@ class Testimonials_Widget extends Aihrus_Common {
 
 			if ( $prior_version < self::VERSION ) {
 				tw_requirements_check( true );
+				tw_init_options();
+				flush_rewrite_rules();
 				do_action( 'tw_update' );
 			}
 
@@ -1161,8 +1164,7 @@ EOF;
 							}
 
 							$args['tag_slug__and'][] = $tag;
-						}
-						else {
+						} else {
 							if ( empty( $args['tag_slug__in'] ) || ! is_array( $args['tag_slug__in'] ) ) {
 								$args['tag_slug__in'] = array();
 							}
@@ -1176,8 +1178,7 @@ EOF;
 							}
 
 							$args['tag__and'][] = $tag;
-						}
-						else {
+						} else {
 							if ( empty( $args['tag__in'] ) || ! is_array( $args['tag__in'] ) ) {
 								$args['tag__in'] = array();
 							}
@@ -1254,6 +1255,7 @@ EOF;
 		$testimonials = apply_filters( 'tw_cache_get', false, $args );
 		if ( false === $testimonials ) {
 			$testimonials = new WP_Query( $args );
+			$testimonials = apply_filters( 'tw_testimonials_query', $testimonials, $args );
 			$testimonials = apply_filters( 'tw_cache_set', $testimonials, $args );
 		}
 
@@ -2086,7 +2088,7 @@ EOF;
 
 			$count = 0;
 			$query = new WP_Query( $query_args );
-			while  ( $query->have_posts() ) {
+			while ( $query->have_posts() ) {
 				$query->the_post();
 				$count++;
 			}

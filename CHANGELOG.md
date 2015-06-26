@@ -2,6 +2,14 @@
 
 ## master
 
+## 3.2.0
+* Add filter tw_testimonial_query to alter WP_Query in get_testimonials
+* Require Aihrus Framework 1.2.2
+* RESOLVE #168 Auto save options and clear permalinks on updating
+* RESOLVE #173 prevent_slug_conflict runs on front end page load
+* Store branding updates
+* Update bxslider library to v4.2.5
+
 ## 3.1.1
 * Redo SVN release
 
@@ -1193,7 +1201,7 @@
 * TODO Updates
 
 ## 2.2.5
-* Adapt for [Testimonials Widget Premium plugin](http://axelerant.com/downloads/testimonials-widget-premium-wordpress-plugin/)
+* Adapt for [Testimonials Widget Premium plugin](https://store.axelerant.com/downloads/testimonials-widget-premium-wordpress-plugin/)
 * Add support text
 * Correct verbiage spacing
 * Explain `limit`
